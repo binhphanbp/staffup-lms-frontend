@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Staffup LMS — Frontend
+
+Production-ready Next.js frontend for the Staffup Learning Management System.
+
+## Tech Stack
+
+| Category         | Technology                      |
+| ---------------- | ------------------------------- |
+| Framework        | Next.js 16 (App Router)         |
+| Language         | TypeScript (Strict)             |
+| Styling          | Tailwind CSS v4 + Shadcn/ui     |
+| State Management | Zustand (with persistence)      |
+| Data Fetching    | TanStack React Query v5 + Axios |
+| Forms            | React Hook Form + Zod           |
+| Icons            | Lucide React                    |
+| Linting          | ESLint 9 + Prettier             |
+| Git Hooks        | Husky + lint-staged             |
+| Package Manager  | pnpm                            |
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Copy environment variables
+cp .env.example .env.local
+
+# Start development server
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command             | Description               |
+| ------------------- | ------------------------- |
+| `pnpm dev`          | Start dev server          |
+| `pnpm build`        | Build for production      |
+| `pnpm start`        | Start production server   |
+| `pnpm lint`         | Run ESLint                |
+| `pnpm lint:fix`     | Fix ESLint errors         |
+| `pnpm format`       | Format code with Prettier |
+| `pnpm format:check` | Check formatting          |
 
-## Learn More
+## Docker
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Development
+docker compose up
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Production build
+docker build --target production -t staffup-frontend .
+docker run -p 3000:3000 staffup-frontend
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/                  # Next.js App Router (routes & layouts)
+│   ├── (auth)/           # Auth route group (login, register)
+│   └── (dashboard)/      # Dashboard route group
+├── components/
+│   ├── ui/               # Shadcn/ui base components
+│   ├── shared/           # Reusable (Navbar, Sidebar, Footer)
+│   └── features/         # Domain-grouped components
+├── hooks/                # Custom React hooks
+├── lib/                  # Utilities (axios, query-client, utils)
+├── services/             # API service modules
+├── store/                # Zustand stores
+├── types/                # TypeScript interfaces
+├── assets/               # Images, fonts, local icons
+└── proxy.ts              # Route protection (Next.js 16)
+```

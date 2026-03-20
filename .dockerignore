@@ -1,0 +1,48 @@
+# ================================
+# Dependencies
+# ================================
+node_modules
+.pnpm-store
+
+# ================================
+# Build output
+# ================================
+.next
+out
+dist
+build
+
+# ================================
+# Dev/editor
+# ================================
+.git
+.gitignore
+.vscode
+.idea
+*.log
+
+# ================================
+# Environment
+# ================================
+.env
+.env.local
+.env.*.local
+
+# ================================
+# Dev tooling (not needed in image)
+# ================================
+.husky
+.lintstagedrc.json
+.prettierrc
+.prettierignore
+eslint.config.mjs
+AGENTS.md
+CLAUDE.md
+README.md
+
+# ================================
+# Docker (avoid recursive copy)
+# ================================
+docker-compose.yml
+Dockerfile
+.dockerignore
