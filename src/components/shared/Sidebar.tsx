@@ -1,76 +1,100 @@
 /* eslint-disable @next/next/no-img-element */
+'use client';
 import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export const Sidebar = () => {
+  // Lấy đường dẫn hiện tại (VD: '/' hoặc '/courses')
+  const pathname = usePathname();
+
+  // Danh sách cấu hình Menu (thêm bớt tùy ý ở đây)
+  const learningMenus = [
+    { name: 'Bảng điều khiển', href: '/', icon: 'fa-house' },
+    { name: 'Thư viện Khóa học', href: '/courses', icon: 'fa-book-open' },
+    { name: 'Lộ trình phát triển', href: '/path', icon: 'fa-route' },
+    { name: 'Môi trường Thực hành', href: '/lab', icon: 'fa-code' },
+  ];
+
+  const achievementMenus = [
+    { name: 'Bài Test năng lực', href: '/assessment', icon: 'fa-clipboard-check', badge: 1 },
+    { name: 'Chứng chỉ Nội bộ', href: '/certificates', icon: 'fa-award' },
+  ];
+
   return (
-    <aside className="z-30 flex w-64 flex-shrink-0 flex-col border-r border-gray-200 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+    <aside className="z-20 flex h-screen w-64 flex-shrink-0 flex-col border-r border-gray-200 bg-white text-sm text-slate-700">
+      {/* Logo */}
       <div className="flex h-16 items-center border-b border-gray-100 px-6">
-        <div className="flex items-center gap-2.5 text-lg font-bold text-slate-800">
+        <Link href="/" className="flex items-center gap-2.5 text-lg font-bold text-slate-800">
           <div className="bg-primary flex h-8 w-8 items-center justify-center rounded text-white shadow-sm">
             <i className="fa-solid fa-laptop-code text-xs"></i>
           </div>
           <span>
             Tech<span className="font-light text-slate-500">Learn</span>
           </span>
-        </div>
+        </Link>
       </div>
 
+      {/* Danh sách Menu */}
       <div className="custom-scrollbar flex-1 space-y-1.5 overflow-y-auto px-3 py-6">
+        {/* Nhóm: Học tập */}
         <div className="mb-2 px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
           Học tập
         </div>
+        {learningMenus.map((item) => {
+          // Kiểm tra xem menu này có khớp với đường dẫn hiện tại không
+          const isActive = pathname === item.href;
 
-        <a
-          href="#"
-          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
-        >
-          <i className="fa-solid fa-house w-5 text-center"></i> Bảng điều khiển
-        </a>
-        <a
-          href="#"
-          className="bg-primary-bg text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-semibold transition-colors"
-        >
-          <i className="fa-solid fa-book-open w-5 text-center"></i> Thư viện Khóa học
-        </a>
-        <a
-          href="#"
-          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
-        >
-          <i className="fa-solid fa-route w-5 text-center"></i> Lộ trình phát triển
-        </a>
-        <a
-          href="#"
-          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
-        >
-          <i className="fa-solid fa-code w-5 text-center"></i> Môi trường Thực hành
-        </a>
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors ${
+                isActive
+                  ? 'bg-primary-bg text-primary font-bold'
+                  : 'hover:text-primary font-medium text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <i className={`fa-solid ${item.icon} w-5 text-center`}></i> {item.name}
+            </Link>
+          );
+        })}
 
+        {/* Nhóm: Đánh giá & Thành tích */}
         <div className="mt-6 mb-2 px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
           Đánh giá & Thành tích
         </div>
+        {achievementMenus.map((item) => {
+          const isActive = pathname === item.href;
 
-        <a
-          href="#"
-          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
-        >
-          <i className="fa-solid fa-clipboard-check w-5 text-center"></i> Bài Test năng lực
-          <span className="ml-auto rounded bg-red-100 px-1.5 text-[10px] font-bold text-red-600">
-            1
-          </span>
-        </a>
-        <a
-          href="#"
-          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
-        >
-          <i className="fa-solid fa-award w-5 text-center"></i> Chứng chỉ Nội bộ
-        </a>
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors ${
+                isActive
+                  ? 'bg-primary-bg text-primary font-bold'
+                  : 'hover:text-primary font-medium text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              <i className={`fa-solid ${item.icon} w-5 text-center`}></i> {item.name}
+              {/* Nếu có badge (số thông báo) thì hiển thị */}
+              {item.badge && (
+                <span className="ml-auto rounded bg-red-100 px-1.5 text-[10px] font-bold text-red-600">
+                  {item.badge}
+                </span>
+              )}
+            </Link>
+          );
+        })}
       </div>
 
+      {/* User Profile */}
       <div className="border-t border-gray-100 bg-slate-50 p-4">
         <div className="flex cursor-pointer items-center gap-3 rounded-lg border border-transparent p-2 transition-colors hover:border-gray-200 hover:bg-white">
           <img
             src="https://ui-avatars.com/api/?name=Tran+Bao&background=1677ff&color=fff&bold=true"
-            alt="Avatar User"
+            alt="Avatar"
             className="h-9 w-9 rounded-md border border-gray-200 shadow-sm"
           />
           <div className="min-w-0 flex-1">
