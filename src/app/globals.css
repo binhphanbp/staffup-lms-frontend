@@ -10,6 +10,15 @@
   --color-warning: #faad14;
   --color-danger: #ff4d4f;
   --color-purple: #7c3aed;
+  --color-code-bg: #282c34;
+  --color-code-text: #abb2bf;
+  --color-code-keyword: #c678dd;
+  --color-code-function: #61afef;
+  --color-code-string: #98c379;
+  --color-code-number: #d19a66;
+  --color-code-comment: #5c6370;
+  --color-code-operator: #56b6c2;
+  --color-code-property: #e06c75;
 
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -306,4 +315,331 @@ body {
 }
 .animate-fade-out-toast {
   animation: fadeOutToast 0.3s ease forwards;
+}
+
+/* =========================================
+   COURSE DETAIL STYLES
+========================================= */
+/* Nền Pattern cho Hero Banner */
+.bg-tech-pattern {
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position:
+    0 0,
+    10px 10px;
+}
+
+/* Accordion Smooth Transition */
+.accordion-content {
+  transition:
+    max-height 0.3s ease-in-out,
+    padding 0.3s ease-in-out,
+    opacity 0.3s ease-in-out;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.accordion-item.active .accordion-content {
+  max-height: 1000px;
+  opacity: 1;
+}
+.accordion-item.active .accordion-icon {
+  transform: rotate(180deg);
+}
+
+/* =========================================
+   LEARNING ROOM STYLES
+========================================= */
+/* Scrollbar riêng cho nền Dark (Cột giáo trình) */
+.dark-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #475569;
+}
+.dark-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #64748b;
+}
+
+/* Video Player Custom CSS */
+.video-container {
+  position: relative;
+  width: 100%;
+  background-color: #000;
+  aspect-ratio: 16 / 9;
+}
+.video-controls {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.5) 60%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.video-container:hover .video-controls {
+  opacity: 1;
+}
+
+/* Progress Bar của Video */
+.vid-progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  position: relative;
+  transition: height 0.1s;
+}
+.vid-progress-bar:hover {
+  height: 6px;
+}
+.vid-progress-filled {
+  height: 100%;
+  background: var(--color-primary, #1677ff);
+  width: 45%;
+  position: relative;
+}
+.vid-progress-filled::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: -4px;
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.vid-progress-bar:hover .vid-progress-filled::after {
+  opacity: 1;
+}
+
+/* Audio Equalizer Animation */
+.eq-bar {
+  width: 3px;
+  background-color: var(--color-primary, #1677ff);
+  border-radius: 2px;
+  display: inline-block;
+  animation: eqPlay 1s infinite ease-in-out;
+}
+.eq-bar:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.eq-bar:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.eq-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+@keyframes eqPlay {
+  0%,
+  100% {
+    height: 4px;
+  }
+  50% {
+    height: 12px;
+  }
+}
+
+/* =========================================
+   CODE LAB STYLES
+========================================= */
+/* Thanh Resizer ở giữa */
+.resizer {
+  width: 4px;
+  background-color: #e2e8f0;
+  cursor: col-resize;
+  transition: background-color 0.2s;
+  z-index: 10;
+}
+.resizer:hover,
+.resizer:active {
+  background-color: #1677ff;
+}
+
+/* Editor Line Numbers */
+.line-numbers {
+  counter-reset: line;
+  text-align: right;
+  user-select: none;
+}
+.line-numbers > div {
+  counter-increment: line;
+}
+.line-numbers > div::before {
+  content: counter(line);
+  display: inline-block;
+  width: 100%;
+}
+
+/* Markdown Styles trong Đề bài */
+.prose pre {
+  background-color: #f1f5f9;
+  padding: 12px;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  border: 1px solid #e2e8f0;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+.prose code {
+  background-color: #f1f5f9;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #db2777;
+}
+
+/* Loading Spinner */
+.loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #1677ff;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* =========================================
+   QUIZ ASSESSMENT STYLES
+========================================= */
+body.quiz-mode {
+  user-select: none; /* Chống bôi đen copy đề bài */
+}
+
+/* Khung câu hỏi & Đáp án */
+.option-label {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+.option-label:hover {
+  border-color: #bae0ff;
+  background-color: #f8fafc;
+}
+.option-input:checked + .option-label {
+  border-color: #1677ff;
+  background-color: #e6f7ff;
+  box-shadow: 0 4px 14px 0 rgba(22, 119, 255, 0.1);
+}
+.option-input:checked + .option-label .radio-circle {
+  border-color: #1677ff;
+}
+.option-input:checked + .option-label .radio-circle::after {
+  transform: scale(1);
+}
+
+/* Custom Radio Button */
+.radio-circle {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  margin-right: 16px;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.radio-circle::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background-color: #1677ff;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Question Palette Grid */
+.q-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.q-btn {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  color: #64748b;
+}
+.q-btn:hover {
+  border-color: #1677ff;
+  color: #1677ff;
+}
+.q-btn.active {
+  border-color: #1677ff;
+  border-width: 2px;
+}
+.q-btn.answered {
+  background-color: #1677ff;
+  color: white;
+  border-color: #1677ff;
+}
+.q-btn.review {
+  background-color: #faad14;
+  color: white;
+  border-color: #faad14;
+}
+.q-btn.answered.review {
+  background: linear-gradient(135deg, #1677ff 50%, #faad14 50%);
+  color: white;
+  border: none;
+}
+
+/* Custom Checkbox (Review) */
+.cbx {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cbx:checked {
+  background-color: #faad14;
+  border-color: #faad14;
+}
+.cbx:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  background-color: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+}
+.animate-pulse-fast {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
