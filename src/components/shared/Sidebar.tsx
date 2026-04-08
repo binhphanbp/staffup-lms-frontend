@@ -1,104 +1,87 @@
-'use client';
+/* eslint-disable @next/next/no-img-element */
+import React from 'react';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { LayoutDashboard, ChevronLeft, ChevronRight } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-
-// ============================================================
-// Sidebar — Dashboard Navigation
-// Collapsible sidebar with route highlighting
-// Define your nav items below according to your Figma design
-// ============================================================
-
-export interface SidebarNavItem {
-  title: string;
-  href: string;
-  icon: LucideIcon;
-}
-
-// Add your nav items here from your Figma design
-const defaultNavItems: SidebarNavItem[] = [
-  {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard,
-  },
-];
-
-interface SidebarProps {
-  navItems?: SidebarNavItem[];
-}
-
-export function Sidebar({ navItems = defaultNavItems }: SidebarProps) {
-  const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
-
+export const Sidebar = () => {
   return (
-    <aside
-      className={cn(
-        'border-border bg-sidebar text-sidebar-foreground sticky top-0 flex h-screen flex-col border-r transition-all duration-300',
-        collapsed ? 'w-[68px]' : 'w-[260px]',
-      )}
-    >
-      {/* Logo */}
-      <div className="border-border flex h-16 items-center border-b px-4">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold">
-            S
+    <aside className="z-30 flex w-64 flex-shrink-0 flex-col border-r border-gray-200 bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+      <div className="flex h-16 items-center border-b border-gray-100 px-6">
+        <div className="flex items-center gap-2.5 text-lg font-bold text-slate-800">
+          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded text-white shadow-sm">
+            <i className="fa-solid fa-laptop-code text-xs"></i>
           </div>
-          {!collapsed && (
-            <span className="text-lg font-bold tracking-tight">
-              Staffup <span className="text-muted-foreground font-normal">LMS</span>
-            </span>
-          )}
-        </Link>
+          <span>
+            Tech<span className="font-light text-slate-500">Learn</span>
+          </span>
+        </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-        {navItems.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== '/dashboard' && pathname.startsWith(item.href));
+      <div className="custom-scrollbar flex-1 space-y-1.5 overflow-y-auto px-3 py-6">
+        <div className="mb-2 px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+          Học tập
+        </div>
 
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-sidebar-accent text-sidebar-accent-foreground'
-                  : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground',
-              )}
-              title={collapsed ? item.title : undefined}
-            >
-              <item.icon className="h-5 w-5 shrink-0" />
-              {!collapsed && <span>{item.title}</span>}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Collapse Toggle */}
-      <div className="border-border border-t p-3">
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors"
+        <a
+          href="#"
+          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
         >
-          {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <>
-              <ChevronLeft className="h-4 w-4" />
-              <span>Collapse</span>
-            </>
-          )}
-        </button>
+          <i className="fa-solid fa-house w-5 text-center"></i> Bảng điều khiển
+        </a>
+        <a
+          href="#"
+          className="bg-primary-bg text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-semibold transition-colors"
+        >
+          <i className="fa-solid fa-book-open w-5 text-center"></i> Thư viện Khóa học
+        </a>
+        <a
+          href="#"
+          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
+        >
+          <i className="fa-solid fa-route w-5 text-center"></i> Lộ trình phát triển
+        </a>
+        <a
+          href="#"
+          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
+        >
+          <i className="fa-solid fa-code w-5 text-center"></i> Môi trường Thực hành
+        </a>
+
+        <div className="mt-6 mb-2 px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+          Đánh giá & Thành tích
+        </div>
+
+        <a
+          href="#"
+          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
+        >
+          <i className="fa-solid fa-clipboard-check w-5 text-center"></i> Bài Test năng lực
+          <span className="ml-auto rounded bg-red-100 px-1.5 text-[10px] font-bold text-red-600">
+            1
+          </span>
+        </a>
+        <a
+          href="#"
+          className="hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50"
+        >
+          <i className="fa-solid fa-award w-5 text-center"></i> Chứng chỉ Nội bộ
+        </a>
+      </div>
+
+      <div className="border-t border-gray-100 bg-slate-50 p-4">
+        <div className="flex cursor-pointer items-center gap-3 rounded-lg border border-transparent p-2 transition-colors hover:border-gray-200 hover:bg-white">
+          <img
+            src="https://ui-avatars.com/api/?name=Tran+Bao&background=1677ff&color=fff&bold=true"
+            alt="Avatar User"
+            className="h-9 w-9 rounded-md border border-gray-200 shadow-sm"
+          />
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm font-bold text-slate-700">Trần Khắc Bảo</div>
+            <div className="truncate font-mono text-[11px] tracking-tight text-slate-500">
+              DevOps Engineer
+            </div>
+          </div>
+          <i className="fa-solid fa-gear text-xs text-slate-400"></i>
+        </div>
       </div>
     </aside>
   );
-}
+};
