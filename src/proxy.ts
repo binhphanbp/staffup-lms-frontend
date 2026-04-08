@@ -18,6 +18,9 @@ const publicRoutes = [
   '/learning-room',
   '/learning-room/lab',
   '/quiz-assessment',
+  '/instructor-dashboard',
+  '/instructor-dashboard/course-builder',
+  '/assignment-review',
 ];
 
 // Routes prefixed with these paths are always public (e.g. API, static)
