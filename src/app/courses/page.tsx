@@ -91,7 +91,7 @@ export default function CourseCatalog() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
+    <div className="flex h-screen w-full overflow-hidden bg-[#f0f2f5] text-sm text-slate-700">
       <Sidebar />
 
       <main className="relative flex h-screen min-w-0 flex-1 flex-col overflow-hidden bg-[#f0f2f5]">

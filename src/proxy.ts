@@ -7,7 +7,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 // ============================================================
 
 // Routes accessible without authentication
-const publicRoutes = ['/', '/login', '/register', '/forgot-password', '/courses'];
+const publicRoutes = ['/', '/login', '/register', '/forgot-password', '/courses', '/certificates'];
 
 // Routes prefixed with these paths are always public (e.g. API, static)
 const publicPrefixes = ['/api', '/_next', '/favicon.ico'];
