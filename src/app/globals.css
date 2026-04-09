@@ -1038,3 +1038,82 @@ body.quiz-mode {
 .animate-cursor-blink {
   animation: blink 1s step-end infinite;
 }
+
+/* =========================================
+   GRADING EVALUATION STYLES (MATERIAL)
+========================================= */
+:root {
+  --g-blue: #1a73e8;
+  --g-blue-hover: #174ea6;
+  --g-blue-light: #e8f0fe;
+  --g-red: #ea4335;
+  --g-red-light: #fce8e6;
+  --g-yellow: #fbbc04;
+  --g-yellow-light: #fef7e0;
+  --g-green: #34a853;
+  --g-green-light: #e6f4ea;
+  --g-purple: #9334e6;
+  --g-purple-light: #f3e8fd;
+}
+
+/* Document Mockup */
+.document-mock {
+  background: white;
+  width: 100%;
+  max-width: 800px;
+  min-height: 100%;
+  padding: 40px 60px;
+  box-shadow:
+    0 1px 2px 0 rgba(60, 64, 67, 0.3),
+    0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  border-radius: 4px;
+  color: #202124;
+  line-height: 1.6;
+}
+
+/* AI Assistant Box */
+.ai-assistant-box {
+  background: linear-gradient(145deg, var(--g-purple-light) 0%, #ffffff 100%);
+  border: 1px solid #e8d3fd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+/* Chips */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.status-chip.pending {
+  background: #fff3e0;
+  color: #e65100;
+  border-color: #ffe0b2;
+}
+.status-chip.aigraded {
+  background: var(--g-purple-light);
+  color: var(--g-purple);
+  border-color: #e8d3fd;
+}
+.status-chip.graded {
+  background: var(--g-green-light);
+  color: #137333;
+  border-color: #ceead6;
+}
+
+/* Transition for Workspace Overlay */
+.workspace-enter {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+}
+.workspace-enter.show {
+  opacity: 1;
+  pointer-events: auto;
+}
