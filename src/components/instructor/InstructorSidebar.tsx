@@ -25,7 +25,7 @@ export const InstructorSidebar = () => {
         </div>
 
         <Link
-          href="/instructor-dashboard"
+          href="/dashboard"
           className="bg-primary/10 flex items-center gap-3 rounded-md px-3 py-2 font-medium text-white transition-colors"
         >
           <i className="fa-solid fa-chart-simple text-primary w-4 text-center text-sm"></i> Tổng
@@ -41,6 +41,12 @@ export const InstructorSidebar = () => {
           className="flex items-center gap-3 rounded-md px-3 py-2 font-medium text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white"
         >
           <i className="fa-solid fa-book-open w-4 text-center text-sm"></i> Quản lý Khóa học
+        </Link>
+        <Link
+          href="/course-builder"
+          className="flex items-center gap-3 rounded-md px-3 py-2 font-medium text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-white"
+        >
+          <i className="fa-solid fa-pen-to-square w-4 text-center text-sm"></i> Soạn giáo trình
         </Link>
         <Link
           href="#"

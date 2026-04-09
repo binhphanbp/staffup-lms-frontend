@@ -22,7 +22,7 @@ export const CourseSidebar = () => {
           </div>
 
           <Link
-            href="/learning-room"
+            href="/courses/detail/learning-room"
             className="bg-primary hover:bg-primary-hover mb-4 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-500/20 transition-transform active:scale-95"
           >
             <i className="fa-solid fa-play"></i> Tiếp tục học

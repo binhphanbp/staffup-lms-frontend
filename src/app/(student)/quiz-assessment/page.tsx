@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { QuizLeftSidebar } from '@/components/quiz/QuizLeftSidebar';
-import { QuizHeader } from '@/components/quiz/QuizHeader';
+import { useState, useEffect } from 'react';
+import { StudentHeader } from '@/components/shared/StudentHeader';
 import { QuestionContent } from '@/components/quiz/QuestionContent';
 import { QuestionPalette } from '@/components/quiz/QuestionPalette';
 import { SubmitModal, AntiCheatModal } from '@/components/quiz/QuizModals';
@@ -78,36 +77,32 @@ export default function QuizAssessmentPage() {
   }, []);
 
   return (
-    <div className="quiz-mode flex h-screen overflow-hidden bg-[#f0f2f5] text-slate-800">
-      {/* Sidebar Trái */}
-      <QuizLeftSidebar />
+    <>
+      <StudentHeader
+        breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Bài Test năng lực' }]}
+      />
 
-      <main className="relative flex h-screen min-w-0 flex-1 flex-col overflow-hidden">
-        {/* Header */}
-        <QuizHeader onShowSubmit={() => setShowSubmitModal(true)} />
+      <div className="flex flex-1 overflow-hidden bg-[#f0f2f5]">
+        {/* Cột Nội dung câu hỏi */}
+        <QuestionContent
+          activeQuestion={activeQuestion}
+          setActiveQuestion={setActiveQuestion}
+          answeredQs={answeredQs}
+          onSelectOption={handleSelectOption}
+          reviewQs={reviewQs}
+          onToggleReview={handleToggleReview}
+        />
 
-        <div className="flex flex-1 overflow-hidden">
-          {/* Cột Nội dung câu hỏi */}
-          <QuestionContent
-            activeQuestion={activeQuestion}
-            setActiveQuestion={setActiveQuestion}
-            answeredQs={answeredQs}
-            onSelectOption={handleSelectOption}
-            reviewQs={reviewQs}
-            onToggleReview={handleToggleReview}
-          />
-
-          {/* Bảng điều khiển câu hỏi & Thời gian bên phải */}
-          <QuestionPalette
-            timeLeft={timeLeft}
-            activeQuestion={activeQuestion}
-            setActiveQuestion={setActiveQuestion}
-            answeredQs={answeredQs}
-            reviewQs={reviewQs}
-            onShowSubmit={() => setShowSubmitModal(true)}
-          />
-        </div>
-      </main>
+        {/* Bảng điều khiển câu hỏi & Thời gian bên phải */}
+        <QuestionPalette
+          timeLeft={timeLeft}
+          activeQuestion={activeQuestion}
+          setActiveQuestion={setActiveQuestion}
+          answeredQs={answeredQs}
+          reviewQs={reviewQs}
+          onShowSubmit={() => setShowSubmitModal(true)}
+        />
+      </div>
 
       {/* Các Popup (Modals) */}
       <SubmitModal
@@ -124,6 +119,6 @@ export default function QuizAssessmentPage() {
         onAcknowledge={() => setShowCheatModal(false)}
         cheatCount={cheatWarnings}
       />
-    </div>
+    </>
   );
 }
