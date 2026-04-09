@@ -19,7 +19,7 @@
   --color-code-comment: #5c6370;
   --color-code-operator: #56b6c2;
   --color-code-property: #e06c75;
-
+  --color-code-type: #e5c07b;
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
@@ -642,4 +642,399 @@ body.quiz-mode {
 }
 .animate-pulse-fast {
   animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* =========================================
+   INSTRUCTOR DASHBOARD STYLES
+========================================= */
+/* Card tối giản: Bỏ shadow, dùng viền mỏng */
+.clean-card {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+/* Bảng dữ liệu chuẩn (Chống rớt dòng) */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.data-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 14px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+.data-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Tiện ích cấm rớt dòng cho các cột số liệu */
+.no-wrap {
+  white-space: nowrap;
+}
+
+/* Line clamp tự nhiên */
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* =========================================
+   COURSE BUILDER STYLES
+========================================= */
+/* Form Controls */
+.input-base {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.input-base:focus {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+}
+
+/* Stepper CSS */
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid #cbd5e1;
+  background-color: white;
+  color: #94a3b8;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10;
+}
+.step-item.active .step-circle {
+  border-color: #1677ff;
+  background-color: #1677ff;
+  color: white;
+}
+.step-item.completed .step-circle {
+  border-color: #1677ff;
+  background-color: white;
+  color: #1677ff;
+}
+.step-line {
+  flex: 1;
+  height: 2px;
+  background-color: #e2e8f0;
+  margin: 0 12px;
+  transition: background-color 0.3s ease;
+}
+.step-item.completed + .step-line {
+  background-color: #1677ff;
+}
+
+/* Custom Toggle Switch */
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: #059669;
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #059669;
+}
+
+/* Drag Handle Area */
+.drag-handle {
+  cursor: grab;
+  color: #cbd5e1;
+}
+.drag-handle:hover {
+  color: #64748b;
+}
+.drag-item {
+  transition: box-shadow 0.2s ease;
+}
+.drag-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.drag-item.active {
+  border-left: 3px solid #1677ff;
+  background-color: #f8fafc;
+}
+
+/* File Upload Zone */
+.upload-zone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.upload-zone:hover {
+  border-color: #1677ff;
+  background-color: #e6f7ff;
+}
+
+/* Animation cho các Step */
+.step-content {
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+}
+.step-content.active {
+  display: block;
+}
+
+/* =========================================
+   ASSIGNMENT REVIEW STYLES
+========================================= */
+.code-line {
+  height: 24px;
+  line-height: 24px;
+  position: relative;
+}
+.code-line:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Inline Comment Simulation */
+.inline-comment {
+  background-color: #3f3f46;
+  border-left: 3px solid #facc15;
+  margin: 4px 0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Rubric Sliders / Radios Custom */
+.rubric-radio:checked + label {
+  background-color: #e6f7ff;
+  border-color: #1677ff;
+  color: #1677ff;
+  font-weight: 600;
+}
+
+/* Queue Item Active State */
+.queue-item.active {
+  background-color: #f1f5f9;
+  border-left-color: #1677ff;
+}
+
+/* =========================================
+   403 FORBIDDEN PAGE STYLES & ANIMATIONS
+========================================= */
+/* KHÓA CHẶT CUỘN TRANG (NO SCROLLING) */
+.page-403-container {
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  background-color: #f8fafc;
+}
+
+/* Diagonal Striped Background */
+.bg-security-pattern {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 77, 79, 0.03),
+    rgba(255, 77, 79, 0.03) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+/* 403 Text Gradient */
+.text-403 {
+  font-size: clamp(6rem, 15vw, 12rem);
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, #ff4d4f 0%, #cf1322 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 10px 15px rgba(255, 77, 79, 0.2));
+  letter-spacing: -0.05em;
+}
+
+/* Hộp thoại Code Bảo mật */
+.security-shadow {
+  box-shadow:
+    0 25px 50px -12px rgba(255, 77, 79, 0.2),
+    0 0 0 1px rgba(255, 77, 79, 0.1);
+}
+
+/* --- TỰ TẠO ANIMATION THAY VÌ DÙNG TAILWIND CONFIG --- */
+@keyframes scanLine {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(400px);
+  }
+}
+.animate-scan-line {
+  animation: scanLine 3s linear infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+.animate-pulse-ring {
+  animation: pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+.animate-flicker {
+  animation: flicker 0.15s infinite;
+}
+
+/* Glitch Effect cho text [ACCESS DENIED] */
+.glitch-text {
+  position: relative;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 red;
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 blue;
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+@keyframes glitch-anim {
+  0% {
+    clip: rect(10px, 9999px, 44px, 0);
+  }
+  20% {
+    clip: rect(65px, 9999px, 86px, 0);
+  }
+  40% {
+    clip: rect(11px, 9999px, 3px, 0);
+  }
+  60% {
+    clip: rect(80px, 9999px, 55px, 0);
+  }
+  80% {
+    clip: rect(23px, 9999px, 12px, 0);
+  }
+  100% {
+    clip: rect(90px, 9999px, 78px, 0);
+  }
+}
+
+/* =========================================
+   404 NOT FOUND PAGE STYLES
+========================================= */
+.page-404-container {
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  background-color: #f8fafc;
+}
+
+/* Background Pattern: Lưới Blueprint Công nghệ */
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(to right, rgba(203, 213, 225, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(203, 213, 225, 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center center;
+}
+
+/* 404 Text Gradient & Shadow */
+.text-404 {
+  font-size: clamp(6rem, 15vw, 12rem);
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, #1677ff 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 10px 15px rgba(22, 119, 255, 0.2));
+  letter-spacing: -0.05em;
+}
+
+/* Terminal Window Shadow */
+.terminal-shadow {
+  box-shadow:
+    0 25px 50px -12px rgba(15, 23, 42, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* --- TỰ TẠO ANIMATION --- */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.animate-cursor-blink {
+  animation: blink 1s step-end infinite;
 }
