@@ -1117,3 +1117,89 @@ body.quiz-mode {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* =========================================
+   AUTH PAGES (LOGIN / REGISTER)
+========================================= */
+
+/* Branding Panel — Left side gradient */
+.auth-branding-panel {
+  background: linear-gradient(165deg, #0f2b5b 0%, #1a56db 40%, #1677ff 65%, #3b82f6 100%);
+  position: relative;
+}
+.auth-branding-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.3), transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(30, 64, 175, 0.4), transparent 50%);
+  pointer-events: none;
+}
+
+/* Form Container — Clean card appearance */
+.auth-form-container {
+  animation: authFadeIn 0.4s ease-out;
+}
+
+@keyframes authFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Input Overrides for Auth Forms */
+.auth-input {
+  height: 44px !important;
+  border-radius: 10px !important;
+  padding: 0 14px !important;
+  font-size: 14px !important;
+  border-color: #e2e8f0 !important;
+  background-color: white !important;
+  transition: all 0.2s ease !important;
+}
+.auth-input:focus {
+  border-color: #1677ff !important;
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.08) !important;
+}
+.auth-input::placeholder {
+  color: #a0aec0 !important;
+}
+.auth-input-error {
+  border-color: #ff4d4f !important;
+}
+.auth-input-error:focus {
+  box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.08) !important;
+}
+
+/* Submit Button */
+.auth-submit-btn {
+  height: 44px !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  gap: 8px !important;
+  background: linear-gradient(135deg, #1677ff 0%, #1a56db 100%) !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.25) !important;
+  transition: all 0.2s ease !important;
+}
+.auth-submit-btn:hover:not(:disabled) {
+  box-shadow: 0 4px 16px rgba(22, 119, 255, 0.35) !important;
+  transform: translateY(-1px) !important;
+}
+.auth-submit-btn:active:not(:disabled) {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 4px rgba(22, 119, 255, 0.2) !important;
+}
+.auth-submit-btn:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+
