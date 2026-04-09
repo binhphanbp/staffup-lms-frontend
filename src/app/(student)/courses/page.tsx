@@ -1,7 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Sidebar } from '@/components/shared/Sidebar';
-import { Header } from '@/components/shared/Header';
+import { StudentHeader } from '@/components/shared/StudentHeader';
 import { FilterSidebar } from '@/components/course/FilterSidebar';
 import { CourseSkeleton } from '@/components/course/CourseSkeleton';
 import { CourseCard, type CourseType } from '@/components/course/CourseCard';
@@ -91,49 +90,46 @@ export default function CourseCatalog() {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#f0f2f5] text-sm text-slate-700">
-      <Sidebar />
+    <>
+      <StudentHeader
+        breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Thư viện Khóa học' }]}
+      />
 
-      <main className="relative flex h-screen min-w-0 flex-1 flex-col overflow-hidden bg-[#f0f2f5]">
-        {/* Truyền mảng đường dẫn vào Header */}
-        <Header breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Thư viện Khóa học' }]} />
+      <div className="relative flex flex-1 overflow-hidden">
+        <FilterSidebar
+          isOpen={isFilterOpen}
+          onReset={triggerFilterLoading}
+          onFilterChange={triggerFilterLoading}
+        />
 
-        <div className="relative flex flex-1 overflow-hidden">
-          <FilterSidebar
-            isOpen={isFilterOpen}
-            onReset={triggerFilterLoading}
-            onFilterChange={triggerFilterLoading}
-          />
-
-          <div className="custom-scrollbar relative flex h-full flex-1 flex-col overflow-y-auto scroll-smooth p-6 lg:p-8">
-            {/* Thanh công cụ Bộ lọc (Rút gọn để dễ nhìn) */}
-            <div className="sticky top-0 z-20 mb-6 flex flex-col items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm sm:flex-row">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={toggleFilter}
-                  className={`flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold transition-all ${isFilterOpen ? 'bg-primary-bg text-primary border-primary' : 'border-gray-300 bg-white text-slate-700'}`}
-                >
-                  <i className="fa-solid fa-sliders"></i>{' '}
-                  <span>{isFilterOpen ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}</span>
-                </button>
-                <h1 className="text-sm font-medium text-slate-600">
-                  Tìm thấy <span className="font-bold text-slate-900">{MOCK_COURSES.length}</span>{' '}
-                  khóa học
-                </h1>
-              </div>
+        <div className="custom-scrollbar relative flex h-full flex-1 flex-col overflow-y-auto scroll-smooth p-6 lg:p-8">
+          {/* Thanh công cụ Bộ lọc (Rút gọn để dễ nhìn) */}
+          <div className="sticky top-0 z-20 mb-6 flex flex-col items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm sm:flex-row">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={toggleFilter}
+                className={`flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold transition-all ${isFilterOpen ? 'bg-primary-bg text-primary border-primary' : 'border-gray-300 bg-white text-slate-700'}`}
+              >
+                <i className="fa-solid fa-sliders"></i>{' '}
+                <span>{isFilterOpen ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}</span>
+              </button>
+              <h1 className="text-sm font-medium text-slate-600">
+                Tìm thấy <span className="font-bold text-slate-900">{MOCK_COURSES.length}</span>{' '}
+                khóa học
+              </h1>
             </div>
-
-            {/* GRID HIỂN THỊ KHÓA HỌC: Chỉ với 1 hàm map thay vì hàng trăm dòng HTML */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-              {isLoading
-                ? Array.from({ length: 5 }).map((_, idx) => <CourseSkeleton key={idx} />)
-                : MOCK_COURSES.map((course) => <CourseCard key={course.id} course={course} />)}
-            </div>
-            {/* Gọi Component Phân trang */}
-            <Pagination currentPage={1} totalPages={12} totalItems={124} itemsPerPage={5} />
           </div>
+
+          {/* GRID HIỂN THỊ KHÓA HỌC: Chỉ với 1 hàm map thay vì hàng trăm dòng HTML */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+            {isLoading
+              ? Array.from({ length: 5 }).map((_, idx) => <CourseSkeleton key={idx} />)
+              : MOCK_COURSES.map((course) => <CourseCard key={course.id} course={course} />)}
+          </div>
+          {/* Gọi Component Phân trang */}
+          <Pagination currentPage={1} totalPages={12} totalItems={124} itemsPerPage={5} />
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }

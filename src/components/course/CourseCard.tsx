@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
+import Link from 'next/link';
 
 // Định nghĩa khung dữ liệu chuẩn cho 1 khóa học
 export interface CourseType {
@@ -23,7 +24,8 @@ export interface CourseType {
 
 export const CourseCard = ({ course }: { course: CourseType }) => {
   return (
-    <div
+    <Link
+      href={`/courses/detail?id=${course.id}`}
       className={`card course-card group flex h-full flex-col ${course.isCodeLab ? 'border-2 border-purple-100' : ''} ${course.isCompleted ? 'opacity-80 hover:opacity-100' : ''}`}
     >
       {/* PHẦN 1: HÌNH ẢNH BANNER */}
@@ -159,6 +161,6 @@ export const CourseCard = ({ course }: { course: CourseType }) => {
           </>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
