@@ -3,6 +3,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { QueryProvider } from '@/components/providers/QueryProvider';
+import AIChatWidget from '@/components/ai-chat/AIChatWidget';
 import './globals.css';
 
 const inter = Inter({
@@ -41,6 +42,7 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-full flex-col font-sans" suppressHydrationWarning>
         <QueryProvider>{children}</QueryProvider>
+        <AIChatWidget />
       </body>
     </html>
   );
