@@ -23,6 +23,10 @@ const publicRoutes = [
   '/assignment-review',
   '/403',
   '/test-404',
+  '/grading-evaluation',
+  '/question-bank',
+  '/ai-configuration',
+  '/role-permission',
 ];
 
 // Routes prefixed with these paths are always public (e.g. API, static)
