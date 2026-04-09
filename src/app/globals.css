@@ -1,130 +1,841 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
 @import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
 
-@custom-variant dark (&:is(.dark *));
+/* CẤU HÌNH TAILWIND V4 TẠI ĐÂY */
+@theme {
+  --color-primary: #1677ff;
+  --color-primary-hover: #4096ff;
+  --color-primary-bg: #e6f7ff;
+  --color-success: #52c41a;
+  --color-warning: #faad14;
+  --color-danger: #ff4d4f;
+  --color-purple: #7c3aed;
+  --color-code-bg: #282c34;
+  --color-code-text: #abb2bf;
+  --color-code-keyword: #c678dd;
+  --color-code-function: #61afef;
+  --color-code-string: #98c379;
+  --color-code-number: #d19a66;
+  --color-code-comment: #5c6370;
+  --color-code-operator: #56b6c2;
+  --color-code-property: #e06c75;
+  --color-code-type: #e5c07b;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --animate-shimmer: shimmer 1.5s infinite linear;
 }
 
-:root {
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+/* CSS TÙY CHỈNH CỦA BẠN */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+.card {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.course-card:hover {
+  border-color: #1677ff;
+  box-shadow:
+    0 10px 25px -5px rgba(22, 119, 255, 0.15),
+    0 8px 10px -6px rgba(22, 119, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Tùy chỉnh thanh cuộn thanh lịch */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 10px;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #94a3b8;
+}
+
+/* CSS CHO BỘ LỌC (SLIDE ANIMATION) */
+#filterSidebarWrapper {
+  transition:
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-right-width 0.3s ease;
+}
+.filter-hidden {
+  width: 0 !important;
+  border-right-width: 0 !important;
+}
+.filter-visible {
+  width: 16rem !important; /* Tương đương w-64 (256px) */
+  border-right-width: 1px !important;
+}
+
+/* Custom Checkbox */
+.filter-checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background-color: white;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-checkbox:checked {
+  background-color: #1677ff;
+  border-color: #1677ff;
+}
+.filter-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Hiệu ứng Shimmer Loading (Khung xương) */
+.skeleton {
+  background: #f1f5f9;
+  background-image: linear-gradient(to right, #f1f5f9 0%, #e2e8f0 20%, #f1f5f9 40%, #f1f5f9 100%);
+  background-repeat: no-repeat;
+  background-size: 1000px 100%;
+  animation: shimmer 1.5s infinite linear forwards;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Step Progress Bar (Lộ trình học) */
+.step-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+.step-item::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: #e2e8f0;
+  z-index: 0;
+}
+.step-item:first-child::before {
+  display: none;
+}
+.step-active .step-circle {
+  background-color: var(--color-primary, #1677ff);
+  color: white;
+  border-color: var(--color-primary, #1677ff);
+}
+.step-active + .step-item::before {
+  background-color: var(--color-primary, #1677ff);
+}
+.step-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  background-color: white;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+/* Thumbnail Hover Effect */
+.course-thumb-container {
+  overflow: hidden;
+}
+.course-thumb-container img {
+  transition: transform 0.5s ease;
+}
+.course-card:hover .course-thumb-container img {
+  transform: scale(1.05);
+}
+
+/* Shine Animation cho thanh Progress */
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
   }
-  body {
-    @apply bg-background text-foreground;
+  100% {
+    transform: translateX(100%);
   }
-  html {
-    @apply font-sans;
+}
+.animate-\[shine_2s_infinite\] {
+  animation: shine 2s infinite;
+}
+
+/* =========================================
+   CERTIFICATE & BADGES STYLES
+========================================= */
+/* Thẻ Chứng chỉ */
+.cert-card {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.cert-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(22, 119, 255, 0.15);
+  border-color: #bae0ff;
+}
+
+/* Hiệu ứng tia sáng */
+.cert-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transform: skewX(-20deg);
+  z-index: 10;
+  transition: 0s;
+}
+.cert-card:hover::before {
+  animation: shine 1.2s forwards;
+}
+@keyframes shine {
+  100% {
+    left: 200%;
   }
+}
+
+/* Hình dạng Huy hiệu Lục giác */
+.hexagon-wrapper {
+  width: 80px;
+  height: 90px;
+  position: relative;
+  margin: 0 auto;
+}
+.hexagon {
+  width: 100%;
+  height: 100%;
+  background-color: #f1f5f9;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+.hexagon-border {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, #1677ff, #7c3aed);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  z-index: 1;
+}
+
+/* Cấp độ Badge */
+.badge-gold .hexagon-border {
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+}
+.badge-silver .hexagon-border {
+  background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
+}
+.badge-bronze .hexagon-border {
+  background: linear-gradient(135deg, #d4af37 0%, #8b4513 100%);
+}
+.badge-card:hover .hexagon {
+  transform: scale(0.95);
+}
+
+/* Font cho chứng chỉ */
+
+.font-cert {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Toast Animations */
+@keyframes slideUpToast {
+  0% {
+    transform: translateY(100%) translateX(-50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) translateX(-50%);
+    opacity: 1;
+  }
+}
+@keyframes fadeOutToast {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.animate-slide-up-toast {
+  animation: slideUpToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-fade-out-toast {
+  animation: fadeOutToast 0.3s ease forwards;
+}
+
+/* =========================================
+   COURSE DETAIL STYLES
+========================================= */
+/* Nền Pattern cho Hero Banner */
+.bg-tech-pattern {
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position:
+    0 0,
+    10px 10px;
+}
+
+/* Accordion Smooth Transition */
+.accordion-content {
+  transition:
+    max-height 0.3s ease-in-out,
+    padding 0.3s ease-in-out,
+    opacity 0.3s ease-in-out;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.accordion-item.active .accordion-content {
+  max-height: 1000px;
+  opacity: 1;
+}
+.accordion-item.active .accordion-icon {
+  transform: rotate(180deg);
+}
+
+/* =========================================
+   LEARNING ROOM STYLES
+========================================= */
+/* Scrollbar riêng cho nền Dark (Cột giáo trình) */
+.dark-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #475569;
+}
+.dark-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #64748b;
+}
+
+/* Video Player Custom CSS */
+.video-container {
+  position: relative;
+  width: 100%;
+  background-color: #000;
+  aspect-ratio: 16 / 9;
+}
+.video-controls {
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.5) 60%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.video-container:hover .video-controls {
+  opacity: 1;
+}
+
+/* Progress Bar của Video */
+.vid-progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  position: relative;
+  transition: height 0.1s;
+}
+.vid-progress-bar:hover {
+  height: 6px;
+}
+.vid-progress-filled {
+  height: 100%;
+  background: var(--color-primary, #1677ff);
+  width: 45%;
+  position: relative;
+}
+.vid-progress-filled::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: -4px;
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.vid-progress-bar:hover .vid-progress-filled::after {
+  opacity: 1;
+}
+
+/* Audio Equalizer Animation */
+.eq-bar {
+  width: 3px;
+  background-color: var(--color-primary, #1677ff);
+  border-radius: 2px;
+  display: inline-block;
+  animation: eqPlay 1s infinite ease-in-out;
+}
+.eq-bar:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.eq-bar:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.eq-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+@keyframes eqPlay {
+  0%,
+  100% {
+    height: 4px;
+  }
+  50% {
+    height: 12px;
+  }
+}
+
+/* =========================================
+   CODE LAB STYLES
+========================================= */
+/* Thanh Resizer ở giữa */
+.resizer {
+  width: 4px;
+  background-color: #e2e8f0;
+  cursor: col-resize;
+  transition: background-color 0.2s;
+  z-index: 10;
+}
+.resizer:hover,
+.resizer:active {
+  background-color: #1677ff;
+}
+
+/* Editor Line Numbers */
+.line-numbers {
+  counter-reset: line;
+  text-align: right;
+  user-select: none;
+}
+.line-numbers > div {
+  counter-increment: line;
+}
+.line-numbers > div::before {
+  content: counter(line);
+  display: inline-block;
+  width: 100%;
+}
+
+/* Markdown Styles trong Đề bài */
+.prose pre {
+  background-color: #f1f5f9;
+  padding: 12px;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  border: 1px solid #e2e8f0;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+.prose code {
+  background-color: #f1f5f9;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #db2777;
+}
+
+/* Loading Spinner */
+.loader {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #1677ff;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+/* =========================================
+   QUIZ ASSESSMENT STYLES
+========================================= */
+body.quiz-mode {
+  user-select: none; /* Chống bôi đen copy đề bài */
+}
+
+/* Khung câu hỏi & Đáp án */
+.option-label {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+.option-label:hover {
+  border-color: #bae0ff;
+  background-color: #f8fafc;
+}
+.option-input:checked + .option-label {
+  border-color: #1677ff;
+  background-color: #e6f7ff;
+  box-shadow: 0 4px 14px 0 rgba(22, 119, 255, 0.1);
+}
+.option-input:checked + .option-label .radio-circle {
+  border-color: #1677ff;
+}
+.option-input:checked + .option-label .radio-circle::after {
+  transform: scale(1);
+}
+
+/* Custom Radio Button */
+.radio-circle {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
+  border-radius: 50%;
+  margin-right: 16px;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.radio-circle::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background-color: #1677ff;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Question Palette Grid */
+.q-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.q-btn {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  color: #64748b;
+}
+.q-btn:hover {
+  border-color: #1677ff;
+  color: #1677ff;
+}
+.q-btn.active {
+  border-color: #1677ff;
+  border-width: 2px;
+}
+.q-btn.answered {
+  background-color: #1677ff;
+  color: white;
+  border-color: #1677ff;
+}
+.q-btn.review {
+  background-color: #faad14;
+  color: white;
+  border-color: #faad14;
+}
+.q-btn.answered.review {
+  background: linear-gradient(135deg, #1677ff 50%, #faad14 50%);
+  color: white;
+  border: none;
+}
+
+/* Custom Checkbox (Review) */
+.cbx {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cbd5e1;
+  border-radius: 4px;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cbx:checked {
+  background-color: #faad14;
+  border-color: #faad14;
+}
+.cbx:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  background-color: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+}
+.animate-pulse-fast {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* =========================================
+   INSTRUCTOR DASHBOARD STYLES
+========================================= */
+/* Card tối giản: Bỏ shadow, dùng viền mỏng */
+.clean-card {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+/* Bảng dữ liệu chuẩn (Chống rớt dòng) */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.data-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 14px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+.data-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Tiện ích cấm rớt dòng cho các cột số liệu */
+.no-wrap {
+  white-space: nowrap;
+}
+
+/* Line clamp tự nhiên */
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* =========================================
+   COURSE BUILDER STYLES
+========================================= */
+/* Form Controls */
+.input-base {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.input-base:focus {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.1);
+}
+
+/* Stepper CSS */
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid #cbd5e1;
+  background-color: white;
+  color: #94a3b8;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10;
+}
+.step-item.active .step-circle {
+  border-color: #1677ff;
+  background-color: #1677ff;
+  color: white;
+}
+.step-item.completed .step-circle {
+  border-color: #1677ff;
+  background-color: white;
+  color: #1677ff;
+}
+.step-line {
+  flex: 1;
+  height: 2px;
+  background-color: #e2e8f0;
+  margin: 0 12px;
+  transition: background-color 0.3s ease;
+}
+.step-item.completed + .step-line {
+  background-color: #1677ff;
+}
+
+/* Custom Toggle Switch */
+.toggle-checkbox:checked {
+  right: 0;
+  border-color: #059669;
+}
+.toggle-checkbox:checked + .toggle-label {
+  background-color: #059669;
+}
+
+/* Drag Handle Area */
+.drag-handle {
+  cursor: grab;
+  color: #cbd5e1;
+}
+.drag-handle:hover {
+  color: #64748b;
+}
+.drag-item {
+  transition: box-shadow 0.2s ease;
+}
+.drag-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.drag-item.active {
+  border-left: 3px solid #1677ff;
+  background-color: #f8fafc;
+}
+
+/* File Upload Zone */
+.upload-zone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.upload-zone:hover {
+  border-color: #1677ff;
+  background-color: #e6f7ff;
+}
+
+/* Animation cho các Step */
+.step-content {
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+}
+.step-content.active {
+  display: block;
+}
+
+/* =========================================
+   ASSIGNMENT REVIEW STYLES
+========================================= */
+.code-line {
+  height: 24px;
+  line-height: 24px;
+  position: relative;
+}
+.code-line:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Inline Comment Simulation */
+.inline-comment {
+  background-color: #3f3f46;
+  border-left: 3px solid #facc15;
+  margin: 4px 0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Rubric Sliders / Radios Custom */
+.rubric-radio:checked + label {
+  background-color: #e6f7ff;
+  border-color: #1677ff;
+  color: #1677ff;
+  font-weight: 600;
+}
+
+/* Queue Item Active State */
+.queue-item.active {
+  background-color: #f1f5f9;
+  border-left-color: #1677ff;
 }

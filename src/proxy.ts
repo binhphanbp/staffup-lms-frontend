@@ -1,5 +1,4 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 // ============================================================
 // Proxy — Route Protection (JWT-based)
@@ -8,7 +7,21 @@ import type { NextRequest } from 'next/server';
 // ============================================================
 
 // Routes accessible without authentication
-const publicRoutes = ['/', '/login', '/register', '/forgot-password'];
+const publicRoutes = [
+  '/',
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/courses',
+  '/certificates',
+  '/courses/detail',
+  '/learning-room',
+  '/learning-room/lab',
+  '/quiz-assessment',
+  '/instructor-dashboard',
+  '/instructor-dashboard/course-builder',
+  '/assignment-review',
+];
 
 // Routes prefixed with these paths are always public (e.g. API, static)
 const publicPrefixes = ['/api', '/_next', '/favicon.ico'];
