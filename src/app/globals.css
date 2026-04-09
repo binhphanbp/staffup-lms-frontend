@@ -839,3 +839,202 @@ body.quiz-mode {
   background-color: #f1f5f9;
   border-left-color: #1677ff;
 }
+
+/* =========================================
+   403 FORBIDDEN PAGE STYLES & ANIMATIONS
+========================================= */
+/* KHÓA CHẶT CUỘN TRANG (NO SCROLLING) */
+.page-403-container {
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  background-color: #f8fafc;
+}
+
+/* Diagonal Striped Background */
+.bg-security-pattern {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 77, 79, 0.03),
+    rgba(255, 77, 79, 0.03) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+/* 403 Text Gradient */
+.text-403 {
+  font-size: clamp(6rem, 15vw, 12rem);
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, #ff4d4f 0%, #cf1322 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 10px 15px rgba(255, 77, 79, 0.2));
+  letter-spacing: -0.05em;
+}
+
+/* Hộp thoại Code Bảo mật */
+.security-shadow {
+  box-shadow:
+    0 25px 50px -12px rgba(255, 77, 79, 0.2),
+    0 0 0 1px rgba(255, 77, 79, 0.1);
+}
+
+/* --- TỰ TẠO ANIMATION THAY VÌ DÙNG TAILWIND CONFIG --- */
+@keyframes scanLine {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(400px);
+  }
+}
+.animate-scan-line {
+  animation: scanLine 3s linear infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+.animate-pulse-ring {
+  animation: pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+.animate-flicker {
+  animation: flicker 0.15s infinite;
+}
+
+/* Glitch Effect cho text [ACCESS DENIED] */
+.glitch-text {
+  position: relative;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 red;
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 blue;
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+@keyframes glitch-anim {
+  0% {
+    clip: rect(10px, 9999px, 44px, 0);
+  }
+  20% {
+    clip: rect(65px, 9999px, 86px, 0);
+  }
+  40% {
+    clip: rect(11px, 9999px, 3px, 0);
+  }
+  60% {
+    clip: rect(80px, 9999px, 55px, 0);
+  }
+  80% {
+    clip: rect(23px, 9999px, 12px, 0);
+  }
+  100% {
+    clip: rect(90px, 9999px, 78px, 0);
+  }
+}
+
+/* =========================================
+   404 NOT FOUND PAGE STYLES
+========================================= */
+.page-404-container {
+  min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  background-color: #f8fafc;
+}
+
+/* Background Pattern: Lưới Blueprint Công nghệ */
+.bg-grid-pattern {
+  background-image:
+    linear-gradient(to right, rgba(203, 213, 225, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(203, 213, 225, 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center center;
+}
+
+/* 404 Text Gradient & Shadow */
+.text-404 {
+  font-size: clamp(6rem, 15vw, 12rem);
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, #1677ff 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 10px 15px rgba(22, 119, 255, 0.2));
+  letter-spacing: -0.05em;
+}
+
+/* Terminal Window Shadow */
+.terminal-shadow {
+  box-shadow:
+    0 25px 50px -12px rgba(15, 23, 42, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* --- TỰ TẠO ANIMATION --- */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.animate-cursor-blink {
+  animation: blink 1s step-end infinite;
+}
