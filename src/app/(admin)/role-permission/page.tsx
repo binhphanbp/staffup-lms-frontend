@@ -2,8 +2,6 @@
 
 import React, { useState } from 'react';
 import type { Role } from '@/components/admin/role-permission/types';
-import { RoleSidebar } from '@/components/admin/role-permission/RoleSidebar';
-import { RoleHeader } from '@/components/admin/role-permission/RoleHeader';
 import { RoleList } from '@/components/admin/role-permission/RoleList';
 import { PermissionMatrix } from '@/components/admin/role-permission/PermissionMatrix';
 import { AddRoleModal } from '@/components/admin/role-permission/AddRoleModal';
@@ -97,64 +95,53 @@ export default function RolePermissionPage() {
 
   return (
     <>
-      <div
-        style={{ fontFamily: "'Roboto', sans-serif" }}
-        className="flex h-screen overflow-hidden bg-[#F8F9FA] text-[#202124] antialiased"
-      >
-        <RoleSidebar />
-
-        <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
-          <RoleHeader />
-
-          <div className="flex flex-1 flex-col overflow-hidden px-8 py-6">
-            <div className="mb-6 flex items-center justify-between">
-              <h1 className="m-0 flex items-center gap-2 text-[22px] font-normal text-[#202124]">
-                <span className="material-symbols-outlined text-[28px] text-[#5F6368]">
-                  admin_panel_settings
-                </span>
-                Quản lý Phân quyền (RBAC)
-              </h1>
-              <div className="flex gap-3">
-                <button className="flex items-center gap-2 rounded-[4px] border border-[#DADCE0] bg-transparent px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-all hover:bg-[#F1F3F4]">
-                  <span className="material-symbols-outlined text-[18px]">history</span> Lịch sử
-                  thay đổi
-                </button>
-              </div>
-            </div>
-
-            <div className="flex flex-1 gap-6 overflow-hidden">
-              <RoleList
-                roles={roles}
-                activeRole={activeRole}
-                onSelectRole={handleSelectRole}
-                onOpenAddModal={() => setIsAddModalOpen(true)}
-              />
-              <PermissionMatrix
-                activeRole={activeRole}
-                permissions={permissions}
-                onSavePermissions={handleSavePermissions}
-              />
-            </div>
+      <div className="flex flex-1 flex-col overflow-hidden px-8 py-6">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="m-0 flex items-center gap-2 text-[22px] font-normal text-[#202124]">
+            <span className="material-symbols-outlined text-[28px] text-[#5F6368]">
+              admin_panel_settings
+            </span>
+            Quản lý Phân quyền (RBAC)
+          </h1>
+          <div className="flex gap-3">
+            <button className="flex items-center gap-2 rounded-[4px] border border-[#DADCE0] bg-transparent px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-all hover:bg-[#F1F3F4]">
+              <span className="material-symbols-outlined text-[18px]">history</span> Lịch sử thay
+              đổi
+            </button>
           </div>
-        </main>
-
-        <AddRoleModal
-          isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
-          onSave={handleCreateRole}
-          newRoleName={newRoleName}
-          setNewRoleName={setNewRoleName}
-          newRoleDesc={newRoleDesc}
-          setNewRoleDesc={setNewRoleDesc}
-        />
-
-        {/* TOAST NOTIFICATION */}
-        <div
-          className={`fixed bottom-6 left-6 z-[3000] flex items-center gap-3 rounded-[4px] bg-[#323232] px-6 py-[14px] text-white shadow-[0_4px_6px_0_rgba(60,64,67,0.15),0_12px_16px_0_rgba(60,64,67,0.15)] transition-transform duration-300 ${toast.visible ? 'translate-y-0' : 'translate-y-[100px]'}`}
-        >
-          <span className="material-symbols-outlined text-[24px] text-[#81C995]">check_circle</span>
-          <span className="text-[14px]">{toast.message}</span>
         </div>
+
+        <div className="flex flex-1 gap-6 overflow-hidden">
+          <RoleList
+            roles={roles}
+            activeRole={activeRole}
+            onSelectRole={handleSelectRole}
+            onOpenAddModal={() => setIsAddModalOpen(true)}
+          />
+          <PermissionMatrix
+            activeRole={activeRole}
+            permissions={permissions}
+            onSavePermissions={handleSavePermissions}
+          />
+        </div>
+      </div>
+
+      <AddRoleModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSave={handleCreateRole}
+        newRoleName={newRoleName}
+        setNewRoleName={setNewRoleName}
+        newRoleDesc={newRoleDesc}
+        setNewRoleDesc={setNewRoleDesc}
+      />
+
+      {/* TOAST NOTIFICATION */}
+      <div
+        className={`fixed bottom-6 left-6 z-[3000] flex items-center gap-3 rounded-[4px] bg-[#323232] px-6 py-[14px] text-white shadow-[0_4px_6px_0_rgba(60,64,67,0.15),0_12px_16px_0_rgba(60,64,67,0.15)] transition-transform duration-300 ${toast.visible ? 'translate-y-0' : 'translate-y-[100px]'}`}
+      >
+        <span className="material-symbols-outlined text-[24px] text-[#81C995]">check_circle</span>
+        <span className="text-[14px]">{toast.message}</span>
       </div>
     </>
   );
