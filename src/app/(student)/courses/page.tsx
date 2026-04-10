@@ -102,7 +102,7 @@ export default function CourseCatalog() {
           onFilterChange={triggerFilterLoading}
         />
 
-        <div className="custom-scrollbar relative flex h-full flex-1 flex-col overflow-y-auto scroll-smooth p-6 lg:p-8">
+        <div className="custom-scrollbar relative flex h-full flex-1 flex-col overflow-y-auto scroll-smooth p-4 lg:p-8">
           {/* Thanh công cụ Bộ lọc (Rút gọn để dễ nhìn) */}
           <div className="sticky top-0 z-20 mb-6 flex flex-col items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm sm:flex-row">
             <div className="flex items-center gap-4">

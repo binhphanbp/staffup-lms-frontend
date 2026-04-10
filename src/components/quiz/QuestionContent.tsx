@@ -20,7 +20,7 @@ export const QuestionContent = ({
   return (
     <div className="relative flex h-full flex-1 flex-col bg-white">
       {/* Thanh công cụ nhỏ trên câu hỏi */}
-      <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-100 bg-slate-50 px-8 py-4">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-gray-100 bg-slate-50 px-4 py-3 md:px-8 md:py-4">
         <div className="flex items-center gap-3">
           <span className="bg-primary rounded px-3 py-1 text-[13px] font-bold text-white shadow-sm">
             Câu hỏi {activeQuestion}
@@ -49,7 +49,7 @@ export const QuestionContent = ({
       </div>
 
       {/* Nội dung câu hỏi */}
-      <div className="custom-scrollbar flex-1 overflow-y-auto p-8">
+      <div className="custom-scrollbar flex-1 overflow-y-auto p-4 md:p-8">
         <div className="mx-auto w-full max-w-3xl pb-10">
           <div className="mb-6 text-[15px] leading-relaxed font-medium text-slate-800">
             Công ty TechCorp đang thiết kế một ứng dụng Web có lượng truy cập đột biến (spiky
@@ -59,28 +59,28 @@ export const QuestionContent = ({
             lần trong vài giây?
           </div>
 
-          <div className="mb-6 overflow-hidden rounded-lg border border-slate-700 bg-[#282c34] shadow-md">
+          <div className="bg-code-bg mb-6 overflow-hidden rounded-lg border border-slate-700 shadow-md">
             <div className="flex items-center gap-2 border-b border-black/40 bg-[#21252b] px-4 py-1.5 font-mono text-[10px] text-slate-400">
               <i className="fa-brands fa-node-js text-green-500"></i> lambda_function.js
             </div>
-            <div className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-[#abb2bf]">
-              <span className="text-[#c678dd]">const</span> {`{`} Client {`}`} ={' '}
-              <span className="text-[#61afef]">require</span>(
-              <span className="text-[#98c379]">&apos;pg&apos;</span>);
-              <span className="text-[#c678dd]">exports</span>.
-              <span className="text-[#61afef]">handler</span> ={' '}
-              <span className="text-[#c678dd]">async</span> (event) ={`>`} {`{`}
+            <div className="text-code-text overflow-x-auto p-4 font-mono text-[13px] leading-relaxed">
+              <span className="text-code-keyword">const</span> {`{`} Client {`}`} ={' '}
+              <span className="text-code-function">require</span>(
+              <span className="text-code-string">&apos;pg&apos;</span>);
+              <span className="text-code-keyword">exports</span>.
+              <span className="text-code-function">handler</span> ={' '}
+              <span className="text-code-keyword">async</span> (event) ={`>`} {`{`}
               {/* Khởi tạo connection mới mỗi khi Lambda được invoke */}
-              <span className="text-[#c678dd]">const</span> client ={' '}
-              <span className="text-[#c678dd]">new</span>{' '}
-              <span className="text-[#61afef]">Client</span>({`{`}
+              <span className="text-code-keyword">const</span> client ={' '}
+              <span className="text-code-keyword">new</span>{' '}
+              <span className="text-code-function">Client</span>({`{`}
               host: process.env.RDS_HOST, database:{' '}
-              <span className="text-[#98c379]">&apos;techcorp_db&apos;</span>
+              <span className="text-code-string">&apos;techcorp_db&apos;</span>
               {`}`});
-              <span className="text-[#c678dd]">await</span> client.
-              <span className="text-[#61afef]">connect</span>();
-              <span className="text-[#c678dd]">return</span>{' '}
-              <span className="text-[#98c379]">&apos;Success&apos;</span>;{`}`};
+              <span className="text-code-keyword">await</span> client.
+              <span className="text-code-function">connect</span>();
+              <span className="text-code-keyword">return</span>{' '}
+              <span className="text-code-string">&apos;Success&apos;</span>;{`}`};
             </div>
           </div>
 
@@ -113,7 +113,7 @@ export const QuestionContent = ({
       </div>
 
       {/* Điều hướng Trái / Phải */}
-      <div className="flex flex-shrink-0 items-center justify-between border-t border-gray-200 bg-white px-8 py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <div className="flex shrink-0 items-center justify-between border-t border-gray-200 bg-white px-8 py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <button
           onClick={() => setActiveQuestion((prev) => Math.max(1, prev - 1))}
           className="hover:text-primary hover:border-primary flex items-center gap-2 rounded-lg border border-gray-300 px-5 py-2.5 text-[13px] font-bold text-slate-600 transition-all hover:bg-slate-50"

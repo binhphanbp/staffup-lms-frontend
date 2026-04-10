@@ -14,11 +14,15 @@ export const SyllabusSidebar = ({ isOpen, onToggle }: SyllabusSidebarProps) => {
 
   return (
     <div
-      className={`relative z-10 flex h-full flex-shrink-0 flex-col bg-slate-50 shadow-[-10px_0_20px_rgba(0,0,0,0.03)] transition-all duration-300 ease-in-out ${isOpen ? 'w-80 border-l border-slate-200 lg:w-96' : 'w-0 border-l-0'}`}
+      className={`z-40 flex shrink-0 flex-col bg-slate-50 shadow-[-10px_0_20px_rgba(0,0,0,0.03)] transition-all duration-300 ease-in-out ${
+        isOpen
+          ? 'fixed inset-y-0 right-0 h-full w-80 border-l border-slate-200 md:relative md:inset-auto md:h-auto md:w-80 lg:w-96'
+          : 'relative w-0 border-l-0'
+      } `}
     >
       <button
         onClick={onToggle}
-        className="hover:text-primary hover:border-primary tooltip absolute top-4 -left-4 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-md transition-colors"
+        className="hover:text-primary hover:border-primary tooltip absolute top-4 -left-4 z-20 hidden h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-md transition-colors md:flex"
         title="Bật/Tắt Giáo trình"
       >
         <i className={`fa-solid ${isOpen ? 'fa-chevron-right' : 'fa-chevron-left'} text-xs`}></i>
@@ -27,7 +31,7 @@ export const SyllabusSidebar = ({ isOpen, onToggle }: SyllabusSidebarProps) => {
       <div
         className={`flex h-full w-80 flex-col overflow-hidden transition-opacity duration-300 lg:w-96 ${isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
       >
-        <div className="flex flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white p-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white p-4">
           <h3 className="text-[14px] font-bold text-slate-800">Nội dung bài học</h3>
           <span className="text-primary bg-primary-bg rounded px-2 py-0.5 text-[11px] font-medium">
             6 / 48 Bài
@@ -52,7 +56,7 @@ export const SyllabusSidebar = ({ isOpen, onToggle }: SyllabusSidebarProps) => {
               ></i>
             </button>
             <div
-              className={`overflow-hidden transition-all duration-300 ${openSection1 ? 'max-h-[1000px]' : 'max-h-0'}`}
+              className={`overflow-hidden transition-all duration-300 ${openSection1 ? 'max-h-250' : 'max-h-0'}`}
             >
               <Link
                 href="#"
@@ -88,7 +92,7 @@ export const SyllabusSidebar = ({ isOpen, onToggle }: SyllabusSidebarProps) => {
               ></i>
             </button>
             <div
-              className={`overflow-hidden transition-all duration-300 ${openSection2 ? 'max-h-[1000px]' : 'max-h-0'}`}
+              className={`overflow-hidden transition-all duration-300 ${openSection2 ? 'max-h-250' : 'max-h-0'}`}
             >
               <Link
                 href="#"
@@ -105,7 +109,7 @@ export const SyllabusSidebar = ({ isOpen, onToggle }: SyllabusSidebarProps) => {
                 </div>
               </Link>
               <div className="bg-primary-bg/50 border-primary flex cursor-pointer items-start gap-3 border-l-2 p-3 transition-colors">
-                <div className="mt-0.5 flex h-3 w-4 items-end justify-center gap-[1px]">
+                <div className="mt-0.5 flex h-3 w-4 items-end justify-center gap-px">
                   <div className="eq-bar"></div>
                   <div className="eq-bar"></div>
                   <div className="eq-bar"></div>
