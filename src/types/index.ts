@@ -626,6 +626,23 @@ export interface EmployeeDashboardStats {
   };
 }
 
+// ----- AI Insights -----
+export type InsightType = 'warning' | 'success' | 'info' | 'action';
+
+export interface AIInsight {
+  type: InsightType;
+  title: string;
+  description: string;
+  suggestion: string;
+}
+
+export interface AIInsightsResponse {
+  insights: AIInsight[];
+  generatedAt: string;
+  cached: boolean;
+  scope: 'admin' | 'manager' | 'trainer';
+}
+
 // ----- Navigation -----
 export interface NavItem {
   title: string;
