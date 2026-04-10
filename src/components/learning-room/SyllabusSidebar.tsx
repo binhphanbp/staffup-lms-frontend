@@ -14,14 +14,11 @@ export const SyllabusSidebar = ({ isOpen, onToggle }: SyllabusSidebarProps) => {
 
   return (
     <div
-      className={`
-        z-40 flex shrink-0 flex-col bg-slate-50 shadow-[-10px_0_20px_rgba(0,0,0,0.03)]
-        transition-all duration-300 ease-in-out
-        ${isOpen
+      className={`z-40 flex shrink-0 flex-col bg-slate-50 shadow-[-10px_0_20px_rgba(0,0,0,0.03)] transition-all duration-300 ease-in-out ${
+        isOpen
           ? 'fixed inset-y-0 right-0 h-full w-80 border-l border-slate-200 md:relative md:inset-auto md:h-auto md:w-80 lg:w-96'
           : 'relative w-0 border-l-0'
-        }
-      `}
+      } `}
     >
       <button
         onClick={onToggle}

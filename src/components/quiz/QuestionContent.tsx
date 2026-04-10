@@ -59,11 +59,11 @@ export const QuestionContent = ({
             lần trong vài giây?
           </div>
 
-          <div className="mb-6 overflow-hidden rounded-lg border border-slate-700 bg-code-bg shadow-md">
+          <div className="bg-code-bg mb-6 overflow-hidden rounded-lg border border-slate-700 shadow-md">
             <div className="flex items-center gap-2 border-b border-black/40 bg-[#21252b] px-4 py-1.5 font-mono text-[10px] text-slate-400">
               <i className="fa-brands fa-node-js text-green-500"></i> lambda_function.js
             </div>
-            <div className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed text-code-text">
+            <div className="text-code-text overflow-x-auto p-4 font-mono text-[13px] leading-relaxed">
               <span className="text-code-keyword">const</span> {`{`} Client {`}`} ={' '}
               <span className="text-code-function">require</span>(
               <span className="text-code-string">&apos;pg&apos;</span>);
