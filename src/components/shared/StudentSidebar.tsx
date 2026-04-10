@@ -3,9 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useMobileNav } from '@/context/MobileNavContext';
 
 export const StudentSidebar = () => {
   const pathname = usePathname();
+  const { closeMobileNav } = useMobileNav();
 
   const learningMenus = [
     { name: 'Bảng điều khiển', href: '/', icon: 'fa-house' },
@@ -20,9 +22,9 @@ export const StudentSidebar = () => {
   ];
 
   return (
-    <aside className="z-20 flex h-screen w-64 flex-shrink-0 flex-col border-r border-gray-200 bg-white text-sm text-slate-700">
+    <aside className="z-20 flex h-screen w-64 shrink-0 flex-col border-r border-gray-200 bg-white text-sm text-slate-700">
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-gray-100 px-6">
+      <div className="flex h-16 items-center justify-between border-b border-gray-100 px-6">
         <Link href="/" className="flex items-center gap-2.5 text-lg font-bold text-slate-800">
           <div className="bg-primary flex h-8 w-8 items-center justify-center rounded text-white shadow-sm">
             <i className="fa-solid fa-laptop-code text-xs"></i>
@@ -31,6 +33,14 @@ export const StudentSidebar = () => {
             Tech<span className="font-light text-slate-500">Learn</span>
           </span>
         </Link>
+        {/* Mobile close button */}
+        <button
+          className="text-slate-500 hover:text-slate-800 lg:hidden"
+          onClick={closeMobileNav}
+          aria-label="Đóng menu"
+        >
+          <i className="fa-solid fa-xmark text-lg"></i>
+        </button>
       </div>
 
       {/* Danh sách Menu */}

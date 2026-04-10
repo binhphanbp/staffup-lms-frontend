@@ -1,11 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
+'use client';
 import React from 'react';
 import Link from 'next/link';
+import { useMobileNav } from '@/context/MobileNavContext';
 
 export const InstructorSidebar = () => {
+  const { closeMobileNav } = useMobileNav();
   return (
-    <aside className="z-20 flex w-64 flex-shrink-0 flex-col bg-[#0f172a] text-slate-300">
-      <div className="flex h-16 flex-shrink-0 items-center border-b border-slate-800/50 px-6">
+    <aside className="z-20 flex h-full w-64 shrink-0 flex-col bg-[#0f172a] text-slate-300">
+      <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-800/50 px-6">
         <div className="flex items-center gap-2.5 text-lg font-bold text-white">
           <div className="bg-primary flex h-7 w-7 items-center justify-center rounded text-white">
             <i className="fa-solid fa-layer-group text-[11px]"></i>
@@ -17,6 +20,14 @@ export const InstructorSidebar = () => {
             </span>
           </span>
         </div>
+        {/* Mobile close button */}
+        <button
+          className="text-slate-400 hover:text-white lg:hidden"
+          onClick={closeMobileNav}
+          aria-label="Đóng menu"
+        >
+          <i className="fa-solid fa-xmark text-lg"></i>
+        </button>
       </div>
 
       <div className="custom-scrollbar flex-1 space-y-1 overflow-y-auto px-4 py-6">

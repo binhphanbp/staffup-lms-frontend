@@ -3,17 +3,29 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useMobileNav } from '@/context/MobileNavContext';
 
 export const AdminSidebar = () => {
   const pathname = usePathname();
+  const { closeMobileNav } = useMobileNav();
 
   return (
-    <aside className="z-[100] flex w-[260px] flex-shrink-0 flex-col border-r border-[#DADCE0] bg-white">
-      <div className="flex h-[64px] items-center border-b border-[#DADCE0] px-6 text-[20px] font-medium text-[#202124]">
-        <span className="material-symbols-outlined mr-3 text-[28px] text-[#1A73E8] [font-variation-settings:'FILL'_1]">
-          hub
-        </span>
-        LMS Workspace
+    <aside className="z-100 flex h-full w-65 shrink-0 flex-col border-r border-[#DADCE0] bg-white">
+      <div className="flex h-16 items-center justify-between border-b border-[#DADCE0] px-6 text-[20px] font-medium text-[#202124]">
+        <div className="flex items-center">
+          <span className="material-symbols-outlined mr-3 text-[28px] text-[#1A73E8] [font-variation-settings:'FILL'_1]">
+            hub
+          </span>
+          LMS Workspace
+        </div>
+        {/* Mobile close button */}
+        <button
+          className="text-[#5F6368] hover:text-[#202124] lg:hidden"
+          onClick={closeMobileNav}
+          aria-label="Đóng menu"
+        >
+          <span className="material-symbols-outlined text-[24px]">close</span>
+        </button>
       </div>
 
       <div className="custom-scrollbar flex-1 overflow-y-auto py-3">
