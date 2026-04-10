@@ -22,11 +22,7 @@ export const QuizHeader = ({ onShowSubmit }: QuizHeaderProps) => {
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-slate-50 px-3 py-1.5">
-          <img
-            src={avatarUrl}
-            className="h-6 w-6 rounded-full"
-            alt="Avatar"
-          />
+          <img src={avatarUrl} className="h-6 w-6 rounded-full" alt="Avatar" />
           <span className="hidden text-xs font-bold text-slate-700 sm:inline-block">
             {displayName}
           </span>
