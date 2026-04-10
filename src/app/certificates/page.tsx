@@ -12,6 +12,8 @@ export default function CertificatesPage() {
   const [activeTab, setActiveTab] = useState<'certificates' | 'badges'>('certificates');
   // State quản lý hiển thị Toast Notification
   const [showToast, setShowToast] = useState(false);
+  // State quản lý Mobile Navigation
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Hàm xử lý copy text và hiện Toast
   const handleCopy = (text: string) => {
@@ -23,14 +25,31 @@ export default function CertificatesPage() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[#f8fafc] text-sm text-slate-700">
-      <Sidebar />
+      {/* Sidebar — hidden on mobile/tablet */}
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
+
+      {/* Mobile Sidebar Drawer + Backdrop */}
+      {mobileNavOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setMobileNavOpen(false)}
+          />
+          <div className="relative z-50 h-full">
+            <Sidebar />
+          </div>
+        </div>
+      )}
 
       <main className="relative flex h-screen min-w-0 flex-1 flex-col overflow-hidden">
         <Header
           breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Thành tích & Chứng chỉ' }]}
+          onMenuClick={() => setMobileNavOpen(true)}
         />
 
-        <div className="custom-scrollbar relative flex-1 overflow-y-auto p-6 lg:p-8">
+        <div className="custom-scrollbar relative flex-1 overflow-y-auto p-4 lg:p-8">
           {/* KHỐI 1: BANNER PROFILE */}
           <ProfileBanner />
 

@@ -82,6 +82,7 @@ const MOCK_COURSES: CourseType[] = [
 export default function CourseCatalog() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const toggleFilter = () => setIsFilterOpen(!isFilterOpen);
 
@@ -92,11 +93,30 @@ export default function CourseCatalog() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[#f0f2f5] text-sm text-slate-700">
-      <Sidebar />
+      {/* Sidebar — hidden on mobile/tablet */}
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
+
+      {/* Mobile Sidebar Drawer + Backdrop */}
+      {mobileNavOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setMobileNavOpen(false)}
+          />
+          <div className="relative z-50 h-full">
+            <Sidebar />
+          </div>
+        </div>
+      )}
 
       <main className="relative flex h-screen min-w-0 flex-1 flex-col overflow-hidden bg-[#f0f2f5]">
         {/* Truyền mảng đường dẫn vào Header */}
-        <Header breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Thư viện Khóa học' }]} />
+        <Header
+          breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Thư viện Khóa học' }]}
+          onMenuClick={() => setMobileNavOpen(true)}
+        />
 
         <div className="relative flex flex-1 overflow-hidden">
           <FilterSidebar
@@ -105,7 +125,7 @@ export default function CourseCatalog() {
             onFilterChange={triggerFilterLoading}
           />
 
-          <div className="custom-scrollbar relative flex h-full flex-1 flex-col overflow-y-auto scroll-smooth p-6 lg:p-8">
+          <div className="custom-scrollbar relative flex h-full flex-1 flex-col overflow-y-auto scroll-smooth p-4 lg:p-8">
             {/* Thanh công cụ Bộ lọc (Rút gọn để dễ nhìn) */}
             <div className="sticky top-0 z-20 mb-6 flex flex-col items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm sm:flex-row">
               <div className="flex items-center gap-4">

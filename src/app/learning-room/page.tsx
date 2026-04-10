@@ -7,12 +7,12 @@ import { LearningTabs } from '@/components/learning-room/LearningTabs';
 import { SyllabusSidebar } from '@/components/learning-room/SyllabusSidebar';
 
 export default function LearningRoomPage() {
-  // State duy nhất còn lại để điều phối layout giữa Cột Trái và Cột Phải
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // Mặc định đóng trên mobile, mở trên desktop
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-slate-900 text-slate-800">
-      <LearningHeader />
+      <LearningHeader onOpenSyllabus={() => setIsSidebarOpen(true)} />
 
       <div className="relative flex flex-1 overflow-hidden bg-slate-900">
         {/* KHỐI TRÁI: Video và Tabs */}
@@ -21,7 +21,15 @@ export default function LearningRoomPage() {
           <LearningTabs />
         </div>
 
-        {/* KHỐI PHẢI: Giáo trình (Truyền state và hàm thay đổi state qua props) */}
+        {/* Backdrop — chỉ hiện trên mobile khi sidebar mở */}
+        {isSidebarOpen && (
+          <div
+            className="absolute inset-0 z-30 bg-black/50 md:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* KHỐI PHẢI: Giáo trình */}
         <SyllabusSidebar isOpen={isSidebarOpen} onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
       </div>
     </div>
