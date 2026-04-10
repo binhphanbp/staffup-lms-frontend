@@ -8,35 +8,10 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 // Routes accessible without authentication
 const publicRoutes = [
-  '/',
   '/login',
   '/register',
   '/forgot-password',
-  '/dashboard',
-  '/admin-dashboard',
-  '/reports',
-  '/students',
-  '/learning-progress',
-  '/certificates-management',
-  '/instructors',
-  '/courses-management',
-  '/courses',
-  '/certificates',
-  '/courses/detail',
-  '/courses/detail/learning-room',
-  '/courses/detail/learning-room/lab',
-  '/quiz-assessment',
-  '/overview',
-  '/dashboard',
-  '/course-builder',
-  '/assignment-review',
   '/403',
-  '/test-404',
-  '/grading-evaluation',
-  '/question-bank',
-  '/ai-configuration',
-  '/role-permission',
-  '/company-documents',
 ];
 
 // Routes prefixed with these paths are always public (e.g. API, static)

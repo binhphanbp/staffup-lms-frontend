@@ -3,15 +3,30 @@
 // ============================================================
 
 // ----- Auth & User -----
-export type UserRole = 'admin' | 'instructor' | 'student';
+// Backend role codes: 'admin' | 'manager' | 'trainer' | 'employee'
+export type RoleCode = 'admin' | 'manager' | 'trainer' | 'employee';
 
+// User shape returned by POST /auth/login, /auth/register, /auth/refresh
 export interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  role: UserRole;
+  fullName: string;
+  roleCodes: RoleCode[];
+  createdAt: string;
+}
+
+// Extended user profile from GET /auth/me
+export interface UserProfile {
+  id: string;
+  email: string;
+  fullName: string;
+  positionTitle: string | null;
+  avatarUrl: string | null;
+  department: {
+    id: string;
+    name: string;
+  };
+  userRoles: Array<{ code: string; name: string }>;
   createdAt: string;
   updatedAt: string;
 }
@@ -28,16 +43,17 @@ export interface LoginCredentials {
 }
 
 export interface RegisterPayload {
-  firstName: string;
-  lastName: string;
+  departmentId: string;
+  fullName: string;
   email: string;
   password: string;
-  role?: UserRole;
+  positionTitle?: string;
 }
 
 export interface AuthResponse {
   user: User;
   token: string;
+  refreshTokenExpiresAt: string;
 }
 
 // ----- API -----
