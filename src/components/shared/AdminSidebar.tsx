@@ -163,6 +163,21 @@ export const AdminSidebar = () => {
             Hệ thống & AI
           </div>
           <Link
+            href="/company-documents"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/company-documents'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span
+              className={`material-symbols-outlined mr-4 text-[20px] ${pathname === '/company-documents' ? "[font-variation-settings:'FILL'_1]" : ''}`}
+            >
+              description
+            </span>{' '}
+            Tài liệu Công ty
+          </Link>
+          <Link
             href="/ai-configuration"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/ai-configuration'
