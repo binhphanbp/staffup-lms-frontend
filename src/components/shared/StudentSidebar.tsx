@@ -4,10 +4,14 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMobileNav } from '@/context/MobileNavContext';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const StudentSidebar = () => {
   const pathname = usePathname();
   const { closeMobileNav } = useMobileNav();
+  const user = useAuthStore((s) => s.user);
+  const displayName = user?.fullName ?? 'Người dùng';
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=1677ff&color=fff&bold=true`;
 
   const learningMenus = [
     { name: 'Bảng điều khiển', href: '/', icon: 'fa-house' },
@@ -99,14 +103,14 @@ export const StudentSidebar = () => {
       <div className="border-t border-gray-100 bg-slate-50 p-4">
         <div className="flex cursor-pointer items-center gap-3 rounded-lg border border-transparent p-2 transition-colors hover:border-gray-200 hover:bg-white">
           <img
-            src="https://ui-avatars.com/api/?name=Tran+Bao&background=1677ff&color=fff&bold=true"
+            src={avatarUrl}
             alt="Avatar"
             className="h-9 w-9 rounded-md border border-gray-200 shadow-sm"
           />
           <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-bold text-slate-700">Trần Khắc Bảo</div>
+            <div className="truncate text-sm font-bold text-slate-700">{displayName}</div>
             <div className="truncate font-mono text-[11px] tracking-tight text-slate-500">
-              DevOps Engineer
+              {user?.email ?? ''}
             </div>
           </div>
           <i className="fa-solid fa-gear text-xs text-slate-400"></i>

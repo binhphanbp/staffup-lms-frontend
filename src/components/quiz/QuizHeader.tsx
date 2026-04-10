@@ -1,11 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface QuizHeaderProps {
   onShowSubmit: () => void;
 }
 
 export const QuizHeader = ({ onShowSubmit }: QuizHeaderProps) => {
+  const user = useAuthStore((s) => s.user);
+  const displayName = user?.fullName ?? 'Thí sinh';
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=1677ff&color=fff&bold=true`;
   return (
     <header className="z-20 flex h-16 flex-shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6 shadow-sm">
       <div className="flex flex-col">
@@ -19,12 +23,12 @@ export const QuizHeader = ({ onShowSubmit }: QuizHeaderProps) => {
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-slate-50 px-3 py-1.5">
           <img
-            src="https://ui-avatars.com/api/?name=Tran+Bao&background=1677ff&color=fff&bold=true"
+            src={avatarUrl}
             className="h-6 w-6 rounded-full"
             alt="Avatar"
           />
           <span className="hidden text-xs font-bold text-slate-700 sm:inline-block">
-            Trần Bảo (Candidate)
+            {displayName}
           </span>
         </div>
         <button

@@ -1,5 +1,11 @@
 import api from '@/lib/axios';
-import type { ApiResponse, AuthResponse, LoginCredentials, RegisterPayload, UserProfile } from '@/types';
+import type {
+  ApiResponse,
+  AuthResponse,
+  LoginCredentials,
+  RegisterPayload,
+  UserProfile,
+} from '@/types';
 
 // ============================================================
 // Auth Service — API calls for authentication

@@ -3,9 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { useMobileNav } from '@/context/MobileNavContext';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const InstructorSidebar = () => {
   const { closeMobileNav } = useMobileNav();
+  const user = useAuthStore((s) => s.user);
+  const displayName = user?.fullName ?? 'Giảng viên';
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=334155&color=fff`;
   return (
     <aside className="z-20 flex h-full w-64 shrink-0 flex-col bg-[#0f172a] text-slate-300">
       <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-800/50 px-6">
@@ -107,13 +111,13 @@ export const InstructorSidebar = () => {
         </Link>
         <div className="flex items-center gap-3 px-2">
           <img
-            src="https://ui-avatars.com/api/?name=L+N&background=334155&color=fff"
+            src={avatarUrl}
             className="h-8 w-8 rounded-full border border-slate-600"
             alt="Avatar"
           />
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[13px] font-semibold text-white">Lê Hoài Nam</div>
-            <div className="truncate text-[10px] text-slate-500">Engineering Manager</div>
+            <div className="truncate text-[13px] font-semibold text-white">{displayName}</div>
+            <div className="truncate text-[10px] text-slate-500">{user?.email ?? ''}</div>
           </div>
         </div>
       </div>
