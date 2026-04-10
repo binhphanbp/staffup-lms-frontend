@@ -25,7 +25,7 @@ export interface UserProfile {
   department: {
     id: string;
     name: string;
-  };
+  } | null;
   userRoles: Array<{ code: string; name: string }>;
   createdAt: string;
   updatedAt: string;
@@ -490,11 +490,36 @@ export interface QuizAttemptHistoryItem {
     id: string;
     title: string;
     passScorePercent: number;
+    timeLimitMinutes: number | null;
+    maxAttempts: number | null;
   };
   enrollment: {
     id: string;
-    courseId: string;
-    courseTitle: string;
+    user: {
+      id: string;
+      fullName: string;
+      email: string;
+    };
+    course: {
+      id: string;
+      title: string;
+    };
+  };
+}
+
+export interface QuizSubmitResponse {
+  attemptId: string;
+  status: string;
+  submittedAt: string;
+  timeSpentSeconds: number;
+  autoGraded: boolean;
+  requiresManualGrading: boolean;
+  result?: {
+    objectiveScore: number;
+    totalPossibleScore: number;
+    scorePercent: number;
+    isPassed: boolean;
+    passScorePercent: number;
   };
 }
 

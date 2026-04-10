@@ -6,6 +6,7 @@ import type {
   QuizStartResponse,
   QuizResponsePayload,
   QuizAttemptHistoryItem,
+  QuizSubmitResponse,
 } from '@/types';
 
 // ============================================================
@@ -41,8 +42,8 @@ export const quizService = {
     await api.post(`${API_BASE}/responses`, payload);
   },
 
-  submit: async (attemptId: string): Promise<QuizAttemptDetailResponse> => {
-    const { data } = await api.post<ApiResponse<QuizAttemptDetailResponse>>(
+  submit: async (attemptId: string): Promise<QuizSubmitResponse> => {
+    const { data } = await api.post<ApiResponse<QuizSubmitResponse>>(
       `${API_BASE}/${attemptId}/submit`,
     );
     return data.data;
