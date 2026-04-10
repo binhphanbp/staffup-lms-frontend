@@ -3,8 +3,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import type { LessonDetail } from '@/types';
 
-export const LearningTabs = () => {
+interface LearningTabsProps {
+  lesson?: LessonDetail & { moduleTitle?: string };
+  trainer?: { id: string; fullName: string; email: string; avatarUrl: string | null };
+}
+
+export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'qa'>('overview');
 
   return (
@@ -12,17 +18,21 @@ export const LearningTabs = () => {
       <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-start">
         <div>
           <h2 className="mb-2 text-2xl font-bold tracking-tight text-slate-900">
-            4. Database Replication & Partitioning (Sharding)
+            {lesson?.title ?? 'Đang tải bài học...'}
           </h2>
           <div className="flex items-center gap-3 text-sm text-slate-500">
-            <img
-              src="https://ui-avatars.com/api/?name=Le+Nam&background=0f172a&color=fff"
-              className="h-6 w-6 rounded-full"
-              alt="Author"
-            />
-            <span className="font-medium text-slate-700">Lê Hoài Nam</span>
-            <span className="text-slate-300">•</span>
-            <span>Cập nhật: 12/03/2026</span>
+            {trainer && (
+              <>
+                <img
+                  src={trainer.avatarUrl ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(trainer.fullName)}&background=0f172a&color=fff`}
+                  className="h-6 w-6 rounded-full"
+                  alt={trainer.fullName}
+                />
+                <span className="font-medium text-slate-700">{trainer.fullName}</span>
+                <span className="text-slate-300">•</span>
+              </>
+            )}
+            {lesson?.moduleTitle && <span>{lesson.moduleTitle}</span>}
           </div>
         </div>
         <div className="flex gap-2">
@@ -68,45 +78,32 @@ export const LearningTabs = () => {
       <div className="flex-1 pb-10">
         {activeTab === 'overview' && (
           <div className="max-w-4xl animate-[fadeIn_0.3s_ease-in-out] space-y-4 text-[14px] leading-relaxed text-slate-600">
-            <p>
-              Trong bài học này, chúng ta sẽ đi sâu vào các chiến lược mở rộng cơ sở dữ liệu khi hệ
-              thống vượt quá giới hạn của một máy chủ vật lý duy nhất (Scale Up không còn khả thi).
-            </p>
-            <h4 className="mt-6 text-base font-bold text-slate-800">Nội dung chính bao gồm:</h4>
-            <ul className="marker:text-primary ml-2 list-inside list-disc space-y-2">
-              <li>
-                <strong>Replication (Nhân bản):</strong> Master-Slave architecture, Active-Active,
-                xử lý Replication Lag.
-              </li>
-              <li>
-                <strong>Partitioning / Sharding (Phân mảnh):</strong> Horizontal vs Vertical
-                partitioning.
-              </li>
-              <li>
-                Các thuật toán Sharding: Range based, Hash based, và{' '}
-                <strong>Consistent Hashing</strong>.
-              </li>
-              <li>Demo thực tế: Cấu hình Read-Replica trên AWS RDS.</li>
-            </ul>
-            <div className="mt-8 rounded-lg border border-blue-100 bg-blue-50 p-4">
-              <h4 className="mb-2 flex items-center gap-2 text-sm font-bold text-blue-800">
-                <i className="fa-solid fa-link"></i> Tài liệu đính kèm
-              </h4>
-              <div className="flex flex-col gap-2">
-                <Link
-                  href="#"
-                  className="text-primary flex items-center gap-2 text-[13px] hover:underline"
-                >
-                  <i className="fa-regular fa-file-pdf"></i> Slides_Bài4_DB_Sharding.pdf (2.4 MB)
-                </Link>
-                <Link
-                  href="#"
-                  className="text-primary flex items-center gap-2 text-[13px] hover:underline"
-                >
-                  <i className="fa-solid fa-code"></i> sample_consistent_hashing.py (Source code)
-                </Link>
+            {lesson?.contentText ? (
+              <div dangerouslySetInnerHTML={{ __html: lesson.contentText }} />
+            ) : (
+              <p className="text-slate-400">Chưa có nội dung mô tả cho bài học này.</p>
+            )}
+
+            {lesson?.resources && lesson.resources.length > 0 && (
+              <div className="mt-8 rounded-lg border border-blue-100 bg-blue-50 p-4">
+                <h4 className="mb-2 flex items-center gap-2 text-sm font-bold text-blue-800">
+                  <i className="fa-solid fa-link"></i> Tài liệu đính kèm
+                </h4>
+                <div className="flex flex-col gap-2">
+                  {lesson.resources.map((res) => (
+                    <Link
+                      key={res.id}
+                      href={res.fileUrl ?? '#'}
+                      target="_blank"
+                      className="text-primary flex items-center gap-2 text-[13px] hover:underline"
+                    >
+                      <i className={`fa-regular ${res.resourceType === 'pdf' ? 'fa-file-pdf' : 'fa-file'}`}></i>
+                      {res.title}
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 

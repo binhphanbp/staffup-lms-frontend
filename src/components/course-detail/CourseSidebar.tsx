@@ -1,31 +1,34 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import Link from 'next/link';
+import type { CourseDetailResponse } from '@/types';
 
-export const CourseSidebar = () => {
+interface CourseSidebarProps {
+  course?: CourseDetailResponse;
+}
+
+function formatDuration(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h > 0) return `${h}h ${m > 0 ? `${m}m` : ''}`;
+  return `${m}m`;
+}
+
+export const CourseSidebar = ({ course }: CourseSidebarProps) => {
+  const stats = course?.stats;
+  const totalDuration = stats?.totalDurationMinutes ? formatDuration(stats.totalDurationMinutes) : '--';
+  const totalLessons = stats?.totalLessons ?? '--';
+
   return (
     <div className="relative w-full flex-shrink-0 lg:w-[320px] xl:w-[350px]">
       <div className="sticky top-6 flex flex-col gap-6">
         {/* Course Progress & Actions */}
         <div className="card border-t-primary border-t-4 p-6 shadow-lg shadow-slate-200/50">
-          <div className="mb-5">
-            <div className="mb-2 flex items-center justify-between text-[12px] font-bold text-slate-700">
-              <span>Tiến độ học tập</span>
-              <span className="text-primary">12%</span>
-            </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-              <div className="bg-primary h-full w-[12%] rounded-full"></div>
-            </div>
-            <p className="mt-2 text-center text-[11px] text-slate-400">
-              Hoàn thành bài tiếp theo để đạt mốc 15%
-            </p>
-          </div>
-
           <Link
-            href="/courses/detail/learning-room"
+            href={course ? `/courses/detail/learning-room?courseId=${course.id}` : '#'}
             className="bg-primary hover:bg-primary-hover mb-4 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-500/20 transition-transform active:scale-95"
           >
-            <i className="fa-solid fa-play"></i> Tiếp tục học
+            <i className="fa-solid fa-play"></i> Bắt đầu học
           </Link>
 
           <div className="space-y-3.5 text-[13px] text-slate-600">
@@ -33,20 +36,20 @@ export const CourseSidebar = () => {
               <div className="flex items-center gap-2">
                 <i className="fa-regular fa-clock w-4 text-center text-slate-400"></i> Thời lượng
               </div>
-              <span className="font-medium text-slate-800">24h 30m</span>
+              <span className="font-medium text-slate-800">{totalDuration}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <i className="fa-solid fa-layer-group w-4 text-center text-slate-400"></i> Số bài
                 học
               </div>
-              <span className="font-medium text-slate-800">48 bài</span>
+              <span className="font-medium text-slate-800">{totalLessons} bài</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <i className="fa-solid fa-code w-4 text-center text-slate-400"></i> Code Lab
+                <i className="fa-solid fa-cubes w-4 text-center text-slate-400"></i> Số phần
               </div>
-              <span className="font-medium text-slate-800">12 Lab thực hành</span>
+              <span className="font-medium text-slate-800">{stats?.totalModules ?? '--'} phần</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -70,25 +73,25 @@ export const CourseSidebar = () => {
           </button>
         </div>
 
-        {/* Related Courses */}
-        <div className="card border border-gray-200 p-5">
-          <h3 className="mb-3 text-[13px] font-bold text-slate-800">Khóa học thường học cùng</h3>
-          <Link href="#" className="group flex gap-3">
-            <img
-              src="https://images.unsplash.com/photo-1605745341112-85968b19335b?auto=format&fit=crop&w=150&q=80"
-              className="h-12 w-16 rounded object-cover"
-              alt="Related Course"
-            />
-            <div>
-              <div className="group-hover:text-primary mb-1 line-clamp-2 text-[12px] leading-tight font-bold text-slate-700">
-                Docker & Kubernetes cho Backend Developer
-              </div>
-              <div className="text-[10px] text-slate-400">
-                <i className="fa-solid fa-star text-yellow-400"></i> 4.9 • Tuấn Anh
+        {/* Trainer Info */}
+        {course?.trainer && (
+          <div className="card border border-gray-200 p-5">
+            <h3 className="mb-3 text-[13px] font-bold text-slate-800">Giảng viên</h3>
+            <div className="flex gap-3">
+              <img
+                src={course.trainer.avatarUrl ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(course.trainer.fullName)}&background=0f172a&color=fff&size=100`}
+                className="h-12 w-12 rounded-full object-cover"
+                alt={course.trainer.fullName}
+              />
+              <div>
+                <div className="mb-1 text-[13px] font-bold text-slate-700">
+                  {course.trainer.fullName}
+                </div>
+                <div className="text-[11px] text-slate-400">{course.trainer.email}</div>
               </div>
             </div>
-          </Link>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

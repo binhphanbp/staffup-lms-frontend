@@ -8,6 +8,7 @@ interface SubmitModalProps {
   isSubmitting: boolean;
   answeredCount: number;
   reviewCount: number;
+  totalQuestions: number;
 }
 
 export const SubmitModal = ({
@@ -17,6 +18,7 @@ export const SubmitModal = ({
   isSubmitting,
   answeredCount,
   reviewCount,
+  totalQuestions,
 }: SubmitModalProps) => {
   return (
     <div
@@ -31,7 +33,7 @@ export const SubmitModal = ({
           </div>
           <h3 className="mb-2 text-xl font-bold text-slate-800">Xác nhận nộp bài?</h3>
           <p className="mb-6 text-sm text-slate-500">
-            Bạn vẫn còn <strong className="text-danger">{20 - answeredCount} câu hỏi</strong> chưa
+            Bạn vẫn còn <strong className="text-danger">{totalQuestions - answeredCount} câu hỏi</strong> chưa
             trả lời và <strong className="text-warning">{reviewCount} câu</strong> đang đánh dấu xem
             lại. Sau khi nộp bài sẽ không thể sửa đổi.
           </p>
@@ -43,7 +45,7 @@ export const SubmitModal = ({
             </div>
             <div className="w-px bg-gray-200"></div>
             <div className="text-center">
-              <div className="text-danger text-lg font-bold">{20 - answeredCount}</div>
+              <div className="text-danger text-lg font-bold">{totalQuestions - answeredCount}</div>
               <div className="text-[10px] font-bold text-slate-500 uppercase">Bỏ trống</div>
             </div>
             <div className="w-px bg-gray-200"></div>
