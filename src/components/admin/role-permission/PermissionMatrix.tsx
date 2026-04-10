@@ -180,7 +180,7 @@ export const PermissionMatrix = ({
                 <input
                   type="checkbox"
                   className="h-[18px] w-[18px] cursor-pointer accent-[#1A73E8]"
-                  checked={isSystemAdmin || permissions['read-course']}
+                  checked={isSystemAdmin || !!permissions['read-course']}
                   disabled={isSystemAdmin}
                 />
               </td>
@@ -225,7 +225,7 @@ export const PermissionMatrix = ({
                 <input
                   type="checkbox"
                   className="h-[18px] w-[18px] cursor-pointer accent-[#1A73E8]"
-                  checked={isSystemAdmin || permissions['update-grade']}
+                  checked={isSystemAdmin || !!permissions['update-grade']}
                   disabled={isSystemAdmin}
                 />
               </td>
@@ -234,7 +234,7 @@ export const PermissionMatrix = ({
                 <input
                   type="checkbox"
                   className="h-[18px] w-[18px] cursor-pointer accent-[#1A73E8]"
-                  checked={isSystemAdmin || permissions['update-grade']}
+                  checked={isSystemAdmin || !!permissions['update-grade']}
                   disabled={isSystemAdmin}
                   title="Vào điểm"
                 />
@@ -244,7 +244,7 @@ export const PermissionMatrix = ({
                 <input
                   type="checkbox"
                   className="h-[18px] w-[18px] cursor-pointer accent-[#1A73E8]"
-                  checked={isSystemAdmin || permissions['update-grade']}
+                  checked={isSystemAdmin || !!permissions['update-grade']}
                   disabled={isSystemAdmin}
                 />
               </td>

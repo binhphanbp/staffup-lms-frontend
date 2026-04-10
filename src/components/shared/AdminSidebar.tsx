@@ -1,0 +1,187 @@
+'use client';
+
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+export const AdminSidebar = () => {
+  const pathname = usePathname();
+
+  return (
+    <aside className="z-[100] flex w-[260px] flex-shrink-0 flex-col border-r border-[#DADCE0] bg-white">
+      <div className="flex h-[64px] items-center border-b border-[#DADCE0] px-6 text-[20px] font-medium text-[#202124]">
+        <span className="material-symbols-outlined mr-3 text-[28px] text-[#1A73E8] [font-variation-settings:'FILL'_1]">
+          hub
+        </span>
+        LMS Workspace
+      </div>
+
+      <div className="custom-scrollbar flex-1 overflow-y-auto py-3">
+        {/* Tổng quan Hệ thống */}
+        <div className="mb-2 border-b border-[#DADCE0] pb-2">
+          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase">
+            Tổng quan Hệ thống
+          </div>
+          <Link
+            href="/admin-dashboard"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/admin-dashboard'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span
+              className={`material-symbols-outlined mr-4 text-[20px] ${pathname === '/admin-dashboard' ? "[font-variation-settings:'FILL'_1]" : ''}`}
+            >
+              dashboard
+            </span>{' '}
+            Bảng điều khiển (Admin)
+          </Link>
+          <Link
+            href="/reports"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/reports'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span
+              className={`material-symbols-outlined mr-4 text-[20px] ${pathname === '/reports' ? "[font-variation-settings:'FILL'_1]" : ''}`}
+            >
+              analytics
+            </span>{' '}
+            Báo cáo & Thống kê
+          </Link>
+        </div>
+
+        {/* Phân hệ Học viên */}
+        <div className="mb-2 border-b border-[#DADCE0] pb-2">
+          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase">
+            Phân hệ Học viên
+          </div>
+          <Link
+            href="/students"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/students'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span className="material-symbols-outlined mr-4 text-[20px]">school</span> Danh sách Học
+            viên
+          </Link>
+          <Link
+            href="/learning-progress"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/learning-progress'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span className="material-symbols-outlined mr-4 text-[20px]">local_library</span> Tiến
+            độ & Lộ trình học
+          </Link>
+          <Link
+            href="/certificates-management"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/certificates-management'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span className="material-symbols-outlined mr-4 text-[20px]">workspace_premium</span>{' '}
+            Quản lý Chứng chỉ
+          </Link>
+        </div>
+
+        {/* Phân hệ Giảng viên */}
+        <div className="mb-2 border-b border-[#DADCE0] pb-2">
+          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase">
+            Phân hệ Giảng viên
+          </div>
+          <Link
+            href="/instructors"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/instructors'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span className="material-symbols-outlined mr-4 text-[20px]">co_present</span> Danh sách
+            Giảng viên
+          </Link>
+          <Link
+            href="/courses-management"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/courses-management'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span className="material-symbols-outlined mr-4 text-[20px]">menu_book</span> Quản lý
+            Khóa học
+          </Link>
+          <Link
+            href="/grading-evaluation"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/grading-evaluation'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span className="material-symbols-outlined mr-4 text-[20px]">grading</span> Chấm bài &
+            Đánh giá
+          </Link>
+          <Link
+            href="/question-bank"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/question-bank'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span className="material-symbols-outlined mr-4 text-[20px]">quiz</span> Ngân hàng câu
+            hỏi
+          </Link>
+        </div>
+
+        {/* Hệ thống & AI */}
+        <div className="mb-2 border-b border-[#DADCE0] pb-2">
+          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase">
+            Hệ thống & AI
+          </div>
+          <Link
+            href="/ai-configuration"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/ai-configuration'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span
+              className={`material-symbols-outlined mr-4 text-[20px] ${pathname === '/ai-configuration' ? "[font-variation-settings:'FILL'_1]" : ''}`}
+            >
+              robot_2
+            </span>{' '}
+            Cấu hình AI (Gemini)
+          </Link>
+          <Link
+            href="/role-permission"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/role-permission'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span
+              className={`material-symbols-outlined mr-4 text-[20px] ${pathname === '/role-permission' ? "[font-variation-settings:'FILL'_1]" : ''}`}
+            >
+              admin_panel_settings
+            </span>{' '}
+            Phân quyền (Roles)
+          </Link>
+        </div>
+      </div>
+    </aside>
+  );
+};

@@ -123,6 +123,25 @@ export const SyllabusSidebar = ({ isOpen, onToggle }: SyllabusSidebarProps) => {
                   </div>
                 </div>
               </div>
+              <Link
+                href="/courses/detail/learning-room/lab"
+                className="flex items-start gap-3 border-l-2 border-transparent bg-purple-50/50 p-3 transition-colors hover:bg-purple-50"
+              >
+                <i className="fa-solid fa-flask-vial mt-0.5 text-[12px] text-purple-600"></i>
+                <div className="flex-1">
+                  <div className="mb-1 flex items-center gap-2">
+                    <div className="text-[12px] leading-snug font-medium text-slate-700">
+                      5. Lab: Thực hành Database Sharding
+                    </div>
+                    <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[9px] font-bold text-purple-700">
+                      LAB
+                    </span>
+                  </div>
+                  <div className="font-mono text-[10px] text-slate-500">
+                    <i className="fa-solid fa-code mr-1"></i> Code Lab • 45 phút
+                  </div>
+                </div>
+              </Link>
             </div>
           </div>
         </div>

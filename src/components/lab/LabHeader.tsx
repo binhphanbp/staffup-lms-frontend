@@ -10,7 +10,7 @@ export const LabHeader = ({ onRunCode }: LabHeaderProps) => {
     <header className="z-20 flex h-14 flex-shrink-0 items-center justify-between border-b border-black/50 bg-[#181a1f] px-4 text-white shadow-md lg:px-6">
       <div className="flex min-w-0 items-center gap-4">
         <Link
-          href="/learning-room"
+          href="/courses/detail/learning-room"
           className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
           title="Rời khỏi Lab"
         >
