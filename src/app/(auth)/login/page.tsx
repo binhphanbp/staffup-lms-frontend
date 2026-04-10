@@ -22,6 +22,14 @@ function setCookie(name: string, value: string, days: number) {
   document.cookie = `${name}=${value}; path=/; max-age=${60 * 60 * 24 * days}; SameSite=Lax`;
 }
 
+// ----- Helper: Get default route by role -----
+function getDefaultRouteByRole(roleCodes: string[]): string {
+  if (roleCodes.includes('admin')) return '/admin-dashboard';
+  if (roleCodes.includes('manager')) return '/admin-dashboard';
+  if (roleCodes.includes('trainer')) return '/dashboard';
+  return '/courses';
+}
+
 // ----- Validation Schema -----
 const loginSchema = z.object({
   email: z.email('Email không hợp lệ'),
@@ -33,7 +41,12 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const rawCallback = searchParams.get('callbackUrl');
+  // Prevent open-redirect: only allow relative paths
+  const callbackUrl =
+    rawCallback && rawCallback.startsWith('/') && !rawCallback.startsWith('//')
+      ? rawCallback
+      : null; // Will be determined by role if no explicit callback
 
   const login = useAuthStore((state) => state.login);
 
@@ -63,7 +76,9 @@ export default function LoginPage() {
       // Set cookie for proxy.ts route protection
       setCookie('staffup-auth-token', response.token, 7);
 
-      router.push(callbackUrl);
+      // Redirect to callback URL or role-based default route
+      const redirectTo = callbackUrl || getDefaultRouteByRole(response.user.roleCodes);
+      router.push(redirectTo);
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
       setServerError(err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');

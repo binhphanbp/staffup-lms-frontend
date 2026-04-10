@@ -199,7 +199,14 @@ export default function RegisterPage() {
       // Set cookie for proxy.ts route protection
       setCookie('staffup-auth-token', response.token, 7);
 
-      router.push('/dashboard');
+      // Redirect based on user role
+      const roleCodes = response.user.roleCodes || [];
+      const redirectTo = roleCodes.includes('admin') || roleCodes.includes('manager')
+        ? '/admin-dashboard'
+        : roleCodes.includes('trainer')
+          ? '/dashboard'
+          : '/courses';
+      router.push(redirectTo);
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
       setServerError(err.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.');

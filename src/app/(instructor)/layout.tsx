@@ -3,6 +3,7 @@
 import { InstructorSidebar } from '@/components/instructor/InstructorSidebar';
 import { InstructorHeader } from '@/components/instructor/InstructorHeader';
 import { MobileNavProvider, useMobileNav } from '@/context/MobileNavContext';
+import { RoleGuard } from '@/components/shared/RoleGuard';
 
 function InstructorLayoutContent({ children }: { children: React.ReactNode }) {
   const { mobileOpen, closeMobileNav } = useMobileNav();
@@ -34,8 +35,10 @@ function InstructorLayoutContent({ children }: { children: React.ReactNode }) {
 
 export default function InstructorLayout({ children }: { children: React.ReactNode }) {
   return (
-    <MobileNavProvider>
-      <InstructorLayoutContent>{children}</InstructorLayoutContent>
-    </MobileNavProvider>
+    <RoleGuard allowedRoles={['trainer', 'admin', 'manager']}>
+      <MobileNavProvider>
+        <InstructorLayoutContent>{children}</InstructorLayoutContent>
+      </MobileNavProvider>
+    </RoleGuard>
   );
 }
