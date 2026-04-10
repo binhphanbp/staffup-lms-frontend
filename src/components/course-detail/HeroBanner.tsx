@@ -7,7 +7,7 @@ export const HeroBanner = () => {
       <div className="bg-tech-pattern absolute inset-0 opacity-30"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent"></div>
 
-      <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center gap-8 px-8 py-12 lg:flex-row">
+      <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-6 md:gap-8 md:px-8 md:py-12 lg:flex-row">
         <div className="flex-1">
           <div className="mb-4 flex items-center gap-2">
             <span className="rounded border border-blue-500/30 bg-blue-500/20 px-2.5 py-1 text-[10px] font-bold tracking-widest text-blue-300 uppercase">
@@ -44,7 +44,7 @@ export const HeroBanner = () => {
           </div>
         </div>
 
-        <div className="group relative w-full flex-shrink-0 cursor-pointer overflow-hidden rounded-xl border border-slate-700 shadow-2xl shadow-blue-900/20 lg:w-[380px] xl:w-[420px]">
+        <div className="group relative w-full shrink-0 cursor-pointer overflow-hidden rounded-xl border border-slate-700 shadow-2xl shadow-blue-900/20 lg:w-[380px] xl:w-[420px]">
           <img
             src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
             alt="Preview"

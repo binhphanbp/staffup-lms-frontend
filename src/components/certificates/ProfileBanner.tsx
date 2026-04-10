@@ -3,17 +3,17 @@ import React from 'react';
 
 export const ProfileBanner = () => {
   return (
-    <div className="relative mb-8 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-8 text-white shadow-lg">
+    <div className="relative mb-8 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-4 md:p-8 text-white shadow-lg">
       <i className="fa-solid fa-award absolute -top-10 -right-10 rotate-12 transform text-[200px] text-white/5"></i>
 
-      <div className="relative z-10 flex flex-col items-center gap-8 md:flex-row">
-        <div className="relative h-24 w-24 flex-shrink-0 rounded-full border-4 border-slate-700 shadow-xl">
+      <div className="relative z-10 flex flex-col items-center gap-4 md:gap-8 md:flex-row">
+        <div className="relative h-24 w-24 shrink-0 rounded-full border-4 border-slate-700 shadow-xl">
           <img
             src="https://ui-avatars.com/api/?name=Tran+Bao&background=1677ff&color=fff&size=200"
             alt="Avatar"
             className="h-full w-full rounded-full object-cover"
           />
-          <div className="absolute -right-2 -bottom-2 rounded-full border-2 border-slate-900 bg-gradient-to-r from-yellow-400 to-yellow-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-md">
+          <div className="absolute -right-2 -bottom-2 rounded-full border-2 border-slate-900 bg-linear-to-r from-yellow-400 to-yellow-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-md">
             Lvl 12
           </div>
         </div>

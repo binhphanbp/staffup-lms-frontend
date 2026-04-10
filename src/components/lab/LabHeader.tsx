@@ -7,11 +7,11 @@ interface LabHeaderProps {
 
 export const LabHeader = ({ onRunCode }: LabHeaderProps) => {
   return (
-    <header className="z-20 flex h-14 flex-shrink-0 items-center justify-between border-b border-black/50 bg-[#181a1f] px-4 text-white shadow-md lg:px-6">
+    <header className="z-20 flex h-14 shrink-0 items-center justify-between border-b border-black/50 bg-[#181a1f] px-4 text-white shadow-md lg:px-6">
       <div className="flex min-w-0 items-center gap-4">
         <Link
           href="/courses/detail/learning-room"
-          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
           title="Rời khỏi Lab"
         >
           <i className="fa-solid fa-arrow-left"></i>
@@ -30,7 +30,7 @@ export const LabHeader = ({ onRunCode }: LabHeaderProps) => {
         </div>
       </div>
 
-      <div className="flex flex-shrink-0 items-center gap-4">
+      <div className="flex shrink-0 items-center gap-4">
         <div className="hidden items-center gap-1 font-mono text-[10px] text-slate-400 md:flex">
           <i className="fa-solid fa-cloud-arrow-up"></i> Đã tự động lưu
         </div>

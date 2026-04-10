@@ -131,7 +131,7 @@ export default function GradingEvaluationPage() {
 
   return (
     <>
-      <div className="flex flex-1 flex-col overflow-y-auto px-8 py-6">
+      <div className="flex flex-1 flex-col overflow-y-auto px-4 md:px-8 py-4 md:py-6">
         <div className="mb-5 flex items-center justify-between">
           <h1 className="m-0 text-[22px] font-normal text-[#202124]">
             Chấm bài tự luận & Đánh giá
@@ -146,7 +146,7 @@ export default function GradingEvaluationPage() {
         </div>
 
         {/* KPI CARDS */}
-        <div className="mb-6 flex gap-6">
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="flex flex-1 items-center gap-4 rounded-lg border border-[#DADCE0] bg-white p-4 px-5">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FEF7E0] text-[#B06000]">
               <span className="material-symbols-outlined text-[24px] [font-variation-settings:'FILL'_1]">

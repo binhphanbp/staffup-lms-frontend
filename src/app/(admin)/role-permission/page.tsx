@@ -95,7 +95,7 @@ export default function RolePermissionPage() {
 
   return (
     <>
-      <div className="flex flex-1 flex-col overflow-hidden px-8 py-6">
+      <div className="flex flex-1 flex-col overflow-hidden px-4 md:px-8 py-4 md:py-6">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="m-0 flex items-center gap-2 text-[22px] font-normal text-[#202124]">
             <span className="material-symbols-outlined text-[28px] text-[#5F6368]">
@@ -111,7 +111,7 @@ export default function RolePermissionPage() {
           </div>
         </div>
 
-        <div className="flex flex-1 gap-6 overflow-hidden">
+        <div className="flex flex-1 flex-col gap-4 overflow-auto lg:flex-row lg:gap-6 lg:overflow-hidden">
           <RoleList
             roles={roles}
             activeRole={activeRole}

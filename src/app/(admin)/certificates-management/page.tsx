@@ -60,7 +60,7 @@ export default function CertificatesManagementPage() {
 
   return (
     <>
-      <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-8 py-6">
+      <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 md:px-8 py-4 md:py-6">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <h1 className="m-0 text-[22px] font-normal text-[#202124]">

@@ -6,7 +6,7 @@ export const TaskPanel = () => {
   const [leftTab, setLeftTab] = useState<'task' | 'ai'>('task');
 
   return (
-    <div className="z-10 flex h-full w-full flex-shrink-0 flex-col bg-white shadow-xl lg:w-[40%] xl:w-[35%]">
+    <div className="z-10 flex h-full w-full shrink-0 flex-col bg-white shadow-xl lg:w-[40%] xl:w-[35%]">
       <div className="flex border-b border-gray-200 bg-slate-50 px-2 pt-2">
         <button
           onClick={() => setLeftTab('task')}
@@ -86,7 +86,7 @@ export const TaskPanel = () => {
           <div className="flex h-full flex-col bg-[#f8fafc]">
             <div className="custom-scrollbar flex-1 space-y-4 overflow-y-auto p-4">
               <div className="flex gap-3">
-                <div className="mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded bg-purple-100 text-purple-600">
+                <div className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded bg-purple-100 text-purple-600">
                   <i className="fa-solid fa-robot text-xs"></i>
                 </div>
                 <div className="flex-1">

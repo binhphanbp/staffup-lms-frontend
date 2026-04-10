@@ -12,7 +12,7 @@ export const FilterSidebar = ({ isOpen, onReset, onFilterChange }: FilterSidebar
     <div
       id="filterSidebarWrapper"
       // Dùng logic điều kiện (ternary operator) để thêm class ẩn/hiện
-      className={`${isOpen ? 'filter-visible' : 'filter-hidden'} relative z-10 h-full flex-shrink-0 overflow-hidden border-gray-200 bg-white shadow-sm`}
+      className={`${isOpen ? 'filter-visible' : 'filter-hidden'} relative z-10 h-full shrink-0 overflow-hidden border-gray-200 bg-white shadow-sm`}
     >
       <div className="custom-scrollbar flex h-full w-64 flex-col overflow-y-auto">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white p-5">

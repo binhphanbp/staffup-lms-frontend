@@ -133,7 +133,7 @@ export default function QuestionBankPage() {
 
   return (
     <>
-      <div className="flex flex-1 flex-col overflow-hidden px-8 py-6">
+      <div className="flex flex-1 flex-col overflow-hidden px-4 md:px-8 py-4 md:py-6">
         <div className="mb-5 flex items-center justify-between">
           <h1 className="text-[22px] font-normal text-[#202124]">
             Ngân hàng Câu hỏi (Question Bank)
@@ -162,7 +162,7 @@ export default function QuestionBankPage() {
         </div>
 
         {/* KPI CARDS */}
-        <div className="mb-6 flex gap-6">
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="flex flex-1 items-center gap-4 rounded-lg border border-[#DADCE0] bg-white p-4 px-5">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8F0FE] text-[#1A73E8]">
               <span className="material-symbols-outlined text-[24px] [font-variation-settings:'FILL'_1]">

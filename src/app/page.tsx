@@ -31,7 +31,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="card course-card border-l-primary flex cursor-pointer flex-col gap-5 border-l-4 p-4 transition-shadow hover:shadow-md sm:flex-row">
-                  <div className="course-thumb-container relative h-32 w-full flex-shrink-0 rounded-md bg-slate-100 sm:w-48">
+                  <div className="course-thumb-container relative h-32 w-full shrink-0 rounded-md bg-slate-100 sm:w-48">
                     <img
                       src="https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
                       className="h-full w-full object-cover"
@@ -82,7 +82,7 @@ export default function DashboardPage() {
             </div>
 
             {/* CỘT BÊN PHẢI */}
-            <div className="flex w-full flex-shrink-0 flex-col gap-8 xl:w-80">
+            <div className="flex w-full shrink-0 flex-col gap-8 xl:w-80">
               {/* Gọi Component Hồ sơ năng lực */}
               <SkillProfile />
 
