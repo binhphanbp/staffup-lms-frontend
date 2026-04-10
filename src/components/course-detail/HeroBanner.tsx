@@ -52,7 +52,8 @@ export const HeroBanner = ({ course }: HeroBannerProps) => {
           <div className="flex items-center gap-6 text-[13px] text-slate-300">
             {totalEnrollments > 0 && (
               <div className="flex items-center gap-1.5">
-                <i className="fa-solid fa-users text-slate-400"></i> {totalEnrollments}+ nhân viên đã học
+                <i className="fa-solid fa-users text-slate-400"></i> {totalEnrollments}+ nhân viên
+                đã học
               </div>
             )}
             {updatedAt && (
@@ -77,7 +78,10 @@ export const HeroBanner = ({ course }: HeroBannerProps) => {
 
         <div className="group relative w-full shrink-0 cursor-pointer overflow-hidden rounded-xl border border-slate-700 shadow-2xl shadow-blue-900/20 lg:w-[380px] xl:w-[420px]">
           <img
-            src={thumbnailUrl ?? 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80'}
+            src={
+              thumbnailUrl ??
+              'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80'
+            }
             alt="Preview"
             className="h-[220px] w-full object-cover opacity-80 mix-blend-overlay transition-opacity duration-300 group-hover:opacity-100"
           />

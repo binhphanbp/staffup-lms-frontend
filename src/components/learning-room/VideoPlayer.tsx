@@ -66,7 +66,10 @@ export const VideoPlayer = ({ lesson }: VideoPlayerProps) => {
                     <button className="hover:text-primary hover:border-primary rounded border border-white/30 px-2 py-0.5 text-[12px] font-bold transition-colors">
                       1x
                     </button>
-                    <button className="hover:text-primary ml-2 transition-colors" title="Toàn màn hình">
+                    <button
+                      className="hover:text-primary ml-2 transition-colors"
+                      title="Toàn màn hình"
+                    >
                       <i className="fa-solid fa-expand text-lg"></i>
                     </button>
                   </div>

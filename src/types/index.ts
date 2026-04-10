@@ -83,7 +83,7 @@ export interface CourseListItem {
     id: string;
     fullName: string;
     email: string;
-    avatarUrl: string | null;
+    avatarUrl?: string | null;
   };
   category: {
     id: string;
@@ -95,11 +95,9 @@ export interface CourseListItem {
     name: string;
   } | null;
   tags?: Array<{ id: string; name: string; slug: string }>;
-  stats?: {
-    totalModules: number;
-    totalLessons: number;
-    totalDurationMinutes: number;
-    totalEnrollments: number;
+  counts?: {
+    modules: number;
+    enrollments: number;
   };
 }
 
@@ -139,6 +137,16 @@ export interface ModuleDetail {
   title: string;
   orderIndex: number;
   lessons: LessonDetail[];
+}
+
+export interface CourseModuleItem {
+  id: string;
+  courseId: string;
+  title: string;
+  orderIndex: number;
+  createdAt: string;
+  updatedAt: string;
+  lessonsCount: number;
 }
 
 export interface CourseDetailResponse {
@@ -238,26 +246,30 @@ export interface EnrollmentListItem {
   userId: string;
   courseId: string;
   status: EnrollmentStatus;
-  progressPercentCache: number;
-  completedLessonsCountCache: number;
-  timeSpentSecondsCache: number;
-  dueAt: string | null;
+  progressPercent: number;
   enrolledAt: string;
   startedAt: string | null;
   completedAt: string | null;
-  lastActivityAt: string | null;
+  dueAt: string | null;
+  isOverdue: boolean;
+  assignmentNote: string | null;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+    avatarUrl: string | null;
+  };
   course: {
     id: string;
     title: string;
     slug: string;
     thumbnailUrl: string | null;
-    estimatedDurationMinutes: number | null;
     trainer: {
       id: string;
       fullName: string;
-      avatarUrl: string | null;
     };
   };
+  assignedBy: { id: string; fullName: string } | null;
 }
 
 export interface EnrollmentDetailResponse {
@@ -324,31 +336,50 @@ export interface EnrollmentDetailResponse {
 export interface EnrollmentProgressResponse {
   enrollmentId: string;
   courseId: string;
-  status: EnrollmentStatus;
-  progressPercent: number;
-  completedLessonsCount: number;
-  totalLessonsCount: number;
-  timeSpentSeconds: number;
-  lessons: Array<{
-    lessonId: string;
-    lessonTitle: string;
-    moduleId: string;
-    moduleTitle: string;
-    status: LessonProgressStatus;
-    watchTimeSeconds: number;
-    lastPositionSeconds: number;
-    startedAt: string | null;
-    completedAt: string | null;
+  enrollmentStatus: string;
+  summary: {
+    progressPercent: number;
+    completedLessonsCount: number;
+    totalLessonsCount: number;
+    timeSpentSeconds: number;
+    lastActivityAt: string | null;
+  };
+  modules: Array<{
+    id: string;
+    title: string;
+    orderIndex: number;
+    lessons: Array<{
+      id: string;
+      title: string;
+      lessonType: string;
+      durationSeconds: number;
+      orderIndex: number;
+      isPreview: boolean;
+      progress: {
+        status: LessonProgressStatus;
+        watchTimeSeconds: number;
+        lastPositionSeconds: number;
+        startedAt: string | null;
+        completedAt: string | null;
+        lastAccessedAt: string | null;
+      };
+    }>;
   }>;
 }
 
 export interface LessonProgressUpdate {
   watchTimeSeconds?: number;
   lastPositionSeconds?: number;
+  status?: LessonProgressStatus;
 }
 
 // ----- Quiz -----
-export type QuestionType = 'single_choice' | 'multiple_choice' | 'true_false' | 'short_answer' | 'essay';
+export type QuestionType =
+  | 'single_choice'
+  | 'multiple_choice'
+  | 'true_false'
+  | 'short_answer'
+  | 'essay';
 export type QuizAttemptStatus = 'in_progress' | 'submitted' | 'graded' | 'expired' | 'abandoned';
 
 export interface QuizAttemptDetailResponse {
@@ -412,10 +443,19 @@ export interface QuizStartPayload {
 }
 
 export interface QuizResponsePayload {
-  attemptId: string;
-  questionId: string;
+  attemptQuestionId: string;
   selectedOptionIds?: string[];
   responseText?: string;
+}
+
+export interface QuizStartResponse {
+  attemptId: string;
+  attemptNo: number;
+  quizId: string;
+  quizTitle: string;
+  timeLimitMinutes: number | null;
+  totalQuestions: number;
+  startedAt: string;
 }
 
 export interface QuizAttemptHistoryItem {
@@ -423,35 +463,62 @@ export interface QuizAttemptHistoryItem {
   quizId: string;
   attemptNo: number;
   status: QuizAttemptStatus;
+  objectiveScore: number | null;
+  manualScore: number | null;
   totalScore: number | null;
   isPassed: boolean | null;
   startedAt: string;
   submittedAt: string | null;
   timeSpentSeconds: number;
+  quiz: {
+    id: string;
+    title: string;
+    passScorePercent: number;
+  };
+  enrollment: {
+    id: string;
+    courseId: string;
+    courseTitle: string;
+  };
 }
 
 // ----- Certificate -----
 export interface CertificateResponse {
   id: string;
-  enrollmentId: string;
   certificateCode: string;
   pdfUrl: string | null;
   issuedAt: string;
-  revokedAt: string | null;
+  revokedAt?: string | null;
   enrollment: {
     id: string;
+    completedAt?: string | null;
     course: {
       id: string;
       title: string;
       slug: string;
-      thumbnailUrl: string | null;
+      description?: string | null;
+      thumbnailUrl?: string | null;
+      trainer?: {
+        id: string;
+        fullName: string;
+      };
     };
     user: {
       id: string;
       fullName: string;
       email: string;
+      avatarUrl?: string | null;
     };
-    completedAt: string | null;
+  };
+}
+
+export interface CertificateListResponse {
+  certificates: CertificateResponse[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
   };
 }
 

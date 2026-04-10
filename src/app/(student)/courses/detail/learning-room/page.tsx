@@ -49,18 +49,29 @@ export default function LearningRoomPage() {
   const activeLesson = useMemo(() => {
     if (!allLessons.length) return null;
     if (activeLessonId) return allLessons.find((l) => l.id === activeLessonId) ?? allLessons[0];
-    // Try to resume from last accessed
-    const lastAccessed = progress?.lessons?.find(
-      (lp) => lp.status === 'in_progress',
-    );
-    if (lastAccessed) return allLessons.find((l) => l.id === lastAccessed.lessonId) ?? allLessons[0];
+    // Try to resume from last accessed via progress modules
+    if (progress?.modules) {
+      for (const mod of progress.modules) {
+        const inProgress = mod.lessons.find((l) => l.progress.status === 'in_progress');
+        if (inProgress) return allLessons.find((l) => l.id === inProgress.id) ?? allLessons[0];
+      }
+    }
     return allLessons[0];
   }, [allLessons, activeLessonId, progress]);
 
-  // Build lesson progress map
+  // Build lesson progress map from nested modules → lessons → progress
   const lessonProgressMap = useMemo(() => {
-    const map = new Map<string, (typeof progress)['lessons'] extends Array<infer T> ? T : never>();
-    progress?.lessons?.forEach((lp) => map.set(lp.lessonId, lp));
+    const map = new Map<string, { lessonId: string; status: import('@/types').LessonProgressStatus; watchTimeSeconds: number; lastPositionSeconds: number }>();
+    progress?.modules?.forEach((mod) => {
+      mod.lessons.forEach((lesson) => {
+        map.set(lesson.id, {
+          lessonId: lesson.id,
+          status: lesson.progress.status,
+          watchTimeSeconds: lesson.progress.watchTimeSeconds,
+          lastPositionSeconds: lesson.progress.lastPositionSeconds,
+        });
+      });
+    });
     return map;
   }, [progress]);
 
@@ -92,9 +103,9 @@ export default function LearningRoomPage() {
       <LearningHeader
         courseTitle={course.title}
         lessonTitle={activeLesson?.title}
-        progressPercent={progress?.progressPercent ?? 0}
-        completedLessons={progress?.completedLessonsCount ?? 0}
-        totalLessons={progress?.totalLessonsCount ?? 0}
+        progressPercent={progress?.summary?.progressPercent ?? 0}
+        completedLessons={progress?.summary?.completedLessonsCount ?? 0}
+        totalLessons={progress?.summary?.totalLessonsCount ?? 0}
         courseId={course.id}
         enrollmentId={enrollmentId}
         lessonId={activeLesson?.id ?? null}
@@ -104,13 +115,8 @@ export default function LearningRoomPage() {
       <div className="relative flex flex-1 overflow-hidden bg-slate-900">
         {/* KHỐI TRÁI: Video và Tabs */}
         <div className="custom-scrollbar flex h-full flex-1 flex-col overflow-y-auto bg-white">
-          <VideoPlayer
-            lesson={activeLesson ?? undefined}
-          />
-          <LearningTabs
-            lesson={activeLesson ?? undefined}
-            trainer={course.trainer}
-          />
+          <VideoPlayer lesson={activeLesson ?? undefined} />
+          <LearningTabs lesson={activeLesson ?? undefined} trainer={course.trainer} />
         </div>
 
         {/* Backdrop — chỉ hiện trên mobile khi sidebar mở */}
@@ -128,8 +134,8 @@ export default function LearningRoomPage() {
           modules={course.modules ?? []}
           activeLessonId={activeLesson?.id ?? null}
           lessonProgressMap={lessonProgressMap}
-          completedLessons={progress?.completedLessonsCount ?? 0}
-          totalLessons={progress?.totalLessonsCount ?? 0}
+          completedLessons={progress?.summary?.completedLessonsCount ?? 0}
+          totalLessons={progress?.summary?.totalLessonsCount ?? 0}
           onSelectLesson={(lessonId) => setActiveLessonId(lessonId)}
         />
       </div>

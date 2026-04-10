@@ -27,7 +27,8 @@ export const StatCards = ({ stats }: StatCardsProps) => {
             <span className="text-sm font-medium text-slate-500">giờ</span>
           </div>
           <div className="mt-3 flex items-center gap-1 text-[11px] font-medium text-green-600">
-            <i className="fa-solid fa-book-open"></i> {stats?.progressSummary?.completedLessons ?? 0} bài học đã hoàn thành
+            <i className="fa-solid fa-book-open"></i>{' '}
+            {stats?.progressSummary?.completedLessons ?? 0} bài học đã hoàn thành
           </div>
         </div>
       </div>
@@ -73,7 +74,9 @@ export const StatCards = ({ stats }: StatCardsProps) => {
             <i className="fa-solid fa-certificate text-success/50 text-lg"></i>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-slate-800">{stats?.certificates?.total ?? 0}</span>
+            <span className="text-3xl font-bold text-slate-800">
+              {stats?.certificates?.total ?? 0}
+            </span>
             <span className="text-sm font-medium text-slate-500">chứng chỉ</span>
           </div>
           {(stats?.progressSummary?.upcomingDeadlines?.length ?? 0) > 0 && (

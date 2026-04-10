@@ -17,6 +17,10 @@ const API_BASE = '/enrollments';
 export interface EnrollmentListParams {
   status?: string;
   courseId?: string;
+  userId?: string;
+  departmentId?: string;
+  overdue?: boolean;
+  search?: string;
   page?: number;
   limit?: number;
 }
@@ -38,18 +42,15 @@ export const enrollmentService = {
     return data.data;
   },
 
-  enroll: async (courseId: string, userIds?: string[]): Promise<{ enrolled: number }> => {
+  enroll: async (courseId: string, userIds: string[]): Promise<{ enrolled: number }> => {
     const { data } = await api.post<ApiResponse<{ enrolled: number }>>(
       `${API_BASE}/courses/${courseId}/enroll`,
-      userIds ? { userIds } : undefined,
+      { userIds },
     );
     return data.data;
   },
 
-  updateStatus: async (
-    id: string,
-    status: string,
-  ): Promise<void> => {
+  updateStatus: async (id: string, status: string): Promise<void> => {
     await api.patch(`${API_BASE}/${id}/status`, { status });
   },
 

@@ -11,7 +11,7 @@ import type { CourseListItem } from '@/types';
 
 // Helper: chuyển dữ liệu API → CourseType cho CourseCard
 function toCourseType(item: CourseListItem): CourseType {
-  const durationMin = item.stats?.totalDurationMinutes ?? item.estimatedDurationMinutes ?? 0;
+  const durationMin = item.estimatedDurationMinutes ?? 0;
   const hours = Math.floor(durationMin / 60);
   const mins = durationMin % 60;
   const duration = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
@@ -91,8 +91,8 @@ export default function CourseCatalog() {
                 <span>{isFilterOpen ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}</span>
               </button>
               <h1 className="text-sm font-medium text-slate-600">
-                Tìm thấy{' '}
-                <span className="font-bold text-slate-900">{meta?.total ?? 0}</span> khóa học
+                Tìm thấy <span className="font-bold text-slate-900">{meta?.total ?? 0}</span> khóa
+                học
               </h1>
             </div>
           </div>
@@ -108,9 +108,7 @@ export default function CourseCatalog() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {isLoading
               ? Array.from({ length: limit }).map((_, idx) => <CourseSkeleton key={idx} />)
-              : courses.map((item) => (
-                  <CourseCard key={item.id} course={toCourseType(item)} />
-                ))}
+              : courses.map((item) => <CourseCard key={item.id} course={toCourseType(item)} />)}
           </div>
 
           {/* Empty state */}
@@ -127,6 +125,7 @@ export default function CourseCatalog() {
               totalPages={meta.totalPages}
               totalItems={meta.total}
               itemsPerPage={meta.limit}
+              onPageChange={(p) => setPage(p)}
             />
           )}
         </div>

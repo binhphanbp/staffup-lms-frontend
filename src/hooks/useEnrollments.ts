@@ -32,7 +32,7 @@ export function useEnrollmentProgress(enrollmentId: string | null) {
 export function useEnrollUser() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ courseId, userIds }: { courseId: string; userIds?: string[] }) =>
+    mutationFn: ({ courseId, userIds }: { courseId: string; userIds: string[] }) =>
       enrollmentService.enroll(courseId, userIds),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['enrollments'] });

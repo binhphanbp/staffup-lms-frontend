@@ -24,7 +24,10 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
             {trainer && (
               <>
                 <img
-                  src={trainer.avatarUrl ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(trainer.fullName)}&background=0f172a&color=fff`}
+                  src={
+                    trainer.avatarUrl ??
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(trainer.fullName)}&background=0f172a&color=fff`
+                  }
                   className="h-6 w-6 rounded-full"
                   alt={trainer.fullName}
                 />
@@ -97,7 +100,9 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
                       target="_blank"
                       className="text-primary flex items-center gap-2 text-[13px] hover:underline"
                     >
-                      <i className={`fa-regular ${res.resourceType === 'pdf' ? 'fa-file-pdf' : 'fa-file'}`}></i>
+                      <i
+                        className={`fa-regular ${res.resourceType === 'pdf' ? 'fa-file-pdf' : 'fa-file'}`}
+                      ></i>
                       {res.title}
                     </Link>
                   ))}

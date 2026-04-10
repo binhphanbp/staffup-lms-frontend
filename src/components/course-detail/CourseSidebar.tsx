@@ -16,7 +16,9 @@ function formatDuration(minutes: number): string {
 
 export const CourseSidebar = ({ course }: CourseSidebarProps) => {
   const stats = course?.stats;
-  const totalDuration = stats?.totalDurationMinutes ? formatDuration(stats.totalDurationMinutes) : '--';
+  const totalDuration = stats?.totalDurationMinutes
+    ? formatDuration(stats.totalDurationMinutes)
+    : '--';
   const totalLessons = stats?.totalLessons ?? '--';
 
   return (
@@ -79,7 +81,10 @@ export const CourseSidebar = ({ course }: CourseSidebarProps) => {
             <h3 className="mb-3 text-[13px] font-bold text-slate-800">Giảng viên</h3>
             <div className="flex gap-3">
               <img
-                src={course.trainer.avatarUrl ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(course.trainer.fullName)}&background=0f172a&color=fff&size=100`}
+                src={
+                  course.trainer.avatarUrl ??
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(course.trainer.fullName)}&background=0f172a&color=fff&size=100`
+                }
                 className="h-12 w-12 rounded-full object-cover"
                 alt={course.trainer.fullName}
               />

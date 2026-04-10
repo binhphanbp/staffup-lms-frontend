@@ -123,7 +123,8 @@ export const SyllabusSidebar = ({
                       Phần {modIdx + 1}: {mod.title}
                     </span>
                     <span className="text-[10px] text-slate-400">
-                      {completedInModule} / {sortedLessons.length} | {formatModuleDuration(sortedLessons)}
+                      {completedInModule} / {sortedLessons.length} |{' '}
+                      {formatModuleDuration(sortedLessons)}
                     </span>
                   </div>
                   <i
@@ -155,7 +156,9 @@ export const SyllabusSidebar = ({
                             </div>
                             <div className="text-primary font-mono text-[10px]">
                               <i className={`${lessonTypeIcon(lesson.lessonType)} mr-1`}></i>
-                              {lesson.durationSeconds > 0 ? formatDuration(lesson.durationSeconds) : ''}
+                              {lesson.durationSeconds > 0
+                                ? formatDuration(lesson.durationSeconds)
+                                : ''}
                             </div>
                           </div>
                         </div>
@@ -185,7 +188,9 @@ export const SyllabusSidebar = ({
                           </div>
                           <div className="font-mono text-[10px] text-slate-400/80">
                             <i className={`${lessonTypeIcon(lesson.lessonType)} mr-1`}></i>
-                            {lesson.durationSeconds > 0 ? formatDuration(lesson.durationSeconds) : ''}
+                            {lesson.durationSeconds > 0
+                              ? formatDuration(lesson.durationSeconds)
+                              : ''}
                           </div>
                         </div>
                       </button>

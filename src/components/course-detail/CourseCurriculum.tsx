@@ -39,7 +39,12 @@ function lessonIcon(type: string): string {
   }
 }
 
-export const CourseCurriculum = ({ modules, totalModules, totalLessons, totalDurationMinutes }: CourseCurriculumProps) => {
+export const CourseCurriculum = ({
+  modules,
+  totalModules,
+  totalLessons,
+  totalDurationMinutes,
+}: CourseCurriculumProps) => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
 
   const toggle = (id: string) => {
@@ -60,9 +65,7 @@ export const CourseCurriculum = ({ modules, totalModules, totalLessons, totalDur
       <div className="mb-4 flex items-end justify-between">
         <h2 className="text-lg font-bold text-slate-800">Giáo trình chi tiết</h2>
         {summaryParts.length > 0 && (
-          <div className="text-[12px] font-medium text-slate-500">
-            {summaryParts.join(' • ')}
-          </div>
+          <div className="text-[12px] font-medium text-slate-500">{summaryParts.join(' • ')}</div>
         )}
       </div>
 
@@ -98,7 +101,9 @@ export const CourseCurriculum = ({ modules, totalModules, totalLessons, totalDur
                         className="group flex items-center justify-between rounded-md p-3 transition-colors hover:bg-slate-50"
                       >
                         <div className="flex items-center gap-3">
-                          <i className={`${lessonIcon(lesson.lessonType)} group-hover:text-primary text-slate-400 transition-colors`}></i>
+                          <i
+                            className={`${lessonIcon(lesson.lessonType)} group-hover:text-primary text-slate-400 transition-colors`}
+                          ></i>
                           <span className="group-hover:text-primary text-[13px] font-medium text-slate-700 transition-colors">
                             {lIdx + 1}. {lesson.title}
                           </span>

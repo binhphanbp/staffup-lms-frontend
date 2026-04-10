@@ -1,5 +1,5 @@
 import api from '@/lib/axios';
-import type { ApiResponse, CertificateResponse, PaginatedResponse } from '@/types';
+import type { ApiResponse, CertificateResponse, CertificateListResponse } from '@/types';
 
 // ============================================================
 // Certificate Service — list and view certificates
@@ -13,8 +13,8 @@ export interface CertificateListParams {
 }
 
 export const certificateService = {
-  list: async (params?: CertificateListParams): Promise<PaginatedResponse<CertificateResponse>> => {
-    const { data } = await api.get<ApiResponse<PaginatedResponse<CertificateResponse>>>(API_BASE, {
+  list: async (params?: CertificateListParams): Promise<CertificateListResponse> => {
+    const { data } = await api.get<ApiResponse<CertificateListResponse>>(API_BASE, {
       params,
     });
     return data.data;
