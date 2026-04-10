@@ -36,6 +36,7 @@ const publicRoutes = [
   '/question-bank',
   '/ai-configuration',
   '/role-permission',
+  '/company-documents',
 ];
 
 // Routes prefixed with these paths are always public (e.g. API, static)
