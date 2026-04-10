@@ -16,10 +16,7 @@ const API_BASE = '/quiz-attempts';
 
 export const quizService = {
   start: async (payload: QuizStartPayload): Promise<QuizStartResponse> => {
-    const { data } = await api.post<ApiResponse<QuizStartResponse>>(
-      `${API_BASE}/start`,
-      payload,
-    );
+    const { data } = await api.post<ApiResponse<QuizStartResponse>>(`${API_BASE}/start`, payload);
     return data.data;
   },
 
