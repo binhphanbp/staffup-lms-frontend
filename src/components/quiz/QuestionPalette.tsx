@@ -7,6 +7,8 @@ interface QuestionPaletteProps {
   answeredQs: number[];
   reviewQs: number[];
   onShowSubmit: () => void;
+  totalQuestions: number;
+  totalSeconds: number;
 }
 
 export const QuestionPalette = ({
@@ -16,16 +18,18 @@ export const QuestionPalette = ({
   answeredQs,
   reviewQs,
   onShowSubmit,
+  totalQuestions,
+  totalSeconds,
 }: QuestionPaletteProps) => {
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
-  const progressPercentage = (timeLeft / 2700) * 100; // 45 phút = 2700s
+  const progressPercentage = (timeLeft / totalSeconds) * 100;
   const isWarningTime = timeLeft <= 300;
 
   // Hàm render grid câu hỏi dùng 100% Tailwind
   const renderQuestionGrid = () => {
     const buttons = [];
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= totalQuestions; i++) {
       const isActive = activeQuestion === i;
       const isAnswered = answeredQs.includes(i);
       const isReview = reviewQs.includes(i);
@@ -88,7 +92,7 @@ export const QuestionPalette = ({
 
       {/* Grid Câu hỏi (Đã sửa lại class grid) */}
       <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto p-6">
-        <h3 className="mb-4 text-[13px] font-bold text-slate-800">Danh sách câu hỏi (20)</h3>
+        <h3 className="mb-4 text-[13px] font-bold text-slate-800">Danh sách câu hỏi ({totalQuestions})</h3>
 
         {/* Dùng grid của Tailwind để chia 5 cột */}
         <div className="mb-8 grid grid-cols-5 gap-2">{renderQuestionGrid()}</div>

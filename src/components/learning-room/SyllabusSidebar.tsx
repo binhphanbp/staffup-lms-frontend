@@ -1,16 +1,82 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import type { ModuleDetail, LessonProgressStatus } from '@/types';
+
+interface LessonProgress {
+  lessonId: string;
+  status: LessonProgressStatus;
+  watchTimeSeconds: number;
+  lastPositionSeconds: number;
+}
 
 interface SyllabusSidebarProps {
   isOpen: boolean;
   onToggle: () => void;
+  modules: ModuleDetail[];
+  activeLessonId: string | null;
+  lessonProgressMap: Map<string, LessonProgress>;
+  completedLessons: number;
+  totalLessons: number;
+  onSelectLesson: (lessonId: string) => void;
 }
 
-export const SyllabusSidebar = ({ isOpen, onToggle }: SyllabusSidebarProps) => {
-  const [openSection1, setOpenSection1] = useState(true);
-  const [openSection2, setOpenSection2] = useState(true);
+function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function formatModuleDuration(lessons: ModuleDetail['lessons']): string {
+  const totalSec = lessons.reduce((sum, l) => sum + (l.durationSeconds ?? 0), 0);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+function lessonTypeIcon(type: string): string {
+  switch (type) {
+    case 'video':
+      return 'fa-solid fa-video';
+    case 'article':
+    case 'document':
+      return 'fa-solid fa-file-lines';
+    case 'quiz':
+      return 'fa-solid fa-flask-vial';
+    default:
+      return 'fa-solid fa-video';
+  }
+}
+
+export const SyllabusSidebar = ({
+  isOpen,
+  onToggle,
+  modules,
+  activeLessonId,
+  lessonProgressMap,
+  completedLessons,
+  totalLessons,
+  onSelectLesson,
+}: SyllabusSidebarProps) => {
+  const sortedModules = [...modules].sort((a, b) => a.orderIndex - b.orderIndex);
+  // Open module containing active lesson by default
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {};
+    for (const mod of sortedModules) {
+      const hasActive = mod.lessons.some((l) => l.id === activeLessonId);
+      initial[mod.id] = hasActive;
+    }
+    // If no active, open first
+    if (sortedModules.length > 0 && !Object.values(initial).some(Boolean)) {
+      initial[sortedModules[0].id] = true;
+    }
+    return initial;
+  });
+
+  const toggleSection = (id: string) => {
+    setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   return (
     <div
@@ -34,116 +100,101 @@ export const SyllabusSidebar = ({ isOpen, onToggle }: SyllabusSidebarProps) => {
         <div className="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white p-4">
           <h3 className="text-[14px] font-bold text-slate-800">Nội dung bài học</h3>
           <span className="text-primary bg-primary-bg rounded px-2 py-0.5 text-[11px] font-medium">
-            6 / 48 Bài
+            {completedLessons} / {totalLessons} Bài
           </span>
         </div>
 
         <div className="dark-scrollbar flex-1 overflow-y-auto pb-10">
-          {/* Accordion Phần 1 */}
-          <div className="border-b border-gray-200">
-            <button
-              className="group flex w-full items-center justify-between bg-slate-100/50 p-3.5 transition-colors hover:bg-slate-100"
-              onClick={() => setOpenSection1(!openSection1)}
-            >
-              <div className="flex flex-col text-left">
-                <span className="group-hover:text-primary text-[12px] font-bold text-slate-700 transition-colors">
-                  Phần 1: Nền tảng thiết kế
-                </span>
-                <span className="text-[10px] text-slate-400">4 / 4 | 45m</span>
-              </div>
-              <i
-                className={`fa-solid fa-chevron-down transform text-[10px] text-slate-400 transition-transform duration-300 ${openSection1 ? 'rotate-180' : ''}`}
-              ></i>
-            </button>
-            <div
-              className={`overflow-hidden transition-all duration-300 ${openSection1 ? 'max-h-250' : 'max-h-0'}`}
-            >
-              <Link
-                href="#"
-                className="flex items-start gap-3 border-l-2 border-transparent bg-white p-3 transition-colors hover:bg-slate-50"
-              >
-                <i className="fa-solid fa-circle-check text-success/60 mt-0.5 text-[12px]"></i>
-                <div className="flex-1">
-                  <div className="mb-1 text-[12px] leading-snug font-medium text-slate-400">
-                    1. Giới thiệu về System Design
-                  </div>
-                  <div className="font-mono text-[10px] text-slate-400/80">
-                    <i className="fa-solid fa-video mr-1"></i> 12:30
-                  </div>
-                </div>
-              </Link>
-            </div>
-          </div>
+          {sortedModules.map((mod, modIdx) => {
+            const isOpen = openSections[mod.id] ?? false;
+            const sortedLessons = [...mod.lessons].sort((a, b) => a.orderIndex - b.orderIndex);
+            const completedInModule = sortedLessons.filter(
+              (l) => lessonProgressMap.get(l.id)?.status === 'completed',
+            ).length;
 
-          {/* Accordion Phần 2 */}
-          <div className="border-b border-gray-200">
-            <button
-              className="group flex w-full items-center justify-between bg-white p-3.5 transition-colors hover:bg-slate-50"
-              onClick={() => setOpenSection2(!openSection2)}
-            >
-              <div className="flex flex-col text-left">
-                <span className="group-hover:text-primary text-[12px] font-bold text-slate-800 transition-colors">
-                  Phần 2: Database Subsystem
-                </span>
-                <span className="text-primary text-[10px] font-medium">2 / 8 | 2h 15m</span>
-              </div>
-              <i
-                className={`fa-solid fa-chevron-down transform text-[10px] text-slate-400 transition-transform duration-300 ${openSection2 ? 'rotate-180' : ''}`}
-              ></i>
-            </button>
-            <div
-              className={`overflow-hidden transition-all duration-300 ${openSection2 ? 'max-h-250' : 'max-h-0'}`}
-            >
-              <Link
-                href="#"
-                className="flex items-start gap-3 border-l-2 border-transparent bg-white p-3 transition-colors hover:bg-slate-50"
-              >
-                <i className="fa-solid fa-circle-check text-success/60 mt-0.5 text-[12px]"></i>
-                <div className="flex-1">
-                  <div className="mb-1 text-[12px] leading-snug font-medium text-slate-400">
-                    3. Relational vs Non-relational DB
-                  </div>
-                  <div className="font-mono text-[10px] text-slate-400/80">
-                    <i className="fa-solid fa-video mr-1"></i> 15:00
-                  </div>
-                </div>
-              </Link>
-              <div className="bg-primary-bg/50 border-primary flex cursor-pointer items-start gap-3 border-l-2 p-3 transition-colors">
-                <div className="mt-0.5 flex h-3 w-4 items-end justify-center gap-px">
-                  <div className="eq-bar"></div>
-                  <div className="eq-bar"></div>
-                  <div className="eq-bar"></div>
-                </div>
-                <div className="flex-1">
-                  <div className="text-primary mb-1 text-[12px] leading-snug font-bold">
-                    4. Database Replication & Partitioning
-                  </div>
-                  <div className="text-primary font-mono text-[10px]">
-                    <i className="fa-solid fa-video mr-1"></i> 22:10
-                  </div>
-                </div>
-              </div>
-              <Link
-                href="/courses/detail/learning-room/lab"
-                className="flex items-start gap-3 border-l-2 border-transparent bg-purple-50/50 p-3 transition-colors hover:bg-purple-50"
-              >
-                <i className="fa-solid fa-flask-vial mt-0.5 text-[12px] text-purple-600"></i>
-                <div className="flex-1">
-                  <div className="mb-1 flex items-center gap-2">
-                    <div className="text-[12px] leading-snug font-medium text-slate-700">
-                      5. Lab: Thực hành Database Sharding
-                    </div>
-                    <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[9px] font-bold text-purple-700">
-                      LAB
+            return (
+              <div key={mod.id} className="border-b border-gray-200">
+                <button
+                  className="group flex w-full items-center justify-between bg-white p-3.5 transition-colors hover:bg-slate-50"
+                  onClick={() => toggleSection(mod.id)}
+                >
+                  <div className="flex flex-col text-left">
+                    <span className="group-hover:text-primary text-[12px] font-bold text-slate-800 transition-colors">
+                      Phần {modIdx + 1}: {mod.title}
+                    </span>
+                    <span className="text-[10px] text-slate-400">
+                      {completedInModule} / {sortedLessons.length} | {formatModuleDuration(sortedLessons)}
                     </span>
                   </div>
-                  <div className="font-mono text-[10px] text-slate-500">
-                    <i className="fa-solid fa-code mr-1"></i> Code Lab • 45 phút
-                  </div>
+                  <i
+                    className={`fa-solid fa-chevron-down transform text-[10px] text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                  ></i>
+                </button>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[2000px]' : 'max-h-0'}`}
+                >
+                  {sortedLessons.map((lesson) => {
+                    const lp = lessonProgressMap.get(lesson.id);
+                    const isActive = lesson.id === activeLessonId;
+                    const isCompleted = lp?.status === 'completed';
+
+                    if (isActive) {
+                      return (
+                        <div
+                          key={lesson.id}
+                          className="bg-primary-bg/50 border-primary flex cursor-pointer items-start gap-3 border-l-2 p-3 transition-colors"
+                        >
+                          <div className="mt-0.5 flex h-3 w-4 items-end justify-center gap-px">
+                            <div className="eq-bar"></div>
+                            <div className="eq-bar"></div>
+                            <div className="eq-bar"></div>
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-primary mb-1 text-[12px] leading-snug font-bold">
+                              {lesson.title}
+                            </div>
+                            <div className="text-primary font-mono text-[10px]">
+                              <i className={`${lessonTypeIcon(lesson.lessonType)} mr-1`}></i>
+                              {lesson.durationSeconds > 0 ? formatDuration(lesson.durationSeconds) : ''}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <button
+                        key={lesson.id}
+                        onClick={() => onSelectLesson(lesson.id)}
+                        className="flex w-full items-start gap-3 border-l-2 border-transparent bg-white p-3 text-left transition-colors hover:bg-slate-50"
+                      >
+                        <i
+                          className={`mt-0.5 text-[12px] ${
+                            isCompleted
+                              ? 'fa-solid fa-circle-check text-success/60'
+                              : `${lessonTypeIcon(lesson.lessonType)} text-slate-400`
+                          }`}
+                        ></i>
+                        <div className="flex-1">
+                          <div
+                            className={`mb-1 text-[12px] leading-snug font-medium ${
+                              isCompleted ? 'text-slate-400' : 'text-slate-700'
+                            }`}
+                          >
+                            {lesson.title}
+                          </div>
+                          <div className="font-mono text-[10px] text-slate-400/80">
+                            <i className={`${lessonTypeIcon(lesson.lessonType)} mr-1`}></i>
+                            {lesson.durationSeconds > 0 ? formatDuration(lesson.durationSeconds) : ''}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-              </Link>
-            </div>
-          </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

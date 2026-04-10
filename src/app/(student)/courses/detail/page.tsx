@@ -1,5 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
+'use client';
+
 import React from 'react';
+import { useSearchParams } from 'next/navigation';
 import { StudentHeader } from '@/components/shared/StudentHeader';
 import Link from 'next/link';
 
@@ -7,15 +10,62 @@ import Link from 'next/link';
 import { HeroBanner } from '@/components/course-detail/HeroBanner';
 import { CourseCurriculum } from '@/components/course-detail/CourseCurriculum';
 import { CourseSidebar } from '@/components/course-detail/CourseSidebar';
+import { useCourseDetail } from '@/hooks/useCourses';
 
 export default function CourseDetailPage() {
+  const searchParams = useSearchParams();
+  const courseId = searchParams.get('id');
+
+  const { data: course, isLoading, isError } = useCourseDetail(courseId);
+
+  if (isLoading) {
+    return (
+      <>
+        <StudentHeader
+          breadcrumbs={[
+            { label: 'Trang chủ', href: '/' },
+            { label: 'Thư viện Khóa học', href: '/courses' },
+            { label: 'Đang tải...' },
+          ]}
+        />
+        <div className="flex flex-1 items-center justify-center bg-[#f8fafc]">
+          <div className="text-sm text-slate-500">
+            <i className="fa-solid fa-spinner fa-spin mr-2"></i>Đang tải thông tin khóa học...
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (isError || !course) {
+    return (
+      <>
+        <StudentHeader
+          breadcrumbs={[
+            { label: 'Trang chủ', href: '/' },
+            { label: 'Thư viện Khóa học', href: '/courses' },
+            { label: 'Lỗi' },
+          ]}
+        />
+        <div className="flex flex-1 items-center justify-center bg-[#f8fafc]">
+          <div className="text-center">
+            <p className="mb-4 text-sm text-red-500">Không thể tải thông tin khóa học.</p>
+            <Link href="/courses" className="text-primary text-sm font-medium hover:underline">
+              ← Quay lại Thư viện Khóa học
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <StudentHeader
         breadcrumbs={[
           { label: 'Trang chủ', href: '/' },
           { label: 'Thư viện Khóa học', href: '/courses' },
-          { label: 'System Design: Phân tích và Thiết kế Hệ thống Lớn' },
+          { label: course.title },
         ]}
       />
 
@@ -24,7 +74,7 @@ export default function CourseDetailPage() {
         id="mainScrollArea"
       >
         {/* 1. HERO BANNER */}
-        <HeroBanner />
+        <HeroBanner course={course} />
 
         {/* 2. MAIN CONTENT AREA */}
         <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 py-4 md:px-8 md:py-8 lg:flex-row">
@@ -117,46 +167,40 @@ export default function CourseDetailPage() {
             </section>
 
             {/* 3. COMPONENT GIÁO TRÌNH */}
-            <CourseCurriculum />
+            <CourseCurriculum
+              modules={course.modules}
+              totalModules={course.stats?.totalModules}
+              totalLessons={course.stats?.totalLessons}
+              totalDurationMinutes={course.stats?.totalDurationMinutes}
+            />
 
             {/* 4. Phần Giảng viên */}
+            {course.trainer && (
             <section id="instructor" className="scroll-mt-20">
               <h2 className="mb-4 text-lg font-bold text-slate-800">Giảng viên nội bộ</h2>
               <div className="card flex items-start gap-5 border border-gray-200 p-5">
                 <img
-                  src="https://ui-avatars.com/api/?name=Le+Nam&background=0f172a&color=fff&size=100"
+                  src={course.trainer.avatarUrl ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(course.trainer.fullName)}&background=0f172a&color=fff&size=100`}
                   className="h-20 w-20 rounded-full shadow-sm"
-                  alt="Instructor"
+                  alt={course.trainer.fullName}
                 />
                 <div>
-                  <h3 className="mb-1 text-base font-bold text-slate-800">Lê Hoài Nam</h3>
+                  <h3 className="mb-1 text-base font-bold text-slate-800">{course.trainer.fullName}</h3>
                   <div className="text-primary mb-3 font-mono text-[12px] tracking-tight">
-                    Head of Engineering @TechCorp
-                  </div>
-                  <p className="mb-3 text-[13px] leading-relaxed text-slate-600">
-                    Hơn 12 năm kinh nghiệm làm việc với các hệ thống phân tán. Từng thiết kế kiến
-                    trúc lõi cho hệ thống xử lý 50 triệu giao dịch/ngày. Hiện đang phụ trách đào tạo
-                    khối Engineering.
-                  </p>
-                  <div className="flex gap-4 text-[12px] font-medium text-slate-500">
-                    <span>
-                      <i className="fa-solid fa-star text-yellow-400"></i> 4.9 Rating
-                    </span>
-                    <span>
-                      <i className="fa-solid fa-play-circle"></i> 5 Khóa học
-                    </span>
+                    {course.trainer.email}
                   </div>
                 </div>
               </div>
             </section>
+            )}
           </div>
 
           {/* Cột Phải: Thanh Sidebar chức năng */}
-          <CourseSidebar />
+          <CourseSidebar course={course} />
         </div>
 
         <footer className="border-t border-gray-200 bg-white py-6 text-center text-[11px] text-slate-400">
-          &copy; 2026 TechCorp Internal System. Course ID: SYS-DES-2026.
+          &copy; 2026 TechCorp Internal System. Course ID: {course.slug ?? course.id}.
         </footer>
       </div>
     </>

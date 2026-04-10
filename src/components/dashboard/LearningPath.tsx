@@ -1,48 +1,63 @@
 import React from 'react';
+import type { EmployeeDashboardStats } from '@/types';
 
-export const LearningPath = () => {
+interface LearningPathProps {
+  roadmaps: EmployeeDashboardStats['myRoadmaps'] | null;
+}
+
+export const LearningPath = ({ roadmaps }: LearningPathProps) => {
+  const roadmap = roadmaps?.roadmaps?.[0]; // Show first roadmap
+
+  if (!roadmap) {
+    return (
+      <div className="card flex h-full flex-col">
+        <div className="flex items-center justify-between rounded-t-lg border-b border-gray-100 bg-gray-50/50 px-5 py-4">
+          <h3 className="font-bold text-slate-800">Lộ trình học tập</h3>
+        </div>
+        <div className="flex flex-1 items-center justify-center p-8 text-sm text-slate-400">
+          Bạn chưa được gán lộ trình học tập nào.
+        </div>
+      </div>
+    );
+  }
+
+  const progressPercent = roadmap.progressPercent ?? 0;
+
   return (
     <div className="card flex h-full flex-col">
       <div className="flex items-center justify-between rounded-t-lg border-b border-gray-100 bg-gray-50/50 px-5 py-4">
         <div>
-          <h3 className="font-bold text-slate-800">Lộ trình: Senior Cloud Architect</h3>
-          <div className="mt-0.5 text-[11px] text-slate-500">Tiến độ lộ trình: 2/4 level</div>
+          <h3 className="font-bold text-slate-800">Lộ trình: {roadmap.roadmapTitle}</h3>
+          <div className="mt-0.5 text-[11px] text-slate-500">
+            Tiến độ: {roadmap.completedCourses}/{roadmap.totalCourses} khóa học ({progressPercent}%)
+            {roadmap.targetPosition && <> • Mục tiêu: {roadmap.targetPosition}</>}
+          </div>
         </div>
-        <button className="hover:text-primary text-slate-400">
-          <i className="fa-solid fa-ellipsis-vertical"></i>
-        </button>
       </div>
 
       <div className="flex flex-1 flex-col justify-center p-6 md:p-8">
-        <div className="relative mx-auto flex w-full max-w-2xl justify-between px-2">
-          <div className="step-item step-active group cursor-pointer">
-            <div className="step-circle !bg-success !border-success">
-              <i className="fa-solid fa-check"></i>
-            </div>
-            <div className="mt-2 text-[11px] font-bold text-slate-800">Cloud Practitioner</div>
-            <div className="text-[10px] text-slate-400">Đã hoàn thành</div>
-          </div>
-
-          <div className="step-item step-active group cursor-pointer">
-            <div className="step-circle ring-primary/20 ring-4">2</div>
-            <div className="text-primary mt-2 text-[11px] font-bold">SysOps Admin</div>
-            <div className="text-[10px] text-slate-500">Đang học tập</div>
-          </div>
-
-          <div className="step-item group opacity-50">
-            <div className="step-circle">3</div>
-            <div className="mt-2 text-[11px] font-semibold text-slate-500">Solutions Architect</div>
-            <div className="text-[10px] text-slate-400">Khóa (Yêu cầu LV2)</div>
-          </div>
-
-          <div className="step-item group opacity-50">
-            <div className="step-circle">
-              <i className="fa-solid fa-trophy"></i>
-            </div>
-            <div className="mt-2 text-[11px] font-semibold text-slate-500">Professional</div>
-            <div className="text-[10px] text-slate-400">Mục tiêu cuối</div>
-          </div>
+        <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <div
+            className="bg-primary h-full rounded-full transition-all"
+            style={{ width: `${progressPercent}%` }}
+          ></div>
         </div>
+        <div className="flex justify-between text-[11px] text-slate-500">
+          <span>
+            {roadmap.status === 'completed'
+              ? 'Đã hoàn thành'
+              : roadmap.status === 'in_progress'
+                ? 'Đang học tập'
+                : 'Đã gán'}
+          </span>
+          <span>{progressPercent}%</span>
+        </div>
+
+        {roadmaps && roadmaps.roadmaps.length > 1 && (
+          <div className="mt-4 text-[11px] text-slate-400">
+            + {roadmaps.roadmaps.length - 1} lộ trình khác
+          </div>
+        )}
       </div>
     </div>
   );

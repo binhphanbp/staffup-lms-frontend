@@ -1,12 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
+'use client';
+
 import React from 'react';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { Header } from '@/components/shared/Header';
 import { StatCards } from '@/components/dashboard/StatCards';
 import { LearningPath } from '@/components/dashboard/LearningPath';
 import { SkillProfile } from '@/components/dashboard/SkillProfile';
+import { useEmployeeDashboard } from '@/hooks/useDashboard';
+import Link from 'next/link';
 
 export default function DashboardPage() {
+  const { data: stats } = useEmployeeDashboard();
+
+  // Find the first in-progress course to show in "Tiếp tục học"
+  const continueCourse = stats?.myCourses?.courses?.find((c) => c.status === 'in_progress');
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-[#f0f2f5] text-sm text-slate-700">
       <Sidebar />
@@ -16,69 +25,75 @@ export default function DashboardPage() {
 
         <div className="custom-scrollbar flex-1 overflow-y-auto scroll-smooth p-6 lg:p-8">
           {/* Gọi Component Thống kê */}
-          <StatCards />
+          <StatCards stats={stats ?? null} />
 
           <div className="flex flex-col gap-8 xl:flex-row">
             {/* CỘT BÊN TRÁI */}
             <div className="flex min-w-0 flex-1 flex-col gap-8">
-              {/* Tiếp tục học (Tạm thời giữ nguyên vì nó gắn liền với ảnh khóa học) */}
+              {/* Tiếp tục học */}
               <div>
                 <div className="mb-4 flex items-end justify-between">
                   <h2 className="text-lg font-bold text-slate-800">Tiếp tục học</h2>
-                  <a href="/courses" className="text-primary text-xs font-semibold hover:underline">
+                  <Link href="/courses" className="text-primary text-xs font-semibold hover:underline">
                     Xem tất cả khóa học
-                  </a>
+                  </Link>
                 </div>
 
-                <div className="card course-card border-l-primary flex cursor-pointer flex-col gap-5 border-l-4 p-4 transition-shadow hover:shadow-md sm:flex-row">
-                  <div className="course-thumb-container relative h-32 w-full shrink-0 rounded-md bg-slate-100 sm:w-48">
-                    <img
-                      src="https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
-                      className="h-full w-full object-cover"
-                      alt="System Design"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity hover:opacity-100">
-                      <div className="text-primary flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                        <i className="fa-solid fa-play ml-1"></i>
-                      </div>
+                {continueCourse ? (
+                  <Link
+                    href={`/courses/detail/learning-room?courseId=${continueCourse.courseId}`}
+                    className="card course-card border-l-primary flex cursor-pointer flex-col gap-5 border-l-4 p-4 transition-shadow hover:shadow-md sm:flex-row"
+                  >
+                    <div className="course-thumb-container relative h-32 w-full shrink-0 rounded-md bg-slate-100 sm:w-48">
+                      {continueCourse.courseThumbnail ? (
+                        <img
+                          src={continueCourse.courseThumbnail}
+                          className="h-full w-full object-cover"
+                          alt={continueCourse.courseTitle}
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-sm text-slate-400">
+                          {continueCourse.courseTitle}
+                        </div>
+                      )}
                     </div>
-                  </div>
 
-                  <div className="flex min-w-0 flex-1 flex-col justify-center">
-                    <div className="mb-1 flex items-center gap-2">
-                      <span className="text-primary rounded bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase">
-                        System Design
-                      </span>
-                      <span className="text-[11px] font-medium text-slate-400">
-                        Bắt buộc (Onboarding)
-                      </span>
-                    </div>
-                    <h3 className="mb-1 truncate text-base font-bold text-slate-800">
-                      Thiết kế hệ thống phân tán chịu tải cao
-                    </h3>
-                    <p className="mb-4 line-clamp-1 text-xs text-slate-500">
-                      Giảng viên: Lê Nam (Head of Engineering)
-                    </p>
+                    <div className="flex min-w-0 flex-1 flex-col justify-center">
+                      <h3 className="mb-1 truncate text-base font-bold text-slate-800">
+                        {continueCourse.courseTitle}
+                      </h3>
+                      <p className="mb-4 text-xs text-slate-500">
+                        Đã ghi danh: {new Date(continueCourse.enrolledAt).toLocaleDateString('vi-VN')}
+                      </p>
 
-                    <div>
-                      <div className="mb-1 flex justify-between text-xs">
-                        <span className="font-semibold text-slate-700">
-                          Bài 4: Load Balancing Strategies
-                        </span>
-                        <span className="text-primary font-bold">65%</span>
-                      </div>
-                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                        <div className="bg-primary relative h-full w-[65%] rounded-full">
-                          <div className="absolute top-0 left-0 h-full w-full animate-[shine_2s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                      <div>
+                        <div className="mb-1 flex justify-between text-xs">
+                          <span className="font-semibold text-slate-700">Tiến độ</span>
+                          <span className="text-primary font-bold">{continueCourse.progress}%</span>
+                        </div>
+                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                          <div
+                            className="bg-primary relative h-full rounded-full"
+                            style={{ width: `${continueCourse.progress}%` }}
+                          >
+                            <div className="absolute top-0 left-0 h-full w-full animate-[shine_2s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                  </Link>
+                ) : (
+                  <div className="card p-6 text-center text-sm text-slate-400">
+                    Bạn chưa có khóa học nào đang học.{' '}
+                    <Link href="/courses" className="text-primary hover:underline">
+                      Khám phá khóa học
+                    </Link>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Gọi Component Lộ trình */}
-              <LearningPath />
+              <LearningPath roadmaps={stats?.myRoadmaps ?? null} />
             </div>
 
             {/* CỘT BÊN PHẢI */}
