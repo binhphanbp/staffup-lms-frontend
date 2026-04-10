@@ -42,16 +42,31 @@ export const enrollmentService = {
     return data.data;
   },
 
-  enroll: async (courseId: string, userIds: string[]): Promise<{ enrolled: number }> => {
+  enroll: async (
+    courseId: string,
+    userIds: string[],
+    options?: { dueAt?: string; assignmentNote?: string },
+  ): Promise<{ enrolled: number }> => {
     const { data } = await api.post<ApiResponse<{ enrolled: number }>>(
       `${API_BASE}/courses/${courseId}/enroll`,
-      { userIds },
+      { userIds, ...options },
     );
     return data.data;
   },
 
-  updateStatus: async (id: string, status: string): Promise<void> => {
-    await api.patch(`${API_BASE}/${id}/status`, { status });
+  selfEnroll: async (courseId: string) => {
+    const { data } = await api.post<ApiResponse<unknown>>(
+      `${API_BASE}/courses/${courseId}/self-enroll`,
+    );
+    return data.data;
+  },
+
+  updateStatus: async (
+    id: string,
+    status: string,
+    options?: { completedAt?: string; note?: string },
+  ): Promise<void> => {
+    await api.patch(`${API_BASE}/${id}/status`, { status, ...options });
   },
 
   // ----- Lesson Progress -----

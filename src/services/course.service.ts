@@ -25,8 +25,10 @@ export const courseService = {
     return data.data;
   },
 
-  getById: async (id: string): Promise<CourseDetailResponse> => {
-    const { data } = await api.get<ApiResponse<CourseDetailResponse>>(`${API_BASE}/${id}`);
+  getById: async (id: string, expand?: string): Promise<CourseDetailResponse> => {
+    const { data } = await api.get<ApiResponse<CourseDetailResponse>>(`${API_BASE}/${id}`, {
+      params: expand ? { expand } : undefined,
+    });
     return data.data;
   },
 

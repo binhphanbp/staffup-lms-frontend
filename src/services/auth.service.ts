@@ -2,6 +2,7 @@ import api from '@/lib/axios';
 import type {
   ApiResponse,
   AuthResponse,
+  ChangePasswordPayload,
   LoginCredentials,
   RegisterPayload,
   UserProfile,
@@ -34,5 +35,9 @@ export const authService = {
 
   logout: async () => {
     await api.post('/auth/logout');
+  },
+
+  changePassword: async (payload: ChangePasswordPayload) => {
+    await api.patch('/auth/change-password', payload);
   },
 };

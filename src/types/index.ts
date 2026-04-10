@@ -50,6 +50,11 @@ export interface RegisterPayload {
   positionTitle?: string;
 }
 
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface AuthResponse {
   user: User;
   token: string;
@@ -197,6 +202,8 @@ export interface CourseDetailResponse {
 export interface CourseListParams {
   search?: string;
   categoryId?: string;
+  trainerId?: string;
+  ownerDepartmentId?: string;
   status?: CourseStatus;
   page?: number;
   limit?: number;
@@ -250,6 +257,7 @@ export interface Tag {
   id: string;
   name: string;
   slug: string;
+  courseCount?: number;
   createdAt: string;
 }
 

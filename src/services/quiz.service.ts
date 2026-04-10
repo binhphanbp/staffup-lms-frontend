@@ -31,6 +31,8 @@ export const quizService = {
   getHistory: async (params?: {
     enrollmentId?: string;
     quizId?: string;
+    page?: number;
+    limit?: number;
   }): Promise<QuizAttemptHistoryItem[]> => {
     const { data } = await api.get<ApiResponse<QuizAttemptHistoryItem[]>>(`${API_BASE}/history`, {
       params,

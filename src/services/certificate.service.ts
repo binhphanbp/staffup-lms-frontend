@@ -8,6 +8,9 @@ import type { ApiResponse, CertificateResponse, CertificateListResponse } from '
 const API_BASE = '/certificates';
 
 export interface CertificateListParams {
+  enrollmentId?: string;
+  userId?: string;
+  courseId?: string;
   page?: number;
   limit?: number;
 }
@@ -29,6 +32,25 @@ export const certificateService = {
     const { data } = await api.get<ApiResponse<CertificateResponse>>(
       `${API_BASE}/enrollment/${enrollmentId}`,
     );
+    return data.data;
+  },
+
+  verify: async (code: string): Promise<CertificateResponse> => {
+    const { data } = await api.get<ApiResponse<CertificateResponse>>(
+      `${API_BASE}/verify/${code}`,
+    );
+    return data.data;
+  },
+
+  issue: async (enrollmentId: string) => {
+    const { data } = await api.post<ApiResponse<unknown>>(
+      `${API_BASE}/issue/${enrollmentId}`,
+    );
+    return data.data;
+  },
+
+  revoke: async (id: string) => {
+    const { data } = await api.delete<ApiResponse<unknown>>(`${API_BASE}/${id}/revoke`);
     return data.data;
   },
 };
