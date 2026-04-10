@@ -5,7 +5,7 @@
 // Professional registration with react-hook-form + zod validation
 // ============================================================
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -24,6 +24,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { authService } from '@/services/auth.service';
+import { departmentService } from '@/services/department.service';
 import { useAuthStore } from '@/store/useAuthStore';
 
 // ----- Helper: Set browser cookie -----
@@ -34,9 +35,13 @@ function setCookie(name: string, value: string, days: number) {
 // ----- Validation Schema -----
 const registerSchema = z
   .object({
-    firstName: z.string().min(2, 'Họ phải có ít nhất 2 ký tự').max(50, 'Họ tối đa 50 ký tự'),
-    lastName: z.string().min(2, 'Tên phải có ít nhất 2 ký tự').max(50, 'Tên tối đa 50 ký tự'),
+    fullName: z
+      .string()
+      .min(2, 'Họ tên phải có ít nhất 2 ký tự')
+      .max(150, 'Họ tên tối đa 150 ký tự'),
     email: z.email('Email không hợp lệ'),
+    departmentId: z.string().min(1, 'Vui lòng chọn phòng ban'),
+    positionTitle: z.string().max(150, 'Chức danh tối đa 150 ký tự').optional().or(z.literal('')),
     password: z
       .string()
       .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
@@ -51,6 +56,11 @@ const registerSchema = z
   });
 
 type RegisterFormData = z.infer<typeof registerSchema>;
+
+interface Department {
+  id: string;
+  name: string;
+}
 
 // ----- Password Strength Indicator -----
 function PasswordStrength({ password }: { password: string }) {
@@ -143,6 +153,11 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [departments, setDepartments] = useState<Department[]>([]);
+
+  useEffect(() => {
+    departmentService.list().then(setDepartments).catch(() => {});
+  }, []);
 
   const {
     register,
@@ -152,9 +167,10 @@ export default function RegisterPage() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      fullName: '',
       email: '',
+      departmentId: '',
+      positionTitle: '',
       password: '',
       confirmPassword: '',
     },
@@ -167,10 +183,11 @@ export default function RegisterPage() {
       setServerError(null);
 
       const response = await authService.register({
-        firstName: data.firstName,
-        lastName: data.lastName,
+        fullName: data.fullName,
         email: data.email,
         password: data.password,
+        departmentId: data.departmentId,
+        positionTitle: data.positionTitle || undefined,
       });
 
       // Auto-login after successful registration
@@ -212,36 +229,20 @@ export default function RegisterPage() {
 
       {/* Register Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-        {/* Name Fields (2 columns) */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <label htmlFor="firstName" className="text-sm font-medium text-gray-700">
-              Họ
-            </label>
-            <Input
-              id="firstName"
-              type="text"
-              placeholder="Nguyễn"
-              autoComplete="given-name"
-              className={`auth-input ${errors.firstName ? 'auth-input-error' : ''}`}
-              {...register('firstName')}
-            />
-            {errors.firstName && <p className="text-xs text-red-500">{errors.firstName.message}</p>}
-          </div>
-          <div className="space-y-2">
-            <label htmlFor="lastName" className="text-sm font-medium text-gray-700">
-              Tên
-            </label>
-            <Input
-              id="lastName"
-              type="text"
-              placeholder="Văn A"
-              autoComplete="family-name"
-              className={`auth-input ${errors.lastName ? 'auth-input-error' : ''}`}
-              {...register('lastName')}
-            />
-            {errors.lastName && <p className="text-xs text-red-500">{errors.lastName.message}</p>}
-          </div>
+        {/* Full Name */}
+        <div className="space-y-2">
+          <label htmlFor="fullName" className="text-sm font-medium text-gray-700">
+            Họ và tên
+          </label>
+          <Input
+            id="fullName"
+            type="text"
+            placeholder="Nguyễn Văn A"
+            autoComplete="name"
+            className={`auth-input ${errors.fullName ? 'auth-input-error' : ''}`}
+            {...register('fullName')}
+          />
+          {errors.fullName && <p className="text-xs text-red-500">{errors.fullName.message}</p>}
         </div>
 
         {/* Email Field */}
@@ -258,6 +259,42 @@ export default function RegisterPage() {
             {...register('email')}
           />
           {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
+        </div>
+
+        {/* Department & Position (2 columns) */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <label htmlFor="departmentId" className="text-sm font-medium text-gray-700">
+              Phòng ban
+            </label>
+            <select
+              id="departmentId"
+              className={`auth-input h-10 w-full rounded-md border bg-white px-3 text-sm ${errors.departmentId ? 'border-red-500' : 'border-input'}`}
+              {...register('departmentId')}
+            >
+              <option value="">Chọn phòng ban</option>
+              {departments.map((dept) => (
+                <option key={dept.id} value={dept.id}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
+            {errors.departmentId && (
+              <p className="text-xs text-red-500">{errors.departmentId.message}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label htmlFor="positionTitle" className="text-sm font-medium text-gray-700">
+              Chức danh <span className="text-gray-400">(tùy chọn)</span>
+            </label>
+            <Input
+              id="positionTitle"
+              type="text"
+              placeholder="Nhân viên"
+              className="auth-input"
+              {...register('positionTitle')}
+            />
+          </div>
         </div>
 
         {/* Password Field */}

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User, UserRole } from '@/types';
+import type { User, RoleCode } from '@/types';
 
 // ============================================================
 // Auth Store — Zustand (with localStorage persistence)
@@ -18,7 +18,7 @@ interface AuthStore {
   logout: () => void;
   setUser: (user: User) => void;
   setToken: (token: string) => void;
-  hasRole: (role: UserRole) => boolean;
+  hasRole: (roleCode: RoleCode) => boolean;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -37,20 +37,25 @@ export const useAuthStore = create<AuthStore>()(
           isAuthenticated: true,
         }),
 
-      logout: () =>
+      logout: () => {
+        // Clear the JS cookie used by proxy.ts
+        if (typeof document !== 'undefined') {
+          document.cookie = 'staffup-auth-token=; path=/; max-age=0';
+        }
         set({
           user: null,
           token: null,
           isAuthenticated: false,
-        }),
+        });
+      },
 
       setUser: (user) => set({ user }),
 
       setToken: (token) => set({ token }),
 
-      hasRole: (role) => {
+      hasRole: (roleCode) => {
         const currentUser = get().user;
-        return currentUser?.role === role;
+        return currentUser?.roleCodes?.includes(roleCode) ?? false;
       },
     }),
     {

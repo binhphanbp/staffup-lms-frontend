@@ -9,10 +9,8 @@ export const ProfileBanner = () => {
   const user = useAuthStore((s) => s.user);
   const { data: stats } = useEmployeeDashboard();
 
-  const displayName = user ? `${user.firstName} ${user.lastName}` : 'Người dùng';
-  const avatarUrl =
-    user?.avatar ??
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=1677ff&color=fff&size=200`;
+  const displayName = user?.fullName ?? 'Người dùng';
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=1677ff&color=fff&size=200`;
   const certCount = stats?.certificates?.total ?? 0;
 
   return (

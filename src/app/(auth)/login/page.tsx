@@ -25,7 +25,7 @@ function setCookie(name: string, value: string, days: number) {
 // ----- Validation Schema -----
 const loginSchema = z.object({
   email: z.email('Email không hợp lệ'),
-  password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
+  password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
