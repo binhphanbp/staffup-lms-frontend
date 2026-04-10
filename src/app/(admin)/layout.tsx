@@ -3,6 +3,7 @@
 import { AdminSidebar } from '@/components/shared/AdminSidebar';
 import { AdminHeader } from '@/components/shared/AdminHeader';
 import { MobileNavProvider, useMobileNav } from '@/context/MobileNavContext';
+import { RoleGuard } from '@/components/shared/RoleGuard';
 
 // ============================================================
 // Admin Layout — Sidebar + Header + Main Content Area
@@ -41,8 +42,10 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <MobileNavProvider>
-      <AdminLayoutContent>{children}</AdminLayoutContent>
-    </MobileNavProvider>
+    <RoleGuard allowedRoles={['admin', 'manager']}>
+      <MobileNavProvider>
+        <AdminLayoutContent>{children}</AdminLayoutContent>
+      </MobileNavProvider>
+    </RoleGuard>
   );
 }

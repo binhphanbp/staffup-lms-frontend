@@ -33,7 +33,12 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const rawCallback = searchParams.get('callbackUrl');
+  // Prevent open-redirect: only allow relative paths
+  const callbackUrl =
+    rawCallback && rawCallback.startsWith('/') && !rawCallback.startsWith('//')
+      ? rawCallback
+      : '/dashboard';
 
   const login = useAuthStore((state) => state.login);
 

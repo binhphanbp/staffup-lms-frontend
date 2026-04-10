@@ -2,6 +2,7 @@
 
 import { StudentSidebar } from '@/components/shared/StudentSidebar';
 import { MobileNavProvider, useMobileNav } from '@/context/MobileNavContext';
+import { RoleGuard } from '@/components/shared/RoleGuard';
 
 function StudentLayoutContent({ children }: { children: React.ReactNode }) {
   const { mobileOpen, closeMobileNav } = useMobileNav();
@@ -30,8 +31,10 @@ function StudentLayoutContent({ children }: { children: React.ReactNode }) {
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
   return (
-    <MobileNavProvider>
-      <StudentLayoutContent>{children}</StudentLayoutContent>
-    </MobileNavProvider>
+    <RoleGuard allowedRoles={['employee', 'trainer', 'manager', 'admin']}>
+      <MobileNavProvider>
+        <StudentLayoutContent>{children}</StudentLayoutContent>
+      </MobileNavProvider>
+    </RoleGuard>
   );
 }
