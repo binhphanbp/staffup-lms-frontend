@@ -12,6 +12,7 @@ interface AuthStore {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  _hasHydrated: boolean;
 
   // ----- Actions -----
   login: (user: User, token: string) => void;
@@ -19,6 +20,7 @@ interface AuthStore {
   setUser: (user: User) => void;
   setToken: (token: string) => void;
   hasRole: (roleCode: RoleCode) => boolean;
+  _setHasHydrated: (flag: boolean) => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -28,6 +30,7 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      _hasHydrated: false,
 
       // ----- Actions -----
       login: (user, token) =>
@@ -57,6 +60,8 @@ export const useAuthStore = create<AuthStore>()(
         const currentUser = get().user;
         return currentUser?.roleCodes?.includes(roleCode) ?? false;
       },
+
+      _setHasHydrated: (flag) => set({ _hasHydrated: flag }),
     }),
     {
       name: 'staffup-auth-storage',
@@ -66,6 +71,9 @@ export const useAuthStore = create<AuthStore>()(
         token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?._setHasHydrated(true);
+      },
     },
   ),
 );

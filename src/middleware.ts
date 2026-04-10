@@ -1,8 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 // ============================================================
-// Proxy — Route Protection (JWT-based)
-// Next.js 16+ uses proxy.ts instead of middleware.ts
+// Middleware — Route Protection (JWT-based)
 // Runs on every matching route to enforce auth boundaries
 // ============================================================
 
@@ -12,7 +11,7 @@ const publicRoutes = ['/login', '/register', '/forgot-password', '/403'];
 // Routes prefixed with these paths are always public (e.g. API, static)
 const publicPrefixes = ['/api', '/_next', '/favicon.ico'];
 
-export function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow public prefixes (API routes, Next.js internals, static files)
@@ -34,7 +33,7 @@ export function proxy(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages to dashboard
   if (token && (pathname === '/login' || pathname === '/register')) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/admin-dashboard', request.url));
   }
 
   return NextResponse.next();

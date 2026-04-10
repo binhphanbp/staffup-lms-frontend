@@ -36,16 +36,12 @@ export const certificateService = {
   },
 
   verify: async (code: string): Promise<CertificateResponse> => {
-    const { data } = await api.get<ApiResponse<CertificateResponse>>(
-      `${API_BASE}/verify/${code}`,
-    );
+    const { data } = await api.get<ApiResponse<CertificateResponse>>(`${API_BASE}/verify/${code}`);
     return data.data;
   },
 
   issue: async (enrollmentId: string) => {
-    const { data } = await api.post<ApiResponse<unknown>>(
-      `${API_BASE}/issue/${enrollmentId}`,
-    );
+    const { data } = await api.post<ApiResponse<unknown>>(`${API_BASE}/issue/${enrollmentId}`);
     return data.data;
   },
 

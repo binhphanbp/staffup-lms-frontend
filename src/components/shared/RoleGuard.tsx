@@ -17,19 +17,20 @@ interface RoleGuardProps {
 
 export function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, _hasHydrated } = useAuthStore();
 
   const hasAccess = isAuthenticated && user?.roleCodes?.some((role) => allowedRoles.includes(role));
 
   useEffect(() => {
+    if (!_hasHydrated) return;
     if (!isAuthenticated) {
       router.replace('/login');
     } else if (!hasAccess) {
       router.replace('/403');
     }
-  }, [isAuthenticated, hasAccess, router]);
+  }, [_hasHydrated, isAuthenticated, hasAccess, router]);
 
-  if (!hasAccess) return null;
+  if (!_hasHydrated || !hasAccess) return null;
 
   return <>{children}</>;
 }
