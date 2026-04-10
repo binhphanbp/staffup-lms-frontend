@@ -46,11 +46,7 @@ export const LabHeader = ({ onRunCode }: LabHeaderProps) => {
         </button>
         <div className="hover:border-primary ml-2 h-8 w-8 cursor-pointer overflow-hidden rounded-full border border-slate-600 bg-slate-700 transition-colors">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={avatarUrl}
-            className="h-full w-full"
-            alt="Avatar"
-          />
+          <img src={avatarUrl} className="h-full w-full" alt="Avatar" />
         </div>
       </div>
     </header>
