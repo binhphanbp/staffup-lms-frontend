@@ -16,7 +16,7 @@ export default function AIConfigurationPage() {
 
   return (
     <>
-      <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 md:px-8 py-4 md:py-6">
+      <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 py-4 md:px-8 md:py-6">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="m-0 flex items-center gap-2 text-[22px] font-normal text-[#202124]">
             <span className="material-symbols-outlined text-[28px] text-[#9334E6] [font-variation-settings:'FILL'_1]">

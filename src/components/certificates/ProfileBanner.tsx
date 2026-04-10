@@ -3,10 +3,10 @@ import React from 'react';
 
 export const ProfileBanner = () => {
   return (
-    <div className="relative mb-8 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-4 md:p-8 text-white shadow-lg">
+    <div className="relative mb-8 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-4 text-white shadow-lg md:p-8">
       <i className="fa-solid fa-award absolute -top-10 -right-10 rotate-12 transform text-[200px] text-white/5"></i>
 
-      <div className="relative z-10 flex flex-col items-center gap-4 md:gap-8 md:flex-row">
+      <div className="relative z-10 flex flex-col items-center gap-4 md:flex-row md:gap-8">
         <div className="relative h-24 w-24 shrink-0 rounded-full border-4 border-slate-700 shadow-xl">
           <img
             src="https://ui-avatars.com/api/?name=Tran+Bao&background=1677ff&color=fff&size=200"

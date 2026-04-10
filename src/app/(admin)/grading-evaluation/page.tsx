@@ -131,7 +131,7 @@ export default function GradingEvaluationPage() {
 
   return (
     <>
-      <div className="flex flex-1 flex-col overflow-y-auto px-4 md:px-8 py-4 md:py-6">
+      <div className="flex flex-1 flex-col overflow-y-auto px-4 py-4 md:px-8 md:py-6">
         <div className="mb-5 flex items-center justify-between">
           <h1 className="m-0 text-[22px] font-normal text-[#202124]">
             Chấm bài tự luận & Đánh giá

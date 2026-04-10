@@ -27,7 +27,7 @@ export default function CourseDetailPage() {
         <HeroBanner />
 
         {/* 2. MAIN CONTENT AREA */}
-        <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 md:px-8 py-4 md:py-8 lg:flex-row">
+        <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 py-4 md:px-8 md:py-8 lg:flex-row">
           {/* Cột Trái: Nội dung chi tiết */}
           <div className="flex min-w-0 flex-1 flex-col gap-8 pb-12">
             <div className="sticky top-0 z-10 -mt-2 border-b border-gray-200 bg-[#f8fafc] pt-2">
