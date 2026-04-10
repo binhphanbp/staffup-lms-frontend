@@ -31,7 +31,11 @@ export default function CompanyDocumentsPage() {
   const [meta, setMeta] = useState({ total: 0, page: 1, limit: 10, totalPages: 0 });
   const [categories, setCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [toast, setToast] = useState({ visible: false, message: '', type: 'success' as 'success' | 'error' });
+  const [toast, setToast] = useState({
+    visible: false,
+    message: '',
+    type: 'success' as 'success' | 'error',
+  });
 
   // Filters
   const [search, setSearch] = useState('');
@@ -220,7 +224,9 @@ export default function CompanyDocumentsPage() {
               disabled={indexingAll}
               className="flex items-center gap-2 rounded-[4px] border border-[#DADCE0] bg-transparent px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-all hover:bg-[#F1F3F4] hover:text-[#202124] disabled:opacity-50"
             >
-              <span className={`material-symbols-outlined text-[18px] ${indexingAll ? 'animate-spin' : ''}`}>
+              <span
+                className={`material-symbols-outlined text-[18px] ${indexingAll ? 'animate-spin' : ''}`}
+              >
                 sync
               </span>
               {indexingAll ? 'Đang index...' : 'Index tất cả'}
@@ -248,8 +254,8 @@ export default function CompanyDocumentsPage() {
 
         {/* Filters */}
         <div className="mb-4 flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[200px] max-w-[360px]">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[20px] text-[#5F6368]">
+          <div className="relative max-w-[360px] min-w-[200px] flex-1">
+            <span className="material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-[20px] text-[#5F6368]">
               search
             </span>
             <input
@@ -257,22 +263,30 @@ export default function CompanyDocumentsPage() {
               placeholder="Tìm kiếm theo tiêu đề..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="h-10 w-full rounded-[4px] border border-[#DADCE0] bg-white pl-10 pr-3 text-[14px] text-[#202124] outline-none transition-colors focus:border-[#1A73E8]"
+              className="h-10 w-full rounded-[4px] border border-[#DADCE0] bg-white pr-3 pl-10 text-[14px] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
             />
           </div>
           <select
             value={filterCategory}
-            onChange={(e) => { setFilterCategory(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setFilterCategory(e.target.value);
+              setPage(1);
+            }}
             className="h-10 rounded-[4px] border border-[#DADCE0] bg-white px-3 text-[14px] text-[#202124] outline-none focus:border-[#1A73E8]"
           >
             <option value="">Tất cả danh mục</option>
             {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
             ))}
           </select>
           <select
             value={filterActive}
-            onChange={(e) => { setFilterActive(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setFilterActive(e.target.value);
+              setPage(1);
+            }}
             className="h-10 rounded-[4px] border border-[#DADCE0] bg-white px-3 text-[14px] text-[#202124] outline-none focus:border-[#1A73E8]"
           >
             <option value="">Tất cả trạng thái</option>
@@ -298,24 +312,31 @@ export default function CompanyDocumentsPage() {
               {isLoading ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-12 text-center text-[#5F6368]">
-                    <span className="material-symbols-outlined animate-spin text-[24px]">progress_activity</span>
+                    <span className="material-symbols-outlined animate-spin text-[24px]">
+                      progress_activity
+                    </span>
                     <p className="mt-2">Đang tải...</p>
                   </td>
                 </tr>
               ) : documents.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-12 text-center text-[#5F6368]">
-                    <span className="material-symbols-outlined text-[48px] text-[#DADCE0]">description</span>
+                    <span className="material-symbols-outlined text-[48px] text-[#DADCE0]">
+                      description
+                    </span>
                     <p className="mt-2">Chưa có tài liệu nào.</p>
                   </td>
                 </tr>
               ) : (
                 documents.map((doc) => (
-                  <tr key={doc.id} className="border-b border-[#DADCE0] last:border-b-0 hover:bg-[#F8F9FA]">
+                  <tr
+                    key={doc.id}
+                    className="border-b border-[#DADCE0] last:border-b-0 hover:bg-[#F8F9FA]"
+                  >
                     <td className="px-4 py-3">
                       <button
                         onClick={() => handleOpenEdit(doc.id)}
-                        className="text-left font-medium text-[#1A73E8] hover:underline bg-transparent border-none cursor-pointer p-0"
+                        className="cursor-pointer border-none bg-transparent p-0 text-left font-medium text-[#1A73E8] hover:underline"
                       >
                         {doc.title}
                       </button>
@@ -330,11 +351,13 @@ export default function CompanyDocumentsPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`inline-block min-w-[32px] rounded-full px-2 py-0.5 text-[12px] font-medium ${
-                        doc.chunkCount > 0
-                          ? 'bg-[#E8F5E9] text-[#2E7D32]'
-                          : 'bg-[#FFF3E0] text-[#E65100]'
-                      }`}>
+                      <span
+                        className={`inline-block min-w-[32px] rounded-full px-2 py-0.5 text-[12px] font-medium ${
+                          doc.chunkCount > 0
+                            ? 'bg-[#E8F5E9] text-[#2E7D32]'
+                            : 'bg-[#FFF3E0] text-[#E65100]'
+                        }`}
+                      >
                         {doc.chunkCount}
                       </span>
                     </td>
@@ -362,7 +385,9 @@ export default function CompanyDocumentsPage() {
                           disabled={indexingId === doc.id}
                           className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F6368] transition-colors hover:bg-[#E8F0FE] hover:text-[#1A73E8] disabled:opacity-50"
                         >
-                          <span className={`material-symbols-outlined text-[18px] ${indexingId === doc.id ? 'animate-spin' : ''}`}>
+                          <span
+                            className={`material-symbols-outlined text-[18px] ${indexingId === doc.id ? 'animate-spin' : ''}`}
+                          >
                             sync
                           </span>
                         </button>
@@ -417,7 +442,10 @@ export default function CompanyDocumentsPage() {
 
       {/* ===== CREATE/EDIT MODAL ===== */}
       {showModal && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40" onClick={() => setShowModal(false)}>
+        <div
+          className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40"
+          onClick={() => setShowModal(false)}
+        >
           <div
             onClick={(e) => e.stopPropagation()}
             className="mx-4 flex max-h-[90vh] w-full max-w-[800px] flex-col rounded-xl bg-white shadow-2xl"
@@ -446,7 +474,7 @@ export default function CompanyDocumentsPage() {
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   placeholder="Nhập tiêu đề tài liệu..."
-                  className="h-10 w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 text-[14px] text-[#202124] outline-none transition-colors focus:border-[#1A73E8]"
+                  className="h-10 w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 text-[14px] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
                 />
               </div>
 
@@ -461,7 +489,7 @@ export default function CompanyDocumentsPage() {
                     onChange={(e) => setForm({ ...form, category: e.target.value })}
                     placeholder="VD: Nội quy, Chính sách, Quy trình..."
                     list="category-suggestions"
-                    className="h-10 w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 text-[14px] text-[#202124] outline-none transition-colors focus:border-[#1A73E8]"
+                    className="h-10 w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 text-[14px] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
                   />
                   <datalist id="category-suggestions">
                     {categories.map((cat) => (
@@ -491,7 +519,7 @@ export default function CompanyDocumentsPage() {
                   onChange={(e) => setForm({ ...form, content: e.target.value })}
                   placeholder="Nhập nội dung tài liệu..."
                   rows={16}
-                  className="w-full resize-y rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 font-mono text-[13px] leading-[1.6] text-[#202124] outline-none transition-colors focus:border-[#1A73E8]"
+                  className="w-full resize-y rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 font-mono text-[13px] leading-[1.6] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
                 />
                 <p className="mt-1 text-[12px] text-[#5F6368]">
                   {form.content.length.toLocaleString()} ký tự
@@ -524,7 +552,10 @@ export default function CompanyDocumentsPage() {
 
       {/* ===== DELETE CONFIRMATION ===== */}
       {deleteTarget && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40" onClick={() => setDeleteTarget(null)}>
+        <div
+          className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40"
+          onClick={() => setDeleteTarget(null)}
+        >
           <div
             onClick={(e) => e.stopPropagation()}
             className="mx-4 w-full max-w-[440px] rounded-xl bg-white p-6 shadow-2xl"
@@ -536,8 +567,8 @@ export default function CompanyDocumentsPage() {
               <h3 className="m-0 text-[18px] font-medium text-[#202124]">Xác nhận xoá</h3>
             </div>
             <p className="mb-6 text-[14px] leading-[1.6] text-[#5F6368]">
-              Bạn có chắc muốn xoá tài liệu <strong>&quot;{deleteTarget.title}&quot;</strong>?
-              Tài liệu sẽ bị vô hiệu hoá và các chunks đã đánh chỉ mục sẽ bị xoá khỏi hệ thống RAG.
+              Bạn có chắc muốn xoá tài liệu <strong>&quot;{deleteTarget.title}&quot;</strong>? Tài
+              liệu sẽ bị vô hiệu hoá và các chunks đã đánh chỉ mục sẽ bị xoá khỏi hệ thống RAG.
             </p>
             <div className="flex justify-end gap-3">
               <button
