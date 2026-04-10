@@ -40,7 +40,9 @@ export const courseService = {
   // ----- Modules -----
 
   listModules: async (courseId: string): Promise<CourseModuleItem[]> => {
-    const { data } = await api.get<ApiResponse<CourseModuleItem[]>>(`${API_BASE}/${courseId}/modules`);
+    const { data } = await api.get<ApiResponse<CourseModuleItem[]>>(
+      `${API_BASE}/${courseId}/modules`,
+    );
     return data.data;
   },
 

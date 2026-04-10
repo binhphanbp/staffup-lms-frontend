@@ -61,7 +61,15 @@ export default function LearningRoomPage() {
 
   // Build lesson progress map from nested modules → lessons → progress
   const lessonProgressMap = useMemo(() => {
-    const map = new Map<string, { lessonId: string; status: import('@/types').LessonProgressStatus; watchTimeSeconds: number; lastPositionSeconds: number }>();
+    const map = new Map<
+      string,
+      {
+        lessonId: string;
+        status: import('@/types').LessonProgressStatus;
+        watchTimeSeconds: number;
+        lastPositionSeconds: number;
+      }
+    >();
     progress?.modules?.forEach((mod) => {
       mod.lessons.forEach((lesson) => {
         map.set(lesson.id, {
