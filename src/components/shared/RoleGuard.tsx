@@ -19,8 +19,7 @@ export function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
 
-  const hasAccess =
-    isAuthenticated && user?.roleCodes?.some((role) => allowedRoles.includes(role));
+  const hasAccess = isAuthenticated && user?.roleCodes?.some((role) => allowedRoles.includes(role));
 
   useEffect(() => {
     if (!isAuthenticated) {
