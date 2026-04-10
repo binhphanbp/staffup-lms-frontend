@@ -176,22 +176,27 @@ export default function CourseDetailPage() {
 
             {/* 4. Phần Giảng viên */}
             {course.trainer && (
-            <section id="instructor" className="scroll-mt-20">
-              <h2 className="mb-4 text-lg font-bold text-slate-800">Giảng viên nội bộ</h2>
-              <div className="card flex items-start gap-5 border border-gray-200 p-5">
-                <img
-                  src={course.trainer.avatarUrl ?? `https://ui-avatars.com/api/?name=${encodeURIComponent(course.trainer.fullName)}&background=0f172a&color=fff&size=100`}
-                  className="h-20 w-20 rounded-full shadow-sm"
-                  alt={course.trainer.fullName}
-                />
-                <div>
-                  <h3 className="mb-1 text-base font-bold text-slate-800">{course.trainer.fullName}</h3>
-                  <div className="text-primary mb-3 font-mono text-[12px] tracking-tight">
-                    {course.trainer.email}
+              <section id="instructor" className="scroll-mt-20">
+                <h2 className="mb-4 text-lg font-bold text-slate-800">Giảng viên nội bộ</h2>
+                <div className="card flex items-start gap-5 border border-gray-200 p-5">
+                  <img
+                    src={
+                      course.trainer.avatarUrl ??
+                      `https://ui-avatars.com/api/?name=${encodeURIComponent(course.trainer.fullName)}&background=0f172a&color=fff&size=100`
+                    }
+                    className="h-20 w-20 rounded-full shadow-sm"
+                    alt={course.trainer.fullName}
+                  />
+                  <div>
+                    <h3 className="mb-1 text-base font-bold text-slate-800">
+                      {course.trainer.fullName}
+                    </h3>
+                    <div className="text-primary mb-3 font-mono text-[12px] tracking-tight">
+                      {course.trainer.email}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
             )}
           </div>
 

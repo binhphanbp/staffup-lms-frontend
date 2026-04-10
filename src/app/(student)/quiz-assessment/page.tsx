@@ -6,7 +6,12 @@ import { StudentHeader } from '@/components/shared/StudentHeader';
 import { QuestionContent } from '@/components/quiz/QuestionContent';
 import { QuestionPalette } from '@/components/quiz/QuestionPalette';
 import { SubmitModal, AntiCheatModal } from '@/components/quiz/QuizModals';
-import { useQuizAttemptDetail, useStartQuiz, useSaveQuizResponse, useSubmitQuiz } from '@/hooks/useQuiz';
+import {
+  useQuizAttemptDetail,
+  useStartQuiz,
+  useSaveQuizResponse,
+  useSubmitQuiz,
+} from '@/hooks/useQuiz';
 import type { QuizAttemptQuestionDetail } from '@/types';
 
 export default function QuizAssessmentPage() {
@@ -18,14 +23,20 @@ export default function QuizAssessmentPage() {
   // If no attemptId, start a new quiz
   const startQuiz = useStartQuiz();
   const [attemptId, setAttemptId] = useState<string | null>(attemptIdParam);
+  const startCalledRef = React.useRef(false);
 
   useEffect(() => {
-    if (!attemptId && quizIdParam && enrollmentIdParam && !startQuiz.isPending) {
+    if (!attemptId && quizIdParam && enrollmentIdParam && !startCalledRef.current) {
+      startCalledRef.current = true;
       startQuiz.mutate(
         { quizId: quizIdParam, enrollmentId: enrollmentIdParam },
-        { onSuccess: (data) => setAttemptId(data.id) },
+        {
+          onSuccess: (data) => setAttemptId(data.attemptId),
+          onError: () => { startCalledRef.current = false; },
+        },
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attemptId, quizIdParam, enrollmentIdParam]);
 
   // Fetch attempt detail (contains questions)
@@ -81,9 +92,7 @@ export default function QuizAssessmentPage() {
 
   // Derive answered and review sets from API data
   const answeredQs = useMemo(
-    () => questions
-      .filter((q) => q.response != null)
-      .map((q) => q.displayOrder),
+    () => questions.filter((q) => q.response != null).map((q) => q.displayOrder),
     [questions],
   );
 
@@ -97,14 +106,13 @@ export default function QuizAssessmentPage() {
 
   const handleSelectOption = useCallback(
     (optionIds: string[]) => {
-      if (!attemptId || !activeQuestionData) return;
+      if (!activeQuestionData) return;
       saveResponse.mutate({
-        attemptId,
-        questionId: activeQuestionData.id,
+        attemptQuestionId: activeQuestionData.id,
         selectedOptionIds: optionIds,
       });
     },
-    [attemptId, activeQuestionData, saveResponse],
+    [activeQuestionData, saveResponse],
   );
 
   const handleToggleReview = () => {
@@ -144,7 +152,9 @@ export default function QuizAssessmentPage() {
   if (isLoading || startQuiz.isPending) {
     return (
       <>
-        <StudentHeader breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Bài Test năng lực' }]} />
+        <StudentHeader
+          breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Bài Test năng lực' }]}
+        />
         <div className="flex flex-1 items-center justify-center bg-[#f0f2f5]">
           <div className="text-sm text-slate-500">
             <i className="fa-solid fa-spinner fa-spin mr-2"></i>Đang tải bài kiểm tra...
@@ -157,7 +167,10 @@ export default function QuizAssessmentPage() {
   return (
     <>
       <StudentHeader
-        breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: attempt?.quiz?.title ?? 'Bài Test năng lực' }]}
+        breadcrumbs={[
+          { label: 'Trang chủ', href: '/' },
+          { label: attempt?.quiz?.title ?? 'Bài Test năng lực' },
+        ]}
       />
 
       <div className="flex flex-1 overflow-hidden bg-[#f0f2f5]">

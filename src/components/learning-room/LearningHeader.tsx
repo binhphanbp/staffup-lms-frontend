@@ -45,13 +45,9 @@ export const LearningHeader = ({
         </Link>
         <div className="hidden h-6 w-px bg-slate-700 sm:block"></div>
         <div className="flex min-w-0 flex-col">
-          <h1 className="truncate text-sm font-bold">
-            {courseTitle ?? 'Đang tải...'}
-          </h1>
+          <h1 className="truncate text-sm font-bold">{courseTitle ?? 'Đang tải...'}</h1>
           {lessonTitle && (
-            <div className="truncate font-mono text-[10px] text-slate-400">
-              {lessonTitle}
-            </div>
+            <div className="truncate font-mono text-[10px] text-slate-400">{lessonTitle}</div>
           )}
         </div>
       </div>
@@ -95,7 +91,10 @@ export const LearningHeader = ({
           disabled={!enrollmentId || !lessonId || completeLesson.isPending}
           className="bg-primary/20 text-primary hover:bg-primary/30 hidden items-center gap-2 rounded px-3 py-1.5 text-xs font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50 md:flex"
         >
-          <i className={`fa-solid ${completeLesson.isPending ? 'fa-spinner fa-spin' : 'fa-check'}`}></i> Đánh dấu hoàn thành
+          <i
+            className={`fa-solid ${completeLesson.isPending ? 'fa-spinner fa-spin' : 'fa-check'}`}
+          ></i>{' '}
+          Đánh dấu hoàn thành
         </button>
       </div>
     </header>

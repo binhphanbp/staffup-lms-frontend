@@ -34,7 +34,10 @@ export default function DashboardPage() {
               <div>
                 <div className="mb-4 flex items-end justify-between">
                   <h2 className="text-lg font-bold text-slate-800">Tiếp tục học</h2>
-                  <Link href="/courses" className="text-primary text-xs font-semibold hover:underline">
+                  <Link
+                    href="/courses"
+                    className="text-primary text-xs font-semibold hover:underline"
+                  >
                     Xem tất cả khóa học
                   </Link>
                 </div>
@@ -63,7 +66,8 @@ export default function DashboardPage() {
                         {continueCourse.courseTitle}
                       </h3>
                       <p className="mb-4 text-xs text-slate-500">
-                        Đã ghi danh: {new Date(continueCourse.enrolledAt).toLocaleDateString('vi-VN')}
+                        Đã ghi danh:{' '}
+                        {new Date(continueCourse.enrolledAt).toLocaleDateString('vi-VN')}
                       </p>
 
                       <div>

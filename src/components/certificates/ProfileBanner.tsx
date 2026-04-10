@@ -21,11 +21,7 @@ export const ProfileBanner = () => {
 
       <div className="relative z-10 flex flex-col items-center gap-4 md:flex-row md:gap-8">
         <div className="relative h-24 w-24 shrink-0 rounded-full border-4 border-slate-700 shadow-xl">
-          <img
-            src={avatarUrl}
-            alt="Avatar"
-            className="h-full w-full rounded-full object-cover"
-          />
+          <img src={avatarUrl} alt="Avatar" className="h-full w-full rounded-full object-cover" />
         </div>
 
         <div className="flex-1 text-center md:text-left">

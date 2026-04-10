@@ -3,6 +3,7 @@ import type {
   ApiResponse,
   QuizAttemptDetailResponse,
   QuizStartPayload,
+  QuizStartResponse,
   QuizResponsePayload,
   QuizAttemptHistoryItem,
 } from '@/types';
@@ -14,8 +15,8 @@ import type {
 const API_BASE = '/quiz-attempts';
 
 export const quizService = {
-  start: async (payload: QuizStartPayload): Promise<QuizAttemptDetailResponse> => {
-    const { data } = await api.post<ApiResponse<QuizAttemptDetailResponse>>(
+  start: async (payload: QuizStartPayload): Promise<QuizStartResponse> => {
+    const { data } = await api.post<ApiResponse<QuizStartResponse>>(
       `${API_BASE}/start`,
       payload,
     );
@@ -33,10 +34,9 @@ export const quizService = {
     enrollmentId?: string;
     quizId?: string;
   }): Promise<QuizAttemptHistoryItem[]> => {
-    const { data } = await api.get<ApiResponse<QuizAttemptHistoryItem[]>>(
-      `${API_BASE}/history`,
-      { params },
-    );
+    const { data } = await api.get<ApiResponse<QuizAttemptHistoryItem[]>>(`${API_BASE}/history`, {
+      params,
+    });
     return data.data;
   },
 

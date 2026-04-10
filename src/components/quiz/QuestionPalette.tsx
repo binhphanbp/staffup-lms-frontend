@@ -92,7 +92,9 @@ export const QuestionPalette = ({
 
       {/* Grid Câu hỏi (Đã sửa lại class grid) */}
       <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto p-6">
-        <h3 className="mb-4 text-[13px] font-bold text-slate-800">Danh sách câu hỏi ({totalQuestions})</h3>
+        <h3 className="mb-4 text-[13px] font-bold text-slate-800">
+          Danh sách câu hỏi ({totalQuestions})
+        </h3>
 
         {/* Dùng grid của Tailwind để chia 5 cột */}
         <div className="mb-8 grid grid-cols-5 gap-2">{renderQuestionGrid()}</div>

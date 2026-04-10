@@ -56,9 +56,7 @@ function CertificateCard({
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-slate-500">Trạng thái:</span>
-            <span
-              className={`font-semibold ${cert.revokedAt ? 'text-red-500' : 'text-green-600'}`}
-            >
+            <span className={`font-semibold ${cert.revokedAt ? 'text-red-500' : 'text-green-600'}`}>
               {cert.revokedAt ? 'Đã thu hồi' : 'Còn hiệu lực'}
             </span>
           </div>
@@ -83,14 +81,14 @@ function CertificateCard({
 
 export const CertificateTab = ({ onCopy }: CertificateTabProps) => {
   const { data, isLoading } = useCertificates();
-  const certificates = data?.data ?? [];
+  const certificates = data?.certificates ?? [];
 
   return (
     <div className="animate-[fadeIn_0.3s_ease-in-out] space-y-6 pb-12">
       {/* Thanh công cụ lọc */}
       <div className="mb-2 flex items-center justify-between">
         <div className="text-sm font-bold text-slate-800">
-          Chứng chỉ đã đạt được ({data?.meta?.total ?? 0})
+          Chứng chỉ đã đạt được ({data?.pagination?.total ?? 0})
         </div>
       </div>
 
@@ -99,9 +97,7 @@ export const CertificateTab = ({ onCopy }: CertificateTabProps) => {
       )}
 
       {!isLoading && certificates.length === 0 && (
-        <div className="py-12 text-center text-sm text-slate-400">
-          Bạn chưa có chứng chỉ nào.
-        </div>
+        <div className="py-12 text-center text-sm text-slate-400">Bạn chưa có chứng chỉ nào.</div>
       )}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
