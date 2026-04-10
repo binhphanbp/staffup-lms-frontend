@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AdminDashboardPage() {
   return (
-    <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-8 py-6">
+    <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 py-4 md:px-8 md:py-6">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <h1 className="m-0 text-[22px] font-normal text-[#202124]">Bảng điều khiển Trung tâm</h1>
@@ -30,8 +30,8 @@ export default function AdminDashboardPage() {
       <StatCards />
 
       {/* Charts Row */}
-      <div className="mb-6 grid grid-cols-3 gap-6">
-        <div className="col-span-2">
+      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
+        <div className="col-span-1 lg:col-span-2">
           <TrendChart />
         </div>
         <div className="col-span-1">
@@ -40,7 +40,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Tables Row */}
-      <div className="mb-6 grid grid-cols-2 gap-6">
+      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
         <StudentProgressTable />
         <InstructorActivityTable />
       </div>

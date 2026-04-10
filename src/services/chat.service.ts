@@ -85,7 +85,7 @@ export const chatApi = {
   ): (() => void) => {
     const controller = new AbortController();
     const token = useAuthStore.getState().token;
-    const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+    const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
 
     fetch(`${baseURL}${API_BASE}/message/stream`, {
       method: 'POST',
@@ -98,7 +98,13 @@ export const chatApi = {
     })
       .then(async (response) => {
         if (!response.ok) {
-          onError('Không thể kết nối đến server. Vui lòng thử lại.');
+          if (response.status === 401) {
+            onError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+          } else if (response.status === 429) {
+            onError('Bạn đã gửi quá nhiều tin nhắn. Vui lòng chờ một chút.');
+          } else {
+            onError('Không thể kết nối đến server. Vui lòng thử lại.');
+          }
           return;
         }
 
@@ -110,6 +116,7 @@ export const chatApi = {
 
         const decoder = new TextDecoder();
         let buffer = '';
+        let completed = false;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -124,8 +131,10 @@ export const chatApi = {
               try {
                 const event = JSON.parse(line.slice(6));
                 if (event.type === 'done') {
+                  completed = true;
                   onDone();
                 } else if (event.type === 'error') {
+                  completed = true;
                   onError(event.data);
                 } else {
                   onEvent(event);
@@ -137,7 +146,9 @@ export const chatApi = {
           }
         }
 
-        onDone();
+        if (!completed) {
+          onDone();
+        }
       })
       .catch((err) => {
         if (err.name !== 'AbortError') {

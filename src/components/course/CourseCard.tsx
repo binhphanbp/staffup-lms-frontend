@@ -30,7 +30,7 @@ export const CourseCard = ({ course }: { course: CourseType }) => {
     >
       {/* PHẦN 1: HÌNH ẢNH BANNER */}
       <div
-        className={`relative h-40 flex-shrink-0 overflow-hidden rounded-t-xl ${course.isCodeLab ? 'flex items-center justify-center border-b border-slate-700 bg-slate-900 p-6 text-center font-mono text-[10px] text-white' : 'bg-slate-100'}`}
+        className={`relative h-40 shrink-0 overflow-hidden rounded-t-xl ${course.isCodeLab ? 'flex items-center justify-center border-b border-slate-700 bg-slate-900 p-6 text-center font-mono text-[10px] text-white' : 'bg-slate-100'}`}
       >
         {/* Nếu là Code Lab thì hiện Terminal, ngược lại hiện Ảnh */}
         {course.isCodeLab ? (
@@ -46,7 +46,7 @@ export const CourseCard = ({ course }: { course: CourseType }) => {
           <img
             src={course.imageUrl}
             alt={course.title}
-            className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 ${course.isCompleted ? 'grayscale-[30%] filter' : ''}`}
+            className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 ${course.isCompleted ? 'grayscale-30 filter' : ''}`}
           />
         )}
 
@@ -147,7 +147,7 @@ export const CourseCard = ({ course }: { course: CourseType }) => {
                     className="h-6 w-6 rounded-full border border-gray-200"
                     alt="Author"
                   />
-                  <div className="max-w-[100px] truncate text-[11px] font-medium text-slate-600">
+                  <div className="max-w-25 truncate text-[11px] font-medium text-slate-600">
                     {course.author.name}
                   </div>
                 </div>

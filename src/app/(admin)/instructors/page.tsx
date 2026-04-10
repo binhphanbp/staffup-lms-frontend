@@ -80,7 +80,7 @@ export default function InstructorsPage() {
 
   return (
     <>
-      <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-8 py-6">
+      <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 py-4 md:px-8 md:py-6">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <h1 className="m-0 text-[22px] font-normal text-[#202124]">
@@ -102,7 +102,7 @@ export default function InstructorsPage() {
         </div>
 
         {/* Stat Cards */}
-        <div className="mb-6 grid grid-cols-3 gap-4">
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="flex items-center gap-4 rounded-lg border border-[#DADCE0] bg-white p-4">
             <div className="flex h-[48px] w-[48px] items-center justify-center rounded-lg bg-[#E8F0FE]">
               <span className="material-symbols-outlined text-[24px] text-[#1A73E8]">
