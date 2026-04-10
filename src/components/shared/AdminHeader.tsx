@@ -2,9 +2,12 @@
 
 import React from 'react';
 import { useMobileNav } from '@/context/MobileNavContext';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const AdminHeader = () => {
   const { openMobileNav } = useMobileNav();
+  const user = useAuthStore((s) => s.user);
+  const initial = user?.fullName?.charAt(0)?.toUpperCase() ?? 'U';
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-[#DADCE0] bg-white px-4 md:px-6">
       {/* Hamburger — mobile only */}
@@ -32,7 +35,7 @@ export const AdminHeader = () => {
           <span className="material-symbols-outlined">settings</span>
         </button>
         <div className="ml-3 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-[#1A73E8] text-[15px] font-medium text-white">
-          A
+          {initial}
         </div>
       </div>
     </header>

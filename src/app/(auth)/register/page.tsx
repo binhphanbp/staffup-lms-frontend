@@ -156,7 +156,10 @@ export default function RegisterPage() {
   const [departments, setDepartments] = useState<Department[]>([]);
 
   useEffect(() => {
-    departmentService.list().then(setDepartments).catch(() => {});
+    departmentService
+      .list()
+      .then(setDepartments)
+      .catch(() => {});
   }, []);
 
   const {

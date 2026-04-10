@@ -1,11 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface LabHeaderProps {
   onRunCode: () => void;
 }
 
 export const LabHeader = ({ onRunCode }: LabHeaderProps) => {
+  const user = useAuthStore((s) => s.user);
+  const displayName = user?.fullName ?? 'Người dùng';
+  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=1677ff&color=fff&bold=true`;
   return (
     <header className="z-20 flex h-14 shrink-0 items-center justify-between border-b border-black/50 bg-[#181a1f] px-4 text-white shadow-md lg:px-6">
       <div className="flex min-w-0 items-center gap-4">
@@ -43,7 +47,7 @@ export const LabHeader = ({ onRunCode }: LabHeaderProps) => {
         <div className="hover:border-primary ml-2 h-8 w-8 cursor-pointer overflow-hidden rounded-full border border-slate-600 bg-slate-700 transition-colors">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://ui-avatars.com/api/?name=Tran+Bao&background=1677ff&color=fff&bold=true"
+            src={avatarUrl}
             className="h-full w-full"
             alt="Avatar"
           />
