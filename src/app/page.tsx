@@ -123,7 +123,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="rounded bg-purple-50 px-1.5 py-0.5 text-[10px] font-bold text-purple-600">
-                        High Priority
+                        Ưu tiên cao
                       </span>
                       <button className="text-primary border-primary hover:bg-primary rounded border px-2 py-1 text-[10px] font-bold transition-colors hover:text-white">
                         Đăng ký

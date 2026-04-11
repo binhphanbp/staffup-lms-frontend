@@ -6,7 +6,7 @@ import { NotFoundFooter } from '@/components/errors/not-found/NotFoundFooter';
 
 // Khai báo metadata cho Next.js để sửa thẻ title
 export const metadata = {
-  title: '404 Không tìm thấy trang - TechLearn LMS',
+  title: '404 Không tìm thấy trang - Staffup LMS',
 };
 
 export default function GlobalNotFound() {

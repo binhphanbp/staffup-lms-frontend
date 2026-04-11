@@ -205,7 +205,7 @@ export default function CourseDetailPage() {
         </div>
 
         <footer className="border-t border-gray-200 bg-white py-6 text-center text-[11px] text-slate-400">
-          &copy; 2026 TechCorp Internal System. Course ID: {course.slug ?? course.id}.
+          &copy; 2026 Staffup LMS. Mã khóa học: {course.slug ?? course.id}.
         </footer>
       </div>
     </>

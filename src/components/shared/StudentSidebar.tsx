@@ -34,7 +34,7 @@ export const StudentSidebar = () => {
             <i className="fa-solid fa-laptop-code text-xs"></i>
           </div>
           <span>
-            Tech<span className="font-light text-slate-500">Learn</span>
+            Staff<span className="font-light text-slate-500">up</span>
           </span>
         </Link>
         {/* Mobile close button */}

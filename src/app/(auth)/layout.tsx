@@ -84,7 +84,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
           {/* Footer */}
           <div className="relative z-10">
-            <p className="text-xs text-blue-200/50">© 2026 Staffup LMS. All rights reserved.</p>
+            <p className="text-xs text-blue-200/50">© 2026 Staffup LMS. Bảo lưu mọi quyền.</p>
           </div>
         </div>
       </div>
