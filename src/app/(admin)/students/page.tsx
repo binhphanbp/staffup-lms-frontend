@@ -1,82 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { Student } from '@/components/admin/students/types';
 import { StudentsTable } from '@/components/admin/students/StudentsTable';
-import { StudentsToolbar } from '@/components/admin/students/StudentsToolbar';
 import { Toast } from '@/components/shared/Toast';
+import { useUsers } from '@/hooks/useUsers';
+
+const LIMIT = 10;
 
 export default function StudentsPage() {
   const [toast, setToast] = useState({ visible: false, message: '' });
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState<'' | 'active' | 'inactive'>('');
 
-  const students: Student[] = [
-    {
-      id: 1,
-      initial: 'N',
-      name: 'Nguyễn Văn An',
-      email: 'nguyen.an@company.com',
-      department: 'Sales',
-      role: 'Chuyên viên B2B',
-      courses: 3,
-      joinDate: '12/01/2026',
-      status: 'active',
-    },
-    {
-      id: 2,
-      initial: 'T',
-      name: 'Trần Thị Bình',
-      email: 'tran.binh@company.com',
-      department: 'Marketing',
-      role: 'Content Strategy',
-      courses: 1,
-      joinDate: '15/01/2026',
-      status: 'active',
-    },
-    {
-      id: 3,
-      initial: 'L',
-      name: 'Lê Minh Dương',
-      email: 'le.duong@company.com',
-      department: 'Tech',
-      role: 'Backend Developer',
-      courses: 4,
-      joinDate: '05/02/2026',
-      status: 'active',
-    },
-    {
-      id: 4,
-      initial: 'P',
-      name: 'Phạm Thu Dung',
-      email: 'pham.dung@company.com',
-      department: 'HR',
-      role: 'C&B Executive',
-      courses: 2,
-      joinDate: '20/02/2026',
-      status: 'inactive',
-    },
-    {
-      id: 5,
-      initial: 'H',
-      name: 'Hoàng Tùng',
-      email: 'hoang.tung@company.com',
-      department: 'Sales',
-      role: 'Trưởng nhóm Telesale',
-      courses: 5,
-      joinDate: '01/03/2026',
-      status: 'active',
-    },
-    {
-      id: 6,
-      initial: 'Đ',
-      name: 'Đỗ Mai Anh',
-      email: 'do.maianh@company.com',
-      department: 'Tech',
-      role: 'QA Engineer',
+  const { data, isLoading, isError } = useUsers({
+    roleCode: 'employee',
+    search: search || undefined,
+    isActive: statusFilter === '' ? undefined : statusFilter === 'active',
+    page,
+    limit: LIMIT,
+  });
+
+  const students: Student[] = useMemo(() => {
+    if (!data?.data) return [];
+    return data.data.map((u, idx) => ({
+      id: idx + 1 + (page - 1) * LIMIT,
+      initial: (u.fullName ?? '?')[0].toUpperCase(),
+      name: u.fullName,
+      email: u.email,
+      department: u.department?.name ?? '—',
+      role: u.positionTitle ?? u.roles?.[0]?.name ?? '—',
       courses: 0,
-      joinDate: '10/03/2026',
-      status: 'active',
-    },
-  ];
+      joinDate: new Date(u.createdAt).toLocaleDateString('vi-VN'),
+      status: u.isActive ? ('active' as const) : ('inactive' as const),
+    }));
+  }, [data, page]);
+
+  const meta = data?.meta;
+  const totalPages = meta?.totalPages ?? 1;
 
   const showToast = (msg: string) => {
     setToast({ visible: true, message: msg });
@@ -106,8 +68,78 @@ export default function StudentsPage() {
           </div>
         </div>
 
-        <StudentsToolbar />
-        <StudentsTable students={students} />
+        {/* Search & Filter toolbar */}
+        <div className="mb-4 flex flex-wrap items-center gap-3">
+          <div className="relative flex-1">
+            <span className="material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-[20px] text-[#5F6368]">
+              search
+            </span>
+            <input
+              type="text"
+              placeholder="Tìm theo tên, email..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              className="w-full rounded-[4px] border border-[#DADCE0] bg-white py-2 pr-4 pl-10 text-[13px] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => {
+              setStatusFilter(e.target.value as '' | 'active' | 'inactive');
+              setPage(1);
+            }}
+            className="rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 text-[13px] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
+          >
+            <option value="">Tất cả trạng thái</option>
+            <option value="active">Đang hoạt động</option>
+            <option value="inactive">Ngừng hoạt động</option>
+          </select>
+          {meta && <span className="text-[13px] text-[#5F6368]">{meta.total} học viên</span>}
+        </div>
+
+        {/* Content */}
+        {isLoading ? (
+          <div className="flex flex-1 items-center justify-center py-20">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DADCE0] border-t-[#1A73E8]" />
+          </div>
+        ) : isError ? (
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20 text-[#D93025]">
+            <span className="material-symbols-outlined text-[32px]">error</span>
+            <span className="text-[14px]">Không thể tải danh sách học viên. Vui lòng thử lại.</span>
+          </div>
+        ) : (
+          <>
+            <StudentsTable students={students} />
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-[13px] text-[#5F6368]">
+                  Trang {page} / {totalPages}
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    disabled={page <= 1}
+                    onClick={() => setPage((p) => p - 1)}
+                    className="rounded-[4px] border border-[#DADCE0] bg-white px-3 py-1.5 text-[13px] text-[#5F6368] transition-colors hover:bg-[#F1F3F4] disabled:opacity-40"
+                  >
+                    Trước
+                  </button>
+                  <button
+                    disabled={page >= totalPages}
+                    onClick={() => setPage((p) => p + 1)}
+                    className="rounded-[4px] border border-[#DADCE0] bg-white px-3 py-1.5 text-[13px] text-[#5F6368] transition-colors hover:bg-[#F1F3F4] disabled:opacity-40"
+                  >
+                    Sau
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <Toast visible={toast.visible} message={toast.message} />

@@ -88,13 +88,11 @@ function InsightItem({ insight, index }: { insight: AIInsight; index: number }) 
             </span>
           </div>
 
-          <h4 className="mb-1 text-[13px] font-semibold leading-snug text-[#202124]">
+          <h4 className="mb-1 text-[13px] leading-snug font-semibold text-[#202124]">
             {insight.title}
           </h4>
 
-          <p className="mb-0 text-[12px] leading-relaxed text-[#5F6368]">
-            {insight.description}
-          </p>
+          <p className="mb-0 text-[12px] leading-relaxed text-[#5F6368]">{insight.description}</p>
 
           {/* Expandable suggestion */}
           {insight.suggestion && (
@@ -188,9 +186,7 @@ export const AIInsightCard = () => {
       <div className="mb-6 flex items-center gap-3 rounded-xl border border-[#FCE8E6] bg-[#FDF0EF] p-4">
         <span className="material-symbols-outlined text-[20px] text-[#D93025]">error</span>
         <div className="flex-1">
-          <p className="text-[13px] font-medium text-[#D93025]">
-            Không thể tải AI Insights
-          </p>
+          <p className="text-[13px] font-medium text-[#D93025]">Không thể tải AI Insights</p>
           <p className="text-[12px] text-[#5F6368]">
             {(error as Error)?.message || 'Vui lòng thử lại sau.'}
           </p>
@@ -232,9 +228,7 @@ export const AIInsightCard = () => {
       <div className="flex items-center justify-between border-b border-[#F1F3F4] px-5 py-3.5">
         <div className="flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#4285F4] to-[#A142F4]">
-            <span className="material-symbols-outlined text-[18px] text-white">
-              auto_awesome
-            </span>
+            <span className="material-symbols-outlined text-[18px] text-white">auto_awesome</span>
           </div>
 
           <div>

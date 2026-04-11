@@ -1,35 +1,34 @@
-export const StudentProgressTable = () => {
-  const students = [
-    {
-      initial: 'N',
-      name: 'Nguyễn Tuấn Anh',
-      role: 'Phòng Kinh doanh',
-      course: 'Kỹ năng Giao tiếp cao B2B',
-      progress: 85,
-    },
-    {
-      initial: 'T',
-      name: 'Trần Thị Bé',
-      role: 'Phòng Marketing',
-      course: 'Digital Marketing 2024',
-      progress: 100,
-    },
-    {
-      initial: 'L',
-      name: 'Lê Minh Trí',
-      role: 'Phòng Công nghệ',
-      course: 'An toàn thông tin nội bộ',
-      progress: 20,
-    },
-    {
-      initial: 'P',
-      name: 'Phạm Văn Đức',
-      role: 'Phòng Nhân sự',
-      course: 'Văn hóa doanh nghiệp',
-      progress: 65,
-    },
-  ];
+interface StudentProgressTableProps {
+  data?: Array<{
+    fullName: string;
+    email: string;
+    courseTitle: string;
+    progressPercent: number;
+  }>;
+  loading?: boolean;
+}
 
+const SkeletonRow = () => (
+  <tr className="border-b border-[#F1F3F4]">
+    <td className="py-3">
+      <div className="flex items-center gap-3">
+        <div className="h-[32px] w-[32px] animate-pulse rounded-full bg-gray-200" />
+        <div className="space-y-1">
+          <div className="h-3 w-24 animate-pulse rounded bg-gray-200" />
+          <div className="h-3 w-32 animate-pulse rounded bg-gray-200" />
+        </div>
+      </div>
+    </td>
+    <td className="py-3">
+      <div className="h-3 w-36 animate-pulse rounded bg-gray-200" />
+    </td>
+    <td className="py-3">
+      <div className="h-2 w-[100px] animate-pulse rounded-full bg-gray-200" />
+    </td>
+  </tr>
+);
+
+export const StudentProgressTable = ({ data, loading }: StudentProgressTableProps) => {
   return (
     <div className="rounded-lg border border-[#DADCE0] bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
@@ -50,35 +49,52 @@ export const StudentProgressTable = () => {
           </tr>
         </thead>
         <tbody>
-          {students.map((student, index) => (
-            <tr key={index} className="border-b border-[#F1F3F4]">
-              <td className="py-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#E8F0FE] text-[14px] font-medium text-[#1A73E8]">
-                    {student.initial}
-                  </div>
-                  <div>
-                    <div className="text-[13px] font-medium text-[#202124]">{student.name}</div>
-                    <div className="text-[12px] text-[#5F6368]">{student.role}</div>
-                  </div>
-                </div>
-              </td>
-              <td className="py-3 text-[13px] text-[#202124]">{student.course}</td>
-              <td className="py-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-[100px] overflow-hidden rounded-full bg-[#F1F3F4]">
-                    <div
-                      className="h-full bg-[#1A73E8]"
-                      style={{ width: `${student.progress}%` }}
-                    ></div>
-                  </div>
-                  <span className="text-[13px] font-medium text-[#202124]">
-                    {student.progress}%
-                  </span>
-                </div>
+          {loading ? (
+            <>
+              <SkeletonRow />
+              <SkeletonRow />
+              <SkeletonRow />
+              <SkeletonRow />
+            </>
+          ) : !data || data.length === 0 ? (
+            <tr>
+              <td colSpan={3} className="py-8 text-center text-[13px] text-[#5F6368]">
+                Chưa có dữ liệu
               </td>
             </tr>
-          ))}
+          ) : (
+            data.map((student, index) => (
+              <tr key={index} className="border-b border-[#F1F3F4]">
+                <td className="py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-[32px] w-[32px] items-center justify-center rounded-full bg-[#E8F0FE] text-[14px] font-medium text-[#1A73E8]">
+                      {student.fullName.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="text-[13px] font-medium text-[#202124]">
+                        {student.fullName}
+                      </div>
+                      <div className="text-[12px] text-[#5F6368]">{student.email}</div>
+                    </div>
+                  </div>
+                </td>
+                <td className="py-3 text-[13px] text-[#202124]">{student.courseTitle}</td>
+                <td className="py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-[100px] overflow-hidden rounded-full bg-[#F1F3F4]">
+                      <div
+                        className="h-full bg-[#1A73E8]"
+                        style={{ width: `${student.progressPercent}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-[13px] font-medium text-[#202124]">
+                      {student.progressPercent}%
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

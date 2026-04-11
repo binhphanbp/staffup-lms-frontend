@@ -1,4 +1,5 @@
-import type { Metadata } from 'next';
+'use client';
+
 import { AIInsightCard } from '@/components/admin/dashboard/AIInsightCard';
 import { StatCards } from '@/components/admin/dashboard/StatCards';
 import { TrendChart } from '@/components/admin/dashboard/TrendChart';
@@ -6,12 +7,24 @@ import { UserPieChart } from '@/components/admin/dashboard/UserPieChart';
 import { StudentProgressTable } from '@/components/admin/dashboard/StudentProgressTable';
 import { InstructorActivityTable } from '@/components/admin/dashboard/InstructorActivityTable';
 import { ActivityLog } from '@/components/admin/dashboard/ActivityLog';
-
-export const metadata: Metadata = {
-  title: 'Bảng điều khiển Trung tâm',
-};
+import { useAdminDashboard } from '@/hooks/useDashboard';
+import { useEnrollments } from '@/hooks/useEnrollments';
 
 export default function AdminDashboardPage() {
+  const { data: stats, isLoading } = useAdminDashboard();
+  const { data: enrollments, isLoading: isLoadingEnrollments } = useEnrollments({
+    page: 1,
+    limit: 8,
+    status: 'in_progress',
+  });
+
+  const progressData = enrollments?.data?.map((e) => ({
+    fullName: e.user.fullName,
+    email: e.user.email,
+    courseTitle: e.course.title,
+    progressPercent: e.progressPercent,
+  }));
+
   return (
     <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 py-4 md:px-8 md:py-6">
       {/* Header */}
@@ -27,7 +40,13 @@ export default function AdminDashboardPage() {
       <AIInsightCard />
 
       {/* Stat Cards */}
-      <StatCards />
+      <StatCards
+        totalUsers={stats?.users.total}
+        activeCourses={stats?.courses.published}
+        totalTrainers={stats?.users.byRole.trainer}
+        completionRate={stats?.enrollments.completionRate}
+        loading={isLoading}
+      />
 
       {/* Charts Row */}
       <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
@@ -41,7 +60,7 @@ export default function AdminDashboardPage() {
 
       {/* Tables Row */}
       <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
-        <StudentProgressTable />
+        <StudentProgressTable data={progressData} loading={isLoadingEnrollments} />
         <InstructorActivityTable />
       </div>
 

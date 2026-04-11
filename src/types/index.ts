@@ -458,7 +458,42 @@ export interface QuizAttemptQuestionDetail {
     isCorrect: boolean | null;
     awardedPoints: number | null;
     gradedAt: string | null;
+    aiSuggestedScore: number | null;
+    aiFeedback: AiGradingFeedback | null;
+    aiGradedAt: string | null;
   } | null;
+}
+
+export interface AiGradingFeedback {
+  suggestedScore: number;
+  maxScore: number;
+  feedback: string;
+  strengths: string[];
+  weaknesses: string[];
+  rubricBreakdown: Array<{
+    criterion: string;
+    score: number;
+    maxScore: number;
+    comment: string;
+  }>;
+}
+
+export interface AiGradeEssayResponse {
+  success: boolean;
+  data: {
+    attemptQuestionId: string;
+    suggestedScore: number;
+    maxScore: number;
+    feedback: string;
+    strengths: string[];
+    weaknesses: string[];
+    rubricBreakdown: Array<{
+      criterion: string;
+      score: number;
+      maxScore: number;
+      comment: string;
+    }>;
+  };
 }
 
 export interface QuizStartPayload {
@@ -658,4 +693,227 @@ export interface NavItem {
   icon?: React.ComponentType<{ className?: string }>;
   badge?: string;
   children?: NavItem[];
+}
+
+// ----- Admin Dashboard -----
+export interface AdminDashboardStats {
+  users: {
+    total: number;
+    active: number;
+    inactive: number;
+    byRole: {
+      admin: number;
+      trainer: number;
+      student: number;
+    };
+  };
+  courses: {
+    total: number;
+    published: number;
+    draft: number;
+    archived: number;
+  };
+  enrollments: {
+    total: number;
+    assigned: number;
+    inProgress: number;
+    completed: number;
+    cancelled: number;
+    expired: number;
+    completionRate: number;
+  };
+  riskSummary: {
+    total: number;
+    high: number;
+    medium: number;
+    low: number;
+  };
+}
+
+export interface TrainerDashboardStats {
+  courses: {
+    total: number;
+    published: number;
+    draft: number;
+    archived: number;
+  };
+  pendingGrading: {
+    total: number;
+    quizAttempts: Array<{
+      attemptId: string;
+      studentId: string;
+      studentName: string;
+      courseId: string;
+      courseTitle: string;
+      quizTitle: string;
+      submittedAt: string;
+      daysWaiting: number;
+    }>;
+  };
+  enrollments: {
+    total: number;
+    assigned: number;
+    inProgress: number;
+    completed: number;
+    averageProgress: number;
+  };
+  passRate: {
+    totalAttempts: number;
+    passed: number;
+    failed: number;
+    passPercentage: number;
+  };
+}
+
+// ----- User Management -----
+export interface UserListItem {
+  id: string;
+  fullName: string;
+  email: string;
+  positionTitle: string | null;
+  avatarUrl: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  department: { id: string; name: string } | null;
+  roles: Array<{ id: string; code: string; name: string }>;
+}
+
+export interface UserListParams {
+  search?: string;
+  departmentId?: string;
+  roleCode?: string;
+  isActive?: boolean;
+  page?: number;
+  limit?: number;
+}
+
+export interface CreateUserPayload {
+  email: string;
+  fullName: string;
+  password: string;
+  departmentId?: string;
+  positionTitle?: string;
+  roleCode?: string;
+}
+
+export interface UpdateUserPayload {
+  fullName?: string;
+  departmentId?: string;
+  positionTitle?: string;
+  avatarUrl?: string;
+  isActive?: boolean;
+}
+
+// ----- Role & Permission -----
+export interface Role {
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  isSystem: boolean;
+  permissions: Array<{ id: string; code: string; name: string }>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RoleListParams {
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface CreateRolePayload {
+  code: string;
+  name: string;
+  description?: string;
+  permissionIds?: string[];
+}
+
+export interface UpdateRolePayload {
+  name?: string;
+  description?: string;
+  permissionIds?: string[];
+}
+
+export interface Permission {
+  id: string;
+  code: string;
+  name: string;
+  description: string | null;
+  resource: string;
+  action: string;
+  createdAt: string;
+}
+
+export interface PermissionListParams {
+  search?: string;
+  resource?: string;
+  page?: number;
+  limit?: number;
+}
+
+// ----- Question Bank -----
+export interface QuestionBank {
+  id: string;
+  name: string;
+  description: string | null;
+  createdBy: { id: string; fullName: string } | null;
+  questionsCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface QuestionBankDetail extends QuestionBank {
+  questions: QuestionBankQuestion[];
+}
+
+export interface QuestionBankQuestion {
+  id: string;
+  questionText: string;
+  questionType: QuestionType;
+  difficultyLevel: string | null;
+  points: number;
+  isActive: boolean;
+  explanation: string | null;
+  options: Array<{
+    id: string;
+    optionText: string;
+    isCorrect: boolean;
+    orderIndex: number;
+  }>;
+  createdAt: string;
+}
+
+export interface QuestionBankListParams {
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+// ----- Quiz Management -----
+export interface QuizListItem {
+  id: string;
+  title: string;
+  description: string | null;
+  courseId: string;
+  lessonId: string | null;
+  selectionMode: 'fixed' | 'random_pool';
+  passScorePercent: number;
+  timeLimitMinutes: number | null;
+  maxAttempts: number | null;
+  shuffleQuestions: boolean;
+  shuffleOptions: boolean;
+  totalQuestions: number;
+  createdAt: string;
+  updatedAt: string;
+  course?: { id: string; title: string };
+}
+
+export interface QuizListParams {
+  courseId?: string;
+  lessonId?: string;
+  selectionMode?: 'fixed' | 'random_pool';
+  page?: number;
+  limit?: number;
 }

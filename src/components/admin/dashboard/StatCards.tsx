@@ -1,4 +1,20 @@
-export const StatCards = () => {
+interface StatCardsProps {
+  totalUsers?: number;
+  activeCourses?: number;
+  totalTrainers?: number;
+  completionRate?: number;
+  loading?: boolean;
+}
+
+const Skeleton = () => <div className="h-8 w-20 animate-pulse rounded bg-gray-200" />;
+
+export const StatCards = ({
+  totalUsers,
+  activeCourses,
+  totalTrainers,
+  completionRate,
+  loading,
+}: StatCardsProps) => {
   return (
     <div className="mb-6 grid grid-cols-4 gap-4">
       {/* Tổng số học viên */}
@@ -7,10 +23,8 @@ export const StatCards = () => {
           <span className="text-[13px] text-[#5F6368]">Tổng số học viên</span>
           <span className="material-symbols-outlined text-[20px] text-[#1A73E8]">school</span>
         </div>
-        <div className="mb-1 text-[32px] font-normal text-[#202124]">1,248</div>
-        <div className="flex items-center gap-1 text-[12px] text-[#34A853]">
-          <span className="material-symbols-outlined text-[14px]">trending_up</span>
-          +45 đăng ký mới tháng này
+        <div className="mb-1 text-[32px] font-normal text-[#202124]">
+          {loading ? <Skeleton /> : (totalUsers?.toLocaleString() ?? '—')}
         </div>
       </div>
 
@@ -22,10 +36,8 @@ export const StatCards = () => {
             library_books
           </span>
         </div>
-        <div className="mb-1 text-[32px] font-normal text-[#202124]">36</div>
-        <div className="flex items-center gap-1 text-[12px] text-[#34A853]">
-          <span className="material-symbols-outlined text-[14px]">trending_up</span>
-          +3 khóa vừa được duyệt
+        <div className="mb-1 text-[32px] font-normal text-[#202124]">
+          {loading ? <Skeleton /> : (activeCourses?.toLocaleString() ?? '—')}
         </div>
       </div>
 
@@ -35,10 +47,8 @@ export const StatCards = () => {
           <span className="text-[13px] text-[#5F6368]">Giảng viên / Tech Lead</span>
           <span className="material-symbols-outlined text-[20px] text-[#F9AB00]">co_present</span>
         </div>
-        <div className="mb-1 text-[32px] font-normal text-[#202124]">24</div>
-        <div className="flex items-center gap-1 text-[12px] text-[#5F6368]">
-          <span className="material-symbols-outlined text-[14px]">remove</span>
-          Ổn định so với tháng trước
+        <div className="mb-1 text-[32px] font-normal text-[#202124]">
+          {loading ? <Skeleton /> : (totalTrainers?.toLocaleString() ?? '—')}
         </div>
       </div>
 
@@ -48,10 +58,14 @@ export const StatCards = () => {
           <span className="text-[13px] text-[#5F6368]">Tỷ lệ hoàn thành toàn tuyến</span>
           <span className="material-symbols-outlined text-[20px] text-[#EA4335]">check_circle</span>
         </div>
-        <div className="mb-1 text-[32px] font-normal text-[#202124]">78.5%</div>
-        <div className="flex items-center gap-1 text-[12px] text-[#34A853]">
-          <span className="material-symbols-outlined text-[14px]">trending_up</span>
-          Tăng 2.1% nhờ nhắc nhở AI
+        <div className="mb-1 text-[32px] font-normal text-[#202124]">
+          {loading ? (
+            <Skeleton />
+          ) : completionRate !== null && completionRate !== undefined ? (
+            `${completionRate}%`
+          ) : (
+            '—'
+          )}
         </div>
       </div>
     </div>

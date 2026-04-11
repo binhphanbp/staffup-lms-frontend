@@ -1,5 +1,10 @@
 import { create } from 'zustand';
-import { chatApi, type ChatMessage, type ChatSession, type ChatSource } from '@/services/chat.service';
+import {
+  chatApi,
+  type ChatMessage,
+  type ChatSession,
+  type ChatSource,
+} from '@/services/chat.service';
 
 // ============================================================
 // AI Chat Store — Zustand
@@ -94,9 +99,7 @@ export const useChatStore = create<ChatStore>()((set, get) => ({
       const { activeSessionId } = get();
       set((s) => ({
         sessions: s.sessions.filter((session) => session.id !== sessionId),
-        ...(activeSessionId === sessionId
-          ? { activeSessionId: null, messages: [] }
-          : {}),
+        ...(activeSessionId === sessionId ? { activeSessionId: null, messages: [] } : {}),
       }));
     } catch {
       set({ error: 'Không thể xoá phiên trò chuyện.' });

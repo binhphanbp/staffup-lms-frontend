@@ -52,16 +52,10 @@ function WelcomeScreen({ onSuggestionClick }: { onSuggestionClick: (msg: string)
     <div className="chat-welcome">
       <div className="chat-welcome-icon">🤖</div>
       <h4>Trợ lý AI StaffUp</h4>
-      <p>
-        Xin chào! Tôi có thể giúp bạn tra cứu nội quy, chính sách và thông tin nội bộ công ty.
-      </p>
+      <p>Xin chào! Tôi có thể giúp bạn tra cứu nội quy, chính sách và thông tin nội bộ công ty.</p>
       <div className="chat-suggestions">
         {SUGGESTIONS.map((s, i) => (
-          <button
-            key={i}
-            className="chat-suggestion-btn"
-            onClick={() => onSuggestionClick(s)}
-          >
+          <button key={i} className="chat-suggestion-btn" onClick={() => onSuggestionClick(s)}>
             {s}
           </button>
         ))}
@@ -70,11 +64,7 @@ function WelcomeScreen({ onSuggestionClick }: { onSuggestionClick: (msg: string)
   );
 }
 
-function SessionSidebar({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+function SessionSidebar({ onClose }: { onClose: () => void }) {
   const { sessions, selectSession, deleteSession, createNewSession } = useChatStore();
 
   return (
@@ -239,20 +229,14 @@ export default function AIChatWidget() {
               >
                 📋
               </button>
-              <button
-                className="chat-header-btn"
-                onClick={toggleChat}
-                title="Đóng"
-              >
+              <button className="chat-header-btn" onClick={toggleChat} title="Đóng">
                 ✕
               </button>
             </div>
           </div>
 
           {/* Sidebar */}
-          {showSidebar && (
-            <SessionSidebar onClose={() => setShowSidebar(false)} />
-          )}
+          {showSidebar && <SessionSidebar onClose={() => setShowSidebar(false)} />}
 
           {/* Messages */}
           <div className="chat-messages">
@@ -264,15 +248,11 @@ export default function AIChatWidget() {
               <>
                 {messages.map((msg) => (
                   <div key={msg.id} className={`chat-msg ${msg.role}`}>
-                    <div className="chat-msg-avatar">
-                      {msg.role === 'user' ? '👤' : '🤖'}
-                    </div>
+                    <div className="chat-msg-avatar">{msg.role === 'user' ? '👤' : '🤖'}</div>
                     <div className="chat-msg-bubble">
                       {msg.role === 'assistant' ? (
                         <>
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {msg.content}
-                          </ReactMarkdown>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                           {msg.sources && <MessageSources sources={msg.sources} />}
                         </>
                       ) : (
@@ -330,11 +310,7 @@ export default function AIChatWidget() {
                 />
               </div>
               {isStreaming ? (
-                <button
-                  className="chat-stop-btn"
-                  onClick={stopStreaming}
-                  title="Dừng"
-                >
+                <button className="chat-stop-btn" onClick={stopStreaming} title="Dừng">
                   ⏹
                 </button>
               ) : (

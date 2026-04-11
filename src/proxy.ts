@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 // ============================================================
-// Middleware — Route Protection (JWT-based)
+// Proxy — Route Protection (JWT-based)
+// Next.js 16+ uses proxy.ts instead of middleware.ts
 // Runs on every matching route to enforce auth boundaries
 // ============================================================
 
@@ -11,7 +12,7 @@ const publicRoutes = ['/login', '/register', '/forgot-password', '/403'];
 // Routes prefixed with these paths are always public (e.g. API, static)
 const publicPrefixes = ['/api', '/_next', '/favicon.ico'];
 
-export default function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow public prefixes (API routes, Next.js internals, static files)
