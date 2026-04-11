@@ -106,4 +106,19 @@ export const companyDocumentApi = {
     );
     return data.data;
   },
+
+  extractTextFromFile: async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const { data } = await api.post<ApiResponse<{ text: string }>>(
+      `${API_BASE}/extract-text`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+    return data.data.text;
+  },
 };
