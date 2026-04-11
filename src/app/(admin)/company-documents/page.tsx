@@ -48,6 +48,7 @@ export default function CompanyDocumentsPage() {
   const [editingDoc, setEditingDoc] = useState<CompanyDocument | null>(null);
   const [form, setForm] = useState<DocumentFormData>(EMPTY_FORM);
   const [isSaving, setIsSaving] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
 
   // Delete dialog
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
@@ -162,6 +163,27 @@ export default function CompanyDocumentsPage() {
       showToast('Không thể lưu tài liệu.', 'error');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsExtracting(true);
+    try {
+      const text = await companyDocumentApi.extractTextFromFile(file);
+      setForm((prev) => ({
+        ...prev,
+        content: prev.content ? prev.content + '\n' + text : text,
+        title: prev.title || file.name.split('.').slice(0, -1).join('.') || file.name,
+      }));
+      showToast('Đã trích xuất nội dung từ file.');
+    } catch {
+      showToast('Không thể trích xuất văn bản từ file. Vui lòng thử file khác.', 'error');
+    } finally {
+      setIsExtracting(false);
+      e.target.value = ''; // reset file input
     }
   };
 
@@ -465,6 +487,44 @@ export default function CompanyDocumentsPage() {
 
             {/* Modal body */}
             <div className="custom-scrollbar flex-1 overflow-y-auto px-6 py-4">
+              {/* FILE UPLOAD AREA */}
+              <div className="mb-4">
+                <label
+                  className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-4 py-8 transition-colors ${isExtracting ? 'border-[#1A73E8] bg-[#E8F0FE]' : 'border-[#DADCE0] bg-[#F8F9FA] hover:border-[#1A73E8] hover:bg-[#F1F3F4]'}`}
+                >
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    {isExtracting ? (
+                      <span className="material-symbols-outlined animate-spin text-[32px] text-[#1A73E8]">
+                        progress_activity
+                      </span>
+                    ) : (
+                      <span className="material-symbols-outlined text-[32px] text-[#8AB4F8] [font-variation-settings:'FILL'_1]">
+                        upload_file
+                      </span>
+                    )}
+                    <p
+                      className={`m-0 text-[14px] font-medium ${isExtracting ? 'text-[#1A73E8]' : 'text-[#202124]'}`}
+                    >
+                      {isExtracting ? 'Đang đọc nội dung file...' : 'Tải file tài liệu lên'}
+                    </p>
+                    {!isExtracting && (
+                      <p className="m-0 text-center text-[12px] text-[#5F6368]">
+                        Chọn hoặc kéo thả file <strong>PDF, DOCX, TXT</strong> vào đây.
+                        <br />
+                        Hệ thống sẽ tự bóc tách nội dung thô (text) và điền xuống dưới.
+                      </p>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.txt,.md,.csv"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    disabled={isExtracting}
+                  />
+                </label>
+              </div>
+
               <div className="mb-4">
                 <label className="mb-1.5 block text-[13px] font-medium text-[#5F6368]">
                   Tiêu đề <span className="text-[#D93025]">*</span>
