@@ -1,97 +1,131 @@
 'use client';
 
-import React, { useState } from 'react';
-import type { Role } from '@/components/admin/role-permission/types';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import type { Role as ComponentRole } from '@/components/admin/role-permission/types';
+import type { Role as ApiRole } from '@/types';
 import { RoleList } from '@/components/admin/role-permission/RoleList';
 import { PermissionMatrix } from '@/components/admin/role-permission/PermissionMatrix';
 import { AddRoleModal } from '@/components/admin/role-permission/AddRoleModal';
+import { useRoles, useCreateRole, usePermissions } from '@/hooks/useRoles';
 
-const INITIAL_ROLES: Role[] = [
-  {
-    id: 'r1',
-    name: 'System Administrator',
-    type: 'admin',
-    desc: 'Toàn quyền truy cập và thay đổi cấu hình hệ thống, AI.',
-    isDefault: true,
-  },
-  {
-    id: 'r2',
-    name: 'L&D Manager',
-    type: 'manager',
-    desc: 'Quản lý đào tạo, xem báo cáo, quản lý khóa học và học viên.',
-    isDefault: true,
-  },
-  {
-    id: 'r3',
-    name: 'Trainer / Tech Lead',
-    type: 'trainer',
-    desc: 'Soạn thảo khóa học, tạo câu hỏi, chấm điểm bài tự luận.',
-    isDefault: true,
-  },
-  {
-    id: 'r4',
-    name: 'Learner',
-    type: 'learner',
-    desc: 'Truy cập khóa học được gán, làm bài tập, xem chứng chỉ cá nhân.',
-    isDefault: true,
-  },
-  {
-    id: 'r5',
-    name: 'Giảng viên Thuê ngoài',
-    type: 'custom',
-    desc: 'Chỉ có quyền xem và chấm điểm khóa học được chỉ định. Không có quyền sửa nội dung.',
-    isDefault: false,
-  },
-];
+function mapCodeToType(code: string): ComponentRole['type'] {
+  switch (code) {
+    case 'admin':
+    case 'manager':
+    case 'trainer':
+      return code;
+    case 'employee':
+      return 'learner';
+    default:
+      return 'custom';
+  }
+}
+
+function mapApiRole(apiRole: ApiRole): ComponentRole {
+  return {
+    id: apiRole.id,
+    name: apiRole.name,
+    type: mapCodeToType(apiRole.code),
+    desc: apiRole.description ?? '',
+    isDefault: apiRole.isSystem,
+  };
+}
 
 export default function RolePermissionPage() {
-  const [roles, setRoles] = useState<Role[]>(INITIAL_ROLES);
-  const [activeRole, setActiveRole] = useState<Role>(INITIAL_ROLES[0]);
+  const { data: rolesData, isLoading: rolesLoading, error: rolesError } = useRoles();
+  const { data: _permissionsData, isLoading: permsLoading, error: permsError } = usePermissions();
+  const createRoleMutation = useCreateRole();
+
+  const apiRoles: ApiRole[] = useMemo(() => rolesData?.data ?? [], [rolesData]);
+  const roles: ComponentRole[] = useMemo(() => apiRoles.map(mapApiRole), [apiRoles]);
+
+  const [activeRole, setActiveRole] = useState<ComponentRole | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newRoleName, setNewRoleName] = useState('');
   const [newRoleDesc, setNewRoleDesc] = useState('');
   const [toast, setToast] = useState({ visible: false, message: '' });
-  const [permissions, setPermissions] = useState<Record<string, boolean>>({});
 
-  const showToast = (msg: string) => {
+  // Auto-select first role when data loads
+  useEffect(() => {
+    if (roles.length > 0 && !activeRole) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveRole(roles[0]);
+    }
+  }, [roles, activeRole]);
+
+  const permissions: Record<string, boolean> = useMemo(() => {
+    if (!activeRole) return {};
+    const apiRole = apiRoles.find((r) => r.id === activeRole.id);
+    if (!apiRole) return {};
+    const map: Record<string, boolean> = {};
+    for (const perm of apiRole.permissions) {
+      map[perm.code] = true;
+    }
+    return map;
+  }, [activeRole, apiRoles]);
+
+  const showToast = useCallback((msg: string) => {
     setToast({ visible: true, message: msg });
     setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  }, []);
 
-  const handleSelectRole = (role: Role) => {
+  const handleSelectRole = useCallback((role: ComponentRole) => {
     setActiveRole(role);
-    if (role.type === 'admin') {
-      setPermissions({});
-    } else if (role.type === 'custom') {
-      setPermissions({ 'read-course': true, 'update-grade': true });
-    } else {
-      setPermissions({ 'read-dashboard': true, 'read-course': true });
-    }
-  };
+  }, []);
 
-  const handleCreateRole = () => {
+  const handleCreateRole = useCallback(() => {
     if (!newRoleName.trim()) {
       alert('Vui lòng nhập tên vai trò.');
       return;
     }
-    const newRole: Role = {
-      id: `r${Date.now()}`,
-      name: newRoleName,
-      type: 'custom',
-      desc: newRoleDesc || 'Vai trò tùy chỉnh.',
-      isDefault: false,
-    };
-    setRoles([...roles, newRole]);
-    setActiveRole(newRole);
-    setIsAddModalOpen(false);
-    setNewRoleName('');
-    setNewRoleDesc('');
-    showToast(`Đã tạo vai trò "${newRoleName}". Vui lòng thiết lập ma trận quyền.`);
-  };
+    const code = newRoleName.toLowerCase().replace(/\s+/g, '_');
+    createRoleMutation.mutate(
+      { code, name: newRoleName, description: newRoleDesc || undefined },
+      {
+        onSuccess: (response) => {
+          const created = mapApiRole(response);
+          setActiveRole(created);
+          setIsAddModalOpen(false);
+          setNewRoleName('');
+          setNewRoleDesc('');
+          showToast(`Đã tạo vai trò "${newRoleName}". Vui lòng thiết lập ma trận quyền.`);
+        },
+      },
+    );
+  }, [newRoleName, newRoleDesc, createRoleMutation, showToast]);
 
-  const handleSavePermissions = () => {
+  const handleSavePermissions = useCallback(() => {
     showToast('Quyền hạn đã được lưu và cập nhật cho các tài khoản liên quan.');
-  };
+  }, [showToast]);
+
+  const isLoading = rolesLoading || permsLoading;
+  const error = rolesError || permsError;
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DADCE0] border-t-[#1A73E8]" />
+          <span className="text-[14px] text-[#5F6368]">Đang tải dữ liệu phân quyền...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <span className="material-symbols-outlined text-[48px] text-[#D93025]">error</span>
+          <span className="text-[14px] text-[#D93025]">
+            Không thể tải dữ liệu. Vui lòng thử lại sau.
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!activeRole) return null;
 
   return (
     <>

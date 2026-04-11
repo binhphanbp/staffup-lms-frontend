@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import type { LessonProgressStatus } from '@/types';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { LearningHeader } from '@/components/learning-room/LearningHeader';
@@ -30,9 +31,10 @@ export default function LearningRoomPage() {
   const { data: progress } = useEnrollmentProgress(enrollmentId);
 
   // Build a flat list of all lessons with module context
+  const modules = course?.modules;
   const allLessons = useMemo(() => {
-    if (!course?.modules) return [];
-    return course.modules
+    if (!modules) return [];
+    return modules
       .sort((a, b) => a.orderIndex - b.orderIndex)
       .flatMap((mod) =>
         mod.lessons
@@ -43,7 +45,7 @@ export default function LearningRoomPage() {
             moduleTitle: mod.title,
           })),
       );
-  }, [course?.modules]);
+  }, [modules]);
 
   // Determine active lesson (selected, or last-accessed, or first)
   const activeLesson = useMemo(() => {
@@ -65,7 +67,7 @@ export default function LearningRoomPage() {
       string,
       {
         lessonId: string;
-        status: import('@/types').LessonProgressStatus;
+        status: LessonProgressStatus;
         watchTimeSeconds: number;
         lastPositionSeconds: number;
       }

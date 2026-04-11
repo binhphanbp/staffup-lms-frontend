@@ -9,8 +9,8 @@ export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState('overview');
 
   return (
-    <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 md:px-8 py-4 md:py-6">
-      {/* Header */
+    <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 py-4 md:px-8 md:py-6">
+      {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <h1 className="m-0 text-[22px] font-normal text-[#202124]">
           Trung tâm Phân tích Dữ liệu (Analytics)

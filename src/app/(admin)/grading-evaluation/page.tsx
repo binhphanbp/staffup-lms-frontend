@@ -1,132 +1,111 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import type { Submission } from '@/components/instructor/grading/types';
 import { GradingWorkspace } from '@/components/instructor/grading/GradingWorkspace';
+import { useAllQuizAttempts, useAiGradeQuiz } from '@/hooks/useQuiz';
+import type { QuizAttemptHistoryItem } from '@/types';
 
-const INITIAL_SUBMISSIONS: Submission[] = [
-  {
-    id: 101,
-    name: 'Trần Thị Bình',
-    email: 'tran.binh@company.com',
-    course: 'Kỹ năng Bán hàng B2B',
-    assignment: 'Phân tích Kịch bản chốt Sale',
-    submitDate: '2 giờ trước',
-    status: 'AIGraded',
-    aiScore: 85,
-    manualScore: null,
-  },
-  {
-    id: 102,
-    name: 'Lê Minh Cường',
-    email: 'le.cuong@company.com',
-    course: 'Lập trình Python',
-    assignment: 'Viết script crawl dữ liệu',
-    submitDate: 'Hôm qua',
-    status: 'Pending',
-    aiScore: null,
-    manualScore: null,
-  },
-  {
-    id: 103,
-    name: 'Hoàng Tùng',
-    email: 'hoang.tung@company.com',
-    course: 'Kỹ năng Giao tiếp',
-    assignment: 'Xử lý xung đột nhóm',
-    submitDate: 'Hôm qua',
-    status: 'AIGraded',
-    aiScore: 92,
-    manualScore: null,
-  },
-  {
-    id: 104,
-    name: 'Phạm Thu Dung',
-    email: 'pham.dung@company.com',
-    course: 'Kỹ năng Bán hàng B2B',
-    assignment: 'Phân tích Kịch bản chốt Sale',
-    submitDate: '2 ngày trước',
-    status: 'Graded',
-    aiScore: 75,
-    manualScore: 80,
-  },
-  {
-    id: 105,
-    name: 'Nguyễn Văn An',
-    email: 'nguyen.an@company.com',
-    course: 'Lập trình Python',
-    assignment: 'Viết script crawl dữ liệu',
-    submitDate: '3 ngày trước',
-    status: 'Pending',
-    aiScore: null,
-    manualScore: null,
-  },
-];
+function formatRelativeDate(dateStr: string | null): string {
+  if (!dateStr) return '-';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 60) return `${minutes} phút trước`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} giờ trước`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return 'Hôm qua';
+  if (days < 7) return `${days} ngày trước`;
+  return new Date(dateStr).toLocaleDateString('vi-VN');
+}
+
+type StatusType = 'Pending' | 'AIGraded' | 'Graded';
+
+interface MappedSubmission {
+  id: number;
+  attemptId: string;
+  name: string;
+  email: string;
+  course: string;
+  assignment: string;
+  submitDate: string;
+  status: StatusType;
+  aiScore: number | null;
+  manualScore: number | null;
+}
+
+function mapAttemptToSubmission(item: QuizAttemptHistoryItem, index: number): MappedSubmission {
+  const status: StatusType =
+    item.status === 'graded' ? 'Graded' : item.status === 'submitted' ? 'Pending' : 'Pending';
+  return {
+    id: index + 1,
+    attemptId: item.id,
+    name: item.enrollment.user.fullName,
+    email: item.enrollment.user.email,
+    course: item.enrollment.course.title,
+    assignment: item.quiz.title,
+    submitDate: formatRelativeDate(item.submittedAt),
+    status,
+    aiScore: item.objectiveScore,
+    manualScore: item.manualScore,
+  };
+}
 
 export default function GradingEvaluationPage() {
-  const [submissions, setSubmissions] = useState<Submission[]>(INITIAL_SUBMISSIONS);
+  const { data: attempts = [], isLoading, isError, refetch } = useAllQuizAttempts();
+  const aiGradeQuiz = useAiGradeQuiz();
+
+  const submissions: MappedSubmission[] = useMemo(
+    () =>
+      attempts
+        .filter((a) => a.status === 'submitted' || a.status === 'graded')
+        .map(mapAttemptToSubmission),
+    [attempts],
+  );
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [courseFilter, setCourseFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
 
   // Workspace State
-  const [activeSubId, setActiveSubId] = useState<number | null>(null);
-  const [draftScore, setDraftScore] = useState<string>('');
-  const [draftFeedback, setDraftFeedback] = useState<string>('');
+  const [activeAttemptId, setActiveAttemptId] = useState<string | null>(null);
   const [toast, setToast] = useState({ visible: false, message: '' });
 
-  const activeSub = submissions.find((s) => s.id === activeSubId);
   const pendingCount = submissions.filter((s) => s.status !== 'Graded').length;
+  const gradedCount = submissions.filter((s) => s.status === 'Graded').length;
 
   const filteredSubmissions = useMemo(() => {
     return submissions.filter((sub) => {
       const matchSearch = sub.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchCourse = courseFilter === 'all' || sub.course.includes(courseFilter);
       const matchStatus = statusFilter === 'all' || sub.status === statusFilter;
-      return matchSearch && matchCourse && matchStatus;
+      return matchSearch && matchStatus;
     });
-  }, [submissions, searchQuery, courseFilter, statusFilter]);
+  }, [submissions, searchQuery, statusFilter]);
 
   const showToast = (msg: string) => {
     setToast({ visible: true, message: msg });
     setTimeout(() => setToast({ visible: false, message: '' }), 3000);
   };
 
-  const openWorkspace = (id: number) => {
-    const sub = submissions.find((s) => s.id === id);
-    if (!sub) return;
-    setActiveSubId(id);
-    if (sub.status === 'Graded') {
-      setDraftScore(sub.manualScore?.toString() || '');
-      setDraftFeedback('Bài làm đạt yêu cầu. Lập luận tốt.');
-    } else {
-      setDraftScore('');
-      setDraftFeedback('');
-    }
-  };
-
-  const handleApplyAI = () => {
-    if (activeSub && activeSub.aiScore) {
-      setDraftScore(activeSub.aiScore.toString());
-      setDraftFeedback(
-        'Học viên nắm vững lý thuyết Consultative Selling và có ví dụ tính toán ROI rõ ràng.\n- Điểm mạnh: Xử lý từ chối logic.\n- Cần cải thiện: Phần giới thiệu thêm thông tin đối thủ.',
-      );
-    } else {
-      alert('Bài này chưa có dữ liệu AI chấm.');
-    }
-  };
-
-  const handleSubmitGrade = () => {
-    if (!draftScore) {
-      alert('Vui lòng nhập điểm số chính thức.');
+  const handleBatchAiGrade = async () => {
+    const pendingSubs = submissions.filter((s) => s.status === 'Pending');
+    if (pendingSubs.length === 0) {
+      showToast('Không có bài nào cần chấm AI.');
       return;
     }
-    setSubmissions((prev) =>
-      prev.map((s) =>
-        s.id === activeSubId ? { ...s, status: 'Graded', manualScore: parseInt(draftScore) } : s,
-      ),
-    );
-    setActiveSubId(null);
-    showToast('Đã lưu điểm và gửi nhận xét đến học viên thành công!');
+
+    showToast('AI đang quét và chấm điểm tất cả bài viết. Vui lòng đợi...');
+
+    let successCount = 0;
+    for (const sub of pendingSubs) {
+      try {
+        await aiGradeQuiz.mutateAsync(sub.attemptId);
+        successCount++;
+      } catch {
+        // Continue with next attempt even if one fails
+      }
+    }
+
+    await refetch();
+    showToast(`AI đã chấm xong ${successCount}/${pendingSubs.length} bài!`);
   };
 
   return (
@@ -137,11 +116,23 @@ export default function GradingEvaluationPage() {
             Chấm bài tự luận & Đánh giá
           </h1>
           <button
-            onClick={() => showToast('AI đang quét và chấm điểm 12 bài viết. Vui lòng đợi...')}
-            className="flex items-center gap-2 rounded border border-[#E8D3FD] bg-[#F3E8FD] px-4 py-2 text-[13px] font-medium text-[#9334E6] transition-all hover:shadow-[0_1px_2px_0_rgba(60,64,67,0.3)]"
+            onClick={handleBatchAiGrade}
+            disabled={aiGradeQuiz.isPending}
+            className="flex items-center gap-2 rounded border border-[#E8D3FD] bg-[#F3E8FD] px-4 py-2 text-[13px] font-medium text-[#9334E6] transition-all hover:shadow-[0_1px_2px_0_rgba(60,64,67,0.3)] disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[20px]">auto_awesome</span> Chấm tự động
-            tất cả bằng AI
+            {aiGradeQuiz.isPending ? (
+              <>
+                <span className="material-symbols-outlined animate-spin text-[20px]">
+                  progress_activity
+                </span>
+                AI đang chấm...
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
+                Chấm tự động tất cả bằng AI
+              </>
+            )}
           </button>
         </div>
 
@@ -155,7 +146,7 @@ export default function GradingEvaluationPage() {
             </div>
             <div>
               <h4 className="mb-1 text-[24px] leading-none font-normal text-[#202124]">
-                {pendingCount}
+                {isLoading ? '-' : pendingCount}
               </h4>
               <p className="m-0 text-[12px] font-medium text-[#5F6368] uppercase">
                 Bài nộp chờ chấm
@@ -169,10 +160,10 @@ export default function GradingEvaluationPage() {
               </span>
             </div>
             <div>
-              <h4 className="mb-1 text-[24px] leading-none font-normal text-[#202124]">45</h4>
-              <p className="m-0 text-[12px] font-medium text-[#5F6368] uppercase">
-                Đã chấm (Tuần này)
-              </p>
+              <h4 className="mb-1 text-[24px] leading-none font-normal text-[#202124]">
+                {isLoading ? '-' : gradedCount}
+              </h4>
+              <p className="m-0 text-[12px] font-medium text-[#5F6368] uppercase">Đã chấm xong</p>
             </div>
           </div>
           <div className="flex flex-1 items-center gap-4 rounded-lg border border-[#E8D3FD] bg-gradient-to-r from-white to-[#F3E8FD] p-4 px-5">
@@ -182,10 +173,10 @@ export default function GradingEvaluationPage() {
               </span>
             </div>
             <div>
-              <h4 className="mb-1 text-[24px] leading-none font-normal text-[#9334E6]">95%</h4>
-              <p className="m-0 text-[12px] font-medium text-[#9334E6] uppercase">
-                Độ chính xác của AI
-              </p>
+              <h4 className="mb-1 text-[24px] leading-none font-normal text-[#9334E6]">
+                {submissions.length > 0 ? `${submissions.length}` : '0'}
+              </h4>
+              <p className="m-0 text-[12px] font-medium text-[#9334E6] uppercase">Tổng bài nộp</p>
             </div>
           </div>
         </div>
@@ -204,136 +195,156 @@ export default function GradingEvaluationPage() {
           </div>
           <select
             className="rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none"
-            value={courseFilter}
-            onChange={(e) => setCourseFilter(e.target.value)}
-          >
-            <option value="all">Tất cả Khóa học</option>
-            <option value="Bán hàng">Kỹ năng Bán hàng B2B</option>
-            <option value="Python">Lập trình Python</option>
-            <option value="Giao tiếp">Kỹ năng Giao tiếp</option>
-          </select>
-          <select
-            className="rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <option value="all">Tất cả Trạng thái</option>
             <option value="Pending">Chờ chấm</option>
-            <option value="AIGraded">AI đã chấm</option>
             <option value="Graded">Đã hoàn tất</option>
           </select>
         </div>
 
+        {/* LOADING / ERROR */}
+        {isLoading && (
+          <div className="flex flex-1 items-center justify-center py-16">
+            <span className="material-symbols-outlined animate-spin text-[40px] text-[#1A73E8]">
+              progress_activity
+            </span>
+          </div>
+        )}
+
+        {isError && !isLoading && (
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 py-16 text-[#D93025]">
+            <span className="material-symbols-outlined text-[40px]">error</span>
+            <p className="text-[14px]">Không thể tải dữ liệu. Vui lòng thử lại sau.</p>
+          </div>
+        )}
+
         {/* TABLE */}
-        <div className="flex-1 overflow-hidden rounded-lg border border-[#DADCE0] bg-white">
-          <table className="w-full border-collapse">
-            <thead className="bg-[#F8F9FA]">
-              <tr>
-                <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
-                  Học viên
-                </th>
-                <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
-                  Bài tập / Khóa học
-                </th>
-                <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
-                  Ngày nộp
-                </th>
-                <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
-                  Trạng thái
-                </th>
-                <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
-                  Điểm AI dự kiến
-                </th>
-                <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
-                  Thao tác
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredSubmissions.map((sub) => (
-                <tr key={sub.id} className="border-b border-[#F1F3F4] hover:bg-[#F8F9FA]">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8F0FE] text-[13px] font-medium text-[#1A73E8] uppercase">
-                        {sub.name
-                          .split(' ')
-                          .slice(-2)
-                          .map((n) => n[0])
-                          .join('')}
-                      </div>
-                      <div>
-                        <p className="m-0 text-[13px] font-medium text-[#202124]">{sub.name}</p>
-                        <span className="text-[11px] text-[#5F6368]">{sub.email}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className="cursor-pointer text-[13px] font-medium text-[#1A73E8] hover:underline"
-                      onClick={() => openWorkspace(sub.id)}
-                    >
-                      {sub.assignment}
-                    </span>
-                    <div className="mt-0.5 text-[11px] text-[#5F6368]">Khóa: {sub.course}</div>
-                  </td>
-                  <td className="px-4 py-3 text-[13px] text-[#202124]">{sub.submitDate}</td>
-                  <td className="px-4 py-3">
-                    {sub.status === 'Pending' && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-[#FFF3E0] px-2 py-1 text-[11px] font-medium text-[#E65100]">
-                        <span className="material-symbols-outlined text-[12px]">schedule</span> Chờ
-                        chấm
-                      </span>
-                    )}
-                    {sub.status === 'AIGraded' && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-[#F3E8FD] px-2 py-1 text-[11px] font-medium text-[#9334E6]">
-                        <span className="material-symbols-outlined text-[12px]">auto_awesome</span>{' '}
-                        AI đã chấm
-                      </span>
-                    )}
-                    {sub.status === 'Graded' && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-[#E6F4EA] px-2 py-1 text-[11px] font-medium text-[#137333]">
-                        <span className="material-symbols-outlined text-[12px]">done_all</span> Đã
-                        hoàn tất
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    {sub.aiScore ? (
-                      <span className="flex items-center gap-1 font-medium text-[#9334E6]">
-                        <span className="material-symbols-outlined text-[16px]">auto_awesome</span>{' '}
-                        {sub.aiScore}/100
-                      </span>
-                    ) : sub.status === 'Graded' ? (
-                      <span className="font-medium text-[#34A853]">{sub.manualScore}/100</span>
-                    ) : (
-                      <span className="text-[#5F6368]">-</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => openWorkspace(sub.id)}
-                      className={`flex items-center justify-center gap-2 rounded-[4px] px-4 py-2 text-[13px] font-medium transition-colors ${sub.status === 'Graded' ? 'border border-[#DADCE0] bg-transparent text-[#5F6368] hover:bg-[#F1F3F4]' : 'bg-[#1A73E8] text-white hover:bg-[#174EA6]'}`}
-                    >
-                      {sub.status === 'Graded' ? 'Xem lại' : 'Chấm bài'}
-                    </button>
-                  </td>
+        {!isLoading && !isError && (
+          <div className="flex-1 overflow-hidden rounded-lg border border-[#DADCE0] bg-white">
+            <table className="w-full border-collapse">
+              <thead className="bg-[#F8F9FA]">
+                <tr>
+                  <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    Học viên
+                  </th>
+                  <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    Bài tập / Khóa học
+                  </th>
+                  <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    Ngày nộp
+                  </th>
+                  <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    Trạng thái
+                  </th>
+                  <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    Điểm
+                  </th>
+                  <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    Thao tác
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filteredSubmissions.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-10 text-center text-[13px] text-[#5F6368]">
+                      Không có bài nộp nào.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredSubmissions.map((sub) => (
+                    <tr
+                      key={sub.attemptId}
+                      className="border-b border-[#F1F3F4] hover:bg-[#F8F9FA]"
+                    >
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8F0FE] text-[13px] font-medium text-[#1A73E8] uppercase">
+                            {sub.name
+                              .split(' ')
+                              .slice(-2)
+                              .map((n) => n[0])
+                              .join('')}
+                          </div>
+                          <div>
+                            <p className="m-0 text-[13px] font-medium text-[#202124]">{sub.name}</p>
+                            <span className="text-[11px] text-[#5F6368]">{sub.email}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className="cursor-pointer text-[13px] font-medium text-[#1A73E8] hover:underline"
+                          onClick={() => setActiveAttemptId(sub.attemptId)}
+                        >
+                          {sub.assignment}
+                        </span>
+                        <div className="mt-0.5 text-[11px] text-[#5F6368]">Khóa: {sub.course}</div>
+                      </td>
+                      <td className="px-4 py-3 text-[13px] text-[#202124]">{sub.submitDate}</td>
+                      <td className="px-4 py-3">
+                        {sub.status === 'Pending' && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[#FFF3E0] px-2 py-1 text-[11px] font-medium text-[#E65100]">
+                            <span className="material-symbols-outlined text-[12px]">schedule</span>
+                            Chờ chấm
+                          </span>
+                        )}
+                        {sub.status === 'AIGraded' && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[#F3E8FD] px-2 py-1 text-[11px] font-medium text-[#9334E6]">
+                            <span className="material-symbols-outlined text-[12px]">
+                              auto_awesome
+                            </span>
+                            AI đã chấm
+                          </span>
+                        )}
+                        {sub.status === 'Graded' && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[#E6F4EA] px-2 py-1 text-[11px] font-medium text-[#137333]">
+                            <span className="material-symbols-outlined text-[12px]">done_all</span>
+                            Đã hoàn tất
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {sub.manualScore !== null && sub.manualScore !== undefined ? (
+                          <span className="font-medium text-[#34A853]">{sub.manualScore}</span>
+                        ) : sub.aiScore !== null && sub.aiScore !== undefined ? (
+                          <span className="flex items-center gap-1 font-medium text-[#9334E6]">
+                            <span className="material-symbols-outlined text-[16px]">
+                              auto_awesome
+                            </span>
+                            {sub.aiScore}
+                          </span>
+                        ) : (
+                          <span className="text-[#5F6368]">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => setActiveAttemptId(sub.attemptId)}
+                          className={`flex items-center justify-center gap-2 rounded-[4px] px-4 py-2 text-[13px] font-medium transition-colors ${sub.status === 'Graded' ? 'border border-[#DADCE0] bg-transparent text-[#5F6368] hover:bg-[#F1F3F4]' : 'bg-[#1A73E8] text-white hover:bg-[#174EA6]'}`}
+                        >
+                          {sub.status === 'Graded' ? 'Xem lại' : 'Chấm bài'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
-      <GradingWorkspace
-        activeSub={activeSub}
-        onClose={() => setActiveSubId(null)}
-        draftScore={draftScore}
-        setDraftScore={setDraftScore}
-        draftFeedback={draftFeedback}
-        setDraftFeedback={setDraftFeedback}
-        onApplyAI={handleApplyAI}
-        onSubmitGrade={handleSubmitGrade}
-      />
+      {/* Grading Workspace (Full Screen Overlay) */}
+      {activeAttemptId && (
+        <GradingWorkspace
+          attemptId={activeAttemptId}
+          onClose={() => setActiveAttemptId(null)}
+          onGraded={() => refetch()}
+        />
+      )}
 
       {/* TOAST */}
       <div

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { StudentHeader } from '@/components/shared/StudentHeader';
 import { QuestionContent } from '@/components/quiz/QuestionContent';
@@ -23,7 +23,7 @@ export default function QuizAssessmentPage() {
   // If no attemptId, start a new quiz
   const startQuiz = useStartQuiz();
   const [attemptId, setAttemptId] = useState<string | null>(attemptIdParam);
-  const startCalledRef = React.useRef(false);
+  const startCalledRef = useRef(false);
 
   useEffect(() => {
     if (!attemptId && quizIdParam && enrollmentIdParam && !startCalledRef.current) {
@@ -32,17 +32,19 @@ export default function QuizAssessmentPage() {
         { quizId: quizIdParam, enrollmentId: enrollmentIdParam },
         {
           onSuccess: (data) => setAttemptId(data.attemptId),
-          onError: () => { startCalledRef.current = false; },
+          onError: () => {
+            startCalledRef.current = false;
+          },
         },
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attemptId, quizIdParam, enrollmentIdParam]);
 
   // Fetch attempt detail (contains questions)
   const { data: attempt, isLoading } = useQuizAttemptDetail(attemptId);
 
-  const questions = attempt?.questions ?? [];
+  const questions = useMemo(() => attempt?.questions ?? [], [attempt?.questions]);
   const totalQuestions = questions.length;
   const timeLimitSeconds = attempt?.timeLimitSeconds ?? null;
   const timeRemaining = attempt?.timeRemainingSeconds ?? timeLimitSeconds ?? 45 * 60;
@@ -71,9 +73,9 @@ export default function QuizAssessmentPage() {
 
   // Sync timer from API response
   useEffect(() => {
-    if (attempt?.timeRemainingSeconds != null) {
+    if (attempt?.timeRemainingSeconds !== null && attempt?.timeRemainingSeconds !== undefined) {
       setTimeLeft(attempt.timeRemainingSeconds);
-    } else if (timeLimitSeconds != null) {
+    } else if (timeLimitSeconds !== null && timeLimitSeconds !== undefined) {
       setTimeLeft(timeLimitSeconds);
     }
   }, [attempt?.timeRemainingSeconds, timeLimitSeconds]);
@@ -92,7 +94,10 @@ export default function QuizAssessmentPage() {
 
   // Derive answered and review sets from API data
   const answeredQs = useMemo(
-    () => questions.filter((q) => q.response != null).map((q) => q.displayOrder),
+    () =>
+      questions
+        .filter((q) => q.response !== null && q.response !== undefined)
+        .map((q) => q.displayOrder),
     [questions],
   );
 

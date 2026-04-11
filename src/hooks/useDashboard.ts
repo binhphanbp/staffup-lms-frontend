@@ -5,6 +5,20 @@ import { dashboardService } from '@/services/dashboard.service';
 // React Query Hooks — Dashboard
 // ============================================================
 
+export function useAdminDashboard() {
+  return useQuery({
+    queryKey: ['dashboard-admin'],
+    queryFn: () => dashboardService.getAdminStats(),
+  });
+}
+
+export function useTrainerDashboard() {
+  return useQuery({
+    queryKey: ['dashboard-trainer'],
+    queryFn: () => dashboardService.getTrainerStats(),
+  });
+}
+
 export function useEmployeeDashboard() {
   return useQuery({
     queryKey: ['dashboard-employee'],

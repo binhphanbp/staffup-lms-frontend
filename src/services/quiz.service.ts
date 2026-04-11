@@ -7,11 +7,34 @@ import type {
   QuizResponsePayload,
   QuizAttemptHistoryItem,
   QuizSubmitResponse,
+  AiGradeEssayResponse,
 } from '@/types';
 
 // ============================================================
-// Quiz Service — quiz attempts, responses, submission
+// AI Grading Types — returned by backend
 // ============================================================
+
+export interface AiGradeQuizResponse {
+  quizAttemptId: string;
+  totalEssayQuestions: number;
+  gradedCount: number;
+  skippedCount: number;
+  results: Array<{
+    attemptQuestionId: string;
+    questionContent: string;
+    suggestedScore: number;
+    maxScore: number;
+    feedback: string;
+    strengths: string[];
+    weaknesses: string[];
+    rubricBreakdown: Array<{
+      criterion: string;
+      score: number;
+      maxScore: number;
+      comment: string;
+    }>;
+  }>;
+}
 
 const API_BASE = '/quiz-attempts';
 
@@ -47,6 +70,37 @@ export const quizService = {
   submit: async (attemptId: string): Promise<QuizSubmitResponse> => {
     const { data } = await api.post<ApiResponse<QuizSubmitResponse>>(
       `${API_BASE}/${attemptId}/submit`,
+    );
+    return data.data;
+  },
+
+  manualGradeResponse: async (
+    responseId: string,
+    payload: { awardedPoints: number; feedback?: string },
+  ): Promise<void> => {
+    await api.post(`${API_BASE}/responses/${responseId}/grade`, payload);
+  },
+
+  finalizeGrading: async (attemptId: string): Promise<void> => {
+    await api.post(`${API_BASE}/${attemptId}/finalize`);
+  },
+
+  // ============================================================
+  // AI Grading — essay auto-grading via Gemini
+  // ============================================================
+
+  /** Grade a single essay question using AI */
+  aiGradeEssay: async (attemptQuestionId: string): Promise<AiGradeEssayResponse['data']> => {
+    const { data } = await api.post<AiGradeEssayResponse>(
+      `/ai-chat/grade-essay/${attemptQuestionId}`,
+    );
+    return data.data;
+  },
+
+  /** Grade all essay questions in a quiz attempt using AI */
+  aiGradeQuiz: async (quizAttemptId: string): Promise<AiGradeQuizResponse> => {
+    const { data } = await api.post<ApiResponse<AiGradeQuizResponse>>(
+      `/ai-chat/grade-quiz/${quizAttemptId}`,
     );
     return data.data;
   },

@@ -44,3 +44,72 @@ export function useSubmitQuiz() {
     },
   });
 }
+
+export function useAllQuizAttempts(params?: {
+  enrollmentId?: string;
+  quizId?: string;
+  page?: number;
+  limit?: number;
+}) {
+  return useQuery({
+    queryKey: ['quiz-attempts-all', params],
+    queryFn: () => quizService.getHistory(params),
+  });
+}
+
+export function useManualGradeResponse() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      responseId,
+      awardedPoints,
+      feedback,
+    }: {
+      responseId: string;
+      awardedPoints: number;
+      feedback?: string;
+    }) => quizService.manualGradeResponse(responseId, { awardedPoints, feedback }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['quiz-attempts-all'] });
+      queryClient.invalidateQueries({ queryKey: ['quiz-attempt'] });
+    },
+  });
+}
+
+export function useFinalizeGrading() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (attemptId: string) => quizService.finalizeGrading(attemptId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['quiz-attempts-all'] });
+    },
+  });
+}
+
+// ============================================================
+// AI Grading Hooks
+// ============================================================
+
+/** Grade a single essay question via AI */
+export function useAiGradeEssay() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (attemptQuestionId: string) => quizService.aiGradeEssay(attemptQuestionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['quiz-attempt'] });
+      queryClient.invalidateQueries({ queryKey: ['quiz-attempts-all'] });
+    },
+  });
+}
+
+/** Grade all essay questions in a quiz attempt via AI */
+export function useAiGradeQuiz() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (quizAttemptId: string) => quizService.aiGradeQuiz(quizAttemptId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['quiz-attempt'] });
+      queryClient.invalidateQueries({ queryKey: ['quiz-attempts-all'] });
+    },
+  });
+}

@@ -60,4 +60,27 @@ export const courseService = {
     );
     return data.data;
   },
+
+  // ----- CRUD -----
+
+  create: async (payload: Record<string, unknown>): Promise<CourseDetailResponse> => {
+    const { data } = await api.post<ApiResponse<CourseDetailResponse>>(API_BASE, payload);
+    return data.data;
+  },
+
+  update: async (id: string, payload: Record<string, unknown>): Promise<CourseDetailResponse> => {
+    const { data } = await api.patch<ApiResponse<CourseDetailResponse>>(
+      `${API_BASE}/${id}`,
+      payload,
+    );
+    return data.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`${API_BASE}/${id}`);
+  },
+
+  updateStatus: async (id: string, status: string): Promise<void> => {
+    await api.patch(`${API_BASE}/${id}/status`, { status });
+  },
 };

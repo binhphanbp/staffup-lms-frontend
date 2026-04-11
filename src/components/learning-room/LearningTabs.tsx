@@ -103,7 +103,7 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
                       <i
                         className={`fa-regular ${res.resourceType === 'pdf' ? 'fa-file-pdf' : 'fa-file'}`}
                       ></i>
-                      {res.title}
+                      {res.fileName}
                     </Link>
                   ))}
                 </div>

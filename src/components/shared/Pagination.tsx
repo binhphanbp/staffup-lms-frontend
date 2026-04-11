@@ -23,7 +23,11 @@ export const Pagination = ({
     const pages: (number | 'ellipsis')[] = [];
     pages.push(1);
     if (currentPage > 3) pages.push('ellipsis');
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+    for (
+      let i = Math.max(2, currentPage - 1);
+      i <= Math.min(totalPages - 1, currentPage + 1);
+      i++
+    ) {
       pages.push(i);
     }
     if (currentPage < totalPages - 2) pages.push('ellipsis');
@@ -32,7 +36,8 @@ export const Pagination = ({
   };
 
   const startItem = totalItems && itemsPerPage ? (currentPage - 1) * itemsPerPage + 1 : null;
-  const endItem = totalItems && itemsPerPage ? Math.min(currentPage * itemsPerPage, totalItems) : null;
+  const endItem =
+    totalItems && itemsPerPage ? Math.min(currentPage * itemsPerPage, totalItems) : null;
 
   return (
     <div className="mt-10 mb-4 flex w-full flex-col items-center">

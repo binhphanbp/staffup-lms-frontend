@@ -201,11 +201,12 @@ export default function RegisterPage() {
 
       // Redirect based on user role
       const roleCodes = response.user.roleCodes || [];
-      const redirectTo = roleCodes.includes('admin') || roleCodes.includes('manager')
-        ? '/admin-dashboard'
-        : roleCodes.includes('trainer')
-          ? '/dashboard'
-          : '/courses';
+      const redirectTo =
+        roleCodes.includes('admin') || roleCodes.includes('manager')
+          ? '/admin-dashboard'
+          : roleCodes.includes('trainer')
+            ? '/dashboard'
+            : '/courses';
       router.push(redirectTo);
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };

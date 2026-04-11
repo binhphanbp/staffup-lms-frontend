@@ -1,5 +1,11 @@
 import api from '@/lib/axios';
-import type { ApiResponse, EmployeeDashboardStats, AIInsightsResponse } from '@/types';
+import type {
+  ApiResponse,
+  EmployeeDashboardStats,
+  AdminDashboardStats,
+  TrainerDashboardStats,
+  AIInsightsResponse,
+} from '@/types';
 
 // ============================================================
 // Dashboard Service — role-based dashboard stats
@@ -13,13 +19,13 @@ export const dashboardService = {
     return data.data;
   },
 
-  getAdminStats: async () => {
-    const { data } = await api.get<ApiResponse<unknown>>(API_BASE);
+  getAdminStats: async (): Promise<AdminDashboardStats> => {
+    const { data } = await api.get<ApiResponse<AdminDashboardStats>>(API_BASE);
     return data.data;
   },
 
-  getTrainerStats: async () => {
-    const { data } = await api.get<ApiResponse<unknown>>(`${API_BASE}/trainer`);
+  getTrainerStats: async (): Promise<TrainerDashboardStats> => {
+    const { data } = await api.get<ApiResponse<TrainerDashboardStats>>(`${API_BASE}/trainer`);
     return data.data;
   },
 
@@ -33,11 +39,9 @@ export const dashboardService = {
    * @param refresh — if true, bypass server-side 1-hour cache
    */
   getAiInsights: async (refresh = false): Promise<AIInsightsResponse> => {
-    const { data } = await api.get<ApiResponse<AIInsightsResponse>>(
-      `${API_BASE}/ai-insights`,
-      { params: refresh ? { refresh: 'true' } : undefined },
-    );
+    const { data } = await api.get<ApiResponse<AIInsightsResponse>>(`${API_BASE}/ai-insights`, {
+      params: refresh ? { refresh: 'true' } : undefined,
+    });
     return data.data;
   },
 };
-
