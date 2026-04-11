@@ -12,6 +12,7 @@ interface LearningHeaderProps {
   enrollmentId?: string | null;
   lessonId?: string | null;
   onOpenSyllabus?: () => void;
+  hasCertificate?: boolean;
 }
 
 export const LearningHeader = ({
@@ -22,6 +23,7 @@ export const LearningHeader = ({
   enrollmentId,
   lessonId,
   onOpenSyllabus,
+  hasCertificate = false,
 }: LearningHeaderProps) => {
   const completeLesson = useCompleteLesson();
 
@@ -53,6 +55,21 @@ export const LearningHeader = ({
       </div>
 
       <div className="flex shrink-0 items-center gap-3 md:gap-5">
+        {/* Certificate indicator */}
+        {hasCertificate && (
+          <>
+            <Link
+              href="/certificates"
+              className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1.5 text-xs font-bold text-white shadow-lg transition-transform hover:scale-105"
+              title="Xem chứng chỉ"
+            >
+              <i className="fa-solid fa-award"></i>
+              <span className="hidden sm:inline">Đã có chứng chỉ</span>
+            </Link>
+            <div className="hidden h-6 w-px bg-slate-700 md:block"></div>
+          </>
+        )}
+
         <div className="hidden w-48 items-center gap-3 md:flex">
           <div className="flex-1">
             <div className="mb-1 flex justify-between text-[10px] font-bold">
@@ -79,10 +96,10 @@ export const LearningHeader = ({
         {onOpenSyllabus && (
           <button
             onClick={onOpenSyllabus}
-            className="flex items-center gap-1.5 rounded border border-slate-700 px-2.5 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:border-slate-500 hover:text-white md:hidden"
+            className="flex items-center gap-2 rounded-lg border-2 border-blue-500 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-600 transition-all hover:border-blue-600 hover:bg-blue-100 md:hidden"
             title="Xem giáo trình"
           >
-            <i className="fa-solid fa-list text-xs"></i>
+            <i className="fa-solid fa-list text-sm"></i>
             <span>Giáo trình</span>
           </button>
         )}

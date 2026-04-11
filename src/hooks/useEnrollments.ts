@@ -40,6 +40,17 @@ export function useEnrollUser() {
   });
 }
 
+export function useSelfEnroll() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (courseId: string) => enrollmentService.selfEnroll(courseId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['enrollments'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-employee'] });
+    },
+  });
+}
+
 export function useStartLesson() {
   return useMutation({
     mutationFn: ({ enrollmentId, lessonId }: { enrollmentId: string; lessonId: string }) =>

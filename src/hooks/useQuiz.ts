@@ -22,6 +22,9 @@ export function useQuizHistory(params?: { enrollmentId?: string; quizId?: string
   });
 }
 
+// Alias for better naming
+export const useQuizAttemptHistory = useQuizHistory;
+
 export function useStartQuiz() {
   return useMutation({
     mutationFn: (payload: QuizStartPayload) => quizService.start(payload),

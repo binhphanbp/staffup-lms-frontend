@@ -3,6 +3,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { QueryProvider } from '@/components/providers/QueryProvider';
+import { RoleRedirect } from '@/components/auth/RoleRedirect';
 import AIChatWidget from '@/components/ai-chat/AIChatWidget';
 import './globals.css';
 
@@ -41,7 +42,10 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col font-sans" suppressHydrationWarning>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <RoleRedirect />
+          <div suppressHydrationWarning>{children}</div>
+        </QueryProvider>
         <AIChatWidget />
       </body>
     </html>

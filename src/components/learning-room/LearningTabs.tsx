@@ -8,10 +8,37 @@ import type { LessonDetail } from '@/types';
 interface LearningTabsProps {
   lesson?: LessonDetail & { moduleTitle?: string };
   trainer?: { id: string; fullName: string; email: string; avatarUrl: string | null };
+  currentVideoTime?: number;
+  onSeekTo?: (time: number) => void;
 }
 
-export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
+export const LearningTabs = ({ lesson, trainer, currentVideoTime = 0, onSeekTo }: LearningTabsProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'qa'>('overview');
+  const [noteText, setNoteText] = useState('');
+  const [notes, setNotes] = useState<Array<{ id: string; time: number; text: string }>>([
+    { id: '1', time: 255, text: 'Sự khác biệt chính giữa Master-Slave: Master xử lý Write, Slave xử lý Read. Cần cẩn thận với Replication Lag (tức là ghi xong đọc liền có thể không thấy data).' },
+  ]);
+
+  const formatTime = (seconds: number): string => {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  const handleSaveNote = () => {
+    if (!noteText.trim()) return;
+    const newNote = {
+      id: Date.now().toString(),
+      time: Math.floor(currentVideoTime),
+      text: noteText,
+    };
+    setNotes([newNote, ...notes]);
+    setNoteText('');
+  };
+
+  const handleDeleteNote = (id: string) => {
+    setNotes(notes.filter(n => n.id !== id));
+  };
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-6 lg:px-10">
@@ -67,7 +94,7 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
             className={`flex items-center gap-1 border-b-2 py-3 transition-colors ${activeTab === 'notes' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
           >
             Ghi chú{' '}
-            <span className="bg-primary rounded-full px-1.5 py-0.5 text-[9px] text-white">2</span>
+            <span className="bg-primary rounded-full px-1.5 py-0.5 text-[9px] text-white">{notes.length}</span>
           </button>
           <button
             onClick={() => setActiveTab('qa')}
@@ -103,7 +130,7 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
                       <i
                         className={`fa-regular ${res.resourceType === 'pdf' ? 'fa-file-pdf' : 'fa-file'}`}
                       ></i>
-                      {res.title}
+                      {res.fileName}
                     </Link>
                   ))}
                 </div>
@@ -117,11 +144,16 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
             <div className="mb-8 rounded-lg border border-gray-200 bg-slate-50 p-4">
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-700">Tạo ghi chú mới</span>
-                <button className="hover:bg-primary flex items-center gap-1 rounded bg-slate-200 px-2 py-1 font-mono text-[11px] font-bold text-slate-700 transition-colors hover:text-white">
-                  <i className="fa-solid fa-thumbtack"></i> Đính kèm lúc 10:05
+                <button 
+                  className="hover:bg-primary flex items-center gap-1 rounded bg-slate-200 px-2 py-1 font-mono text-[11px] font-bold text-slate-700 transition-colors hover:text-white"
+                  title="Ghi chú sẽ được đính kèm với thời điểm hiện tại của video"
+                >
+                  <i className="fa-solid fa-thumbtack"></i> Đính kèm lúc {formatTime(currentVideoTime)}
                 </button>
               </div>
               <textarea
+                value={noteText}
+                onChange={(e) => setNoteText(e.target.value)}
                 className="focus:ring-primary focus:border-primary h-24 w-full resize-none rounded-md border border-gray-300 p-3 font-mono text-[13px] transition-all outline-none focus:ring-1"
                 placeholder="Gõ ghi chú hoặc dán đoạn code vào đây... Markdown được hỗ trợ."
               ></textarea>
@@ -129,27 +161,49 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
                 <div className="text-[10px] text-slate-400">
                   Ghi chú của bạn được lưu riêng tư và không ai khác có thể xem.
                 </div>
-                <button className="rounded bg-slate-800 px-4 py-1.5 text-xs font-bold text-white transition-colors hover:bg-black">
+                <button 
+                  onClick={handleSaveNote}
+                  disabled={!noteText.trim()}
+                  className="rounded bg-slate-800 px-4 py-1.5 text-xs font-bold text-white transition-colors hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   Lưu ghi chú
                 </button>
               </div>
             </div>
 
             <div className="space-y-4">
-              <div className="group rounded-lg border border-gray-100 p-4 transition-colors hover:border-gray-300">
-                <div className="flex items-start gap-3">
-                  <button className="bg-primary-bg text-primary border-primary/20 hover:bg-primary mt-0.5 flex-shrink-0 cursor-pointer rounded border px-2 py-1 font-mono text-[11px] font-bold transition-colors hover:text-white">
-                    04:15
-                  </button>
-                  <div className="flex-1">
-                    <p className="font-mono text-[13px] leading-relaxed text-slate-700">
-                      Sự khác biệt chính giữa Master-Slave: Master xử lý Write, Slave xử lý Read.
-                      Cần cẩn thận với Replication Lag (tức là ghi xong đọc liền có thể không thấy
-                      data).
-                    </p>
-                  </div>
+              {notes.length === 0 ? (
+                <div className="py-12 text-center text-sm text-slate-400">
+                  <i className="fa-regular fa-note-sticky mb-3 text-3xl"></i>
+                  <p>Chưa có ghi chú nào. Hãy tạo ghi chú đầu tiên!</p>
                 </div>
-              </div>
+              ) : (
+                notes.map((note) => (
+                  <div key={note.id} className="group rounded-lg border border-gray-100 p-4 transition-colors hover:border-gray-300">
+                    <div className="flex items-start gap-3">
+                      <button 
+                        onClick={() => onSeekTo?.(note.time)}
+                        className="bg-primary-bg text-primary border-primary/20 hover:bg-primary mt-0.5 flex-shrink-0 cursor-pointer rounded border px-2 py-1 font-mono text-[11px] font-bold transition-colors hover:text-white"
+                        title="Nhảy đến thời điểm này trong video"
+                      >
+                        {formatTime(note.time)}
+                      </button>
+                      <div className="flex-1">
+                        <p className="font-mono text-[13px] leading-relaxed text-slate-700 whitespace-pre-wrap">
+                          {note.text}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteNote(note.id)}
+                        className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all"
+                        title="Xóa ghi chú"
+                      >
+                        <i className="fa-solid fa-trash text-xs"></i>
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         )}

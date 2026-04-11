@@ -7,12 +7,14 @@ import { useAuthStore } from '@/store/useAuthStore';
 // ============================================================
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1',
+  baseURL: process.env.NODE_ENV === 'production' 
+    ? (process.env.NEXT_PUBLIC_API_URL || 'https://api.staffup.site/api/v1')
+    : '/api/proxy', // Use proxy in development to avoid CORS
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Required for httpOnly refresh token cookie
+  // withCredentials disabled to avoid CORS issues with wildcard origin
 });
 
 // Track whether a token refresh is already in progress
@@ -76,11 +78,10 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Attempt to refresh — httpOnly cookie sent automatically
+        // Attempt to refresh token
         const { data } = await axios.post(
           `${api.defaults.baseURL}/auth/refresh`,
           {},
-          { withCredentials: true },
         );
 
         const newToken = data.data.token;

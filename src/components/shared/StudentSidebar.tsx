@@ -10,18 +10,23 @@ export const StudentSidebar = () => {
   const pathname = usePathname();
   const { closeMobileNav } = useMobileNav();
   const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
   const displayName = user?.fullName ?? 'Người dùng';
   const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=1677ff&color=fff&bold=true`;
 
+  const handleLogout = () => {
+    logout();
+    window.location.href = '/login';
+  };
+
   const learningMenus = [
     { name: 'Bảng điều khiển', href: '/', icon: 'fa-house' },
+    { name: 'Khóa học của tôi', href: '/my-courses', icon: 'fa-graduation-cap' },
     { name: 'Thư viện Khóa học', href: '/courses', icon: 'fa-book-open' },
-    { name: 'Lộ trình phát triển', href: '/path', icon: 'fa-route' },
-    { name: 'Môi trường Thực hành', href: '/courses/detail/learning-room', icon: 'fa-code' },
+    { name: 'Lộ trình phát triển', href: '/roadmaps', icon: 'fa-route' },
   ];
 
   const achievementMenus = [
-    { name: 'Bài Test năng lực', href: '/quiz-assessment', icon: 'fa-clipboard-check', badge: 1 },
     { name: 'Chứng chỉ Nội bộ', href: '/certificates', icon: 'fa-award' },
   ];
 
@@ -89,11 +94,6 @@ export const StudentSidebar = () => {
               }`}
             >
               <i className={`fa-solid ${item.icon} w-5 text-center`}></i> {item.name}
-              {item.badge && (
-                <span className="ml-auto rounded bg-red-100 px-1.5 text-[10px] font-bold text-red-600">
-                  {item.badge}
-                </span>
-              )}
             </Link>
           );
         })}
@@ -113,7 +113,13 @@ export const StudentSidebar = () => {
               {user?.email ?? ''}
             </div>
           </div>
-          <i className="fa-solid fa-gear text-xs text-slate-400"></i>
+          <button
+            onClick={handleLogout}
+            className="text-slate-400 hover:text-red-600 transition-colors"
+            title="Đăng xuất"
+          >
+            <i className="fa-solid fa-right-from-bracket text-sm"></i>
+          </button>
         </div>
       </div>
     </aside>

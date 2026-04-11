@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { StudentHeader } from '@/components/shared/StudentHeader';
 import { QuestionContent } from '@/components/quiz/QuestionContent';
@@ -11,36 +11,96 @@ import {
   useStartQuiz,
   useSaveQuizResponse,
   useSubmitQuiz,
+  useQuizAttemptHistory,
 } from '@/hooks/useQuiz';
+import { useQueryClient } from '@tanstack/react-query';
 import type { QuizAttemptQuestionDetail } from '@/types';
+import { Loader2 } from 'lucide-react';
 
-export default function QuizAssessmentPage() {
+function QuizAssessmentContent() {
   const searchParams = useSearchParams();
   const attemptIdParam = searchParams.get('attemptId');
   const quizIdParam = searchParams.get('quizId');
   const enrollmentIdParam = searchParams.get('enrollmentId');
 
-  // If no attemptId, start a new quiz
+  // If no attemptId but have quizId and enrollmentId, check for existing attempt or start new
   const startQuiz = useStartQuiz();
+  const queryClient = useQueryClient();
   const [attemptId, setAttemptId] = useState<string | null>(attemptIdParam);
   const startCalledRef = React.useRef(false);
+  const failedAttemptIdsRef = React.useRef<Set<string>>(new Set());
+
+  // Check for existing in-progress attempts
+  const { data: attemptHistory, isLoading: historyLoading } = useQuizAttemptHistory(
+    quizIdParam && enrollmentIdParam ? { quizId: quizIdParam, enrollmentId: enrollmentIdParam } : undefined
+  );
 
   useEffect(() => {
-    if (!attemptId && quizIdParam && enrollmentIdParam && !startCalledRef.current) {
+    // Don't do anything if we already have an attemptId or if history is still loading
+    if (attemptId || !quizIdParam || !enrollmentIdParam || historyLoading) {
+      return;
+    }
+
+    // Check if there's an in-progress attempt that we haven't already failed to load
+    const inProgressAttempt = attemptHistory?.find(
+      (a) => a.status === 'in_progress' && !failedAttemptIdsRef.current.has(a.id)
+    );
+
+    if (inProgressAttempt) {
+      // Resume existing attempt
+      console.log('Resuming existing attempt:', inProgressAttempt.id);
+      setAttemptId(inProgressAttempt.id);
+      return;
+    }
+
+    // No valid in-progress attempt, start new one (only once)
+    if (!startCalledRef.current) {
       startCalledRef.current = true;
+      console.log('Starting quiz with:', { quizId: quizIdParam, enrollmentId: enrollmentIdParam });
       startQuiz.mutate(
         { quizId: quizIdParam, enrollmentId: enrollmentIdParam },
         {
-          onSuccess: (data) => setAttemptId(data.attemptId),
-          onError: () => { startCalledRef.current = false; },
+          onSuccess: (data) => {
+            console.log('Quiz started successfully:', data);
+            setAttemptId(data.attemptId);
+          },
+          onError: (error: any) => {
+            console.error('Failed to start quiz:', error);
+            console.error('Error status:', error?.response?.status);
+            console.error('Error data:', error?.response?.data);
+            console.error('Error message:', error?.message);
+            alert(`Lỗi khi bắt đầu bài kiểm tra: ${error?.response?.data?.message || error?.message || 'Unknown error'}`);
+            startCalledRef.current = false;
+          },
         },
       );
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [attemptId, quizIdParam, enrollmentIdParam]);
+  }, [attemptId, quizIdParam, enrollmentIdParam, attemptHistory, historyLoading]);
 
   // Fetch attempt detail (contains questions)
-  const { data: attempt, isLoading } = useQuizAttemptDetail(attemptId);
+  const { data: attempt, isLoading, error: attemptError } = useQuizAttemptDetail(attemptId);
+
+  // If attempt not found (404), reset and allow creating new attempt
+  React.useEffect(() => {
+    if (attemptError && 'response' in attemptError && (attemptError as any).response?.status === 404) {
+      console.log('Attempt not found (404), clearing and will start new attempt');
+      
+      // Mark this attempt ID as failed so we don't try it again
+      if (attemptId) {
+        failedAttemptIdsRef.current.add(attemptId);
+      }
+      
+      // Clear the invalid attemptId and reset the start flag
+      // This will trigger the useEffect above to start a fresh quiz
+      setAttemptId(null);
+      startCalledRef.current = false;
+      
+      // Also clear the history query to prevent re-selecting the invalid attempt
+      // This forces a fresh fetch of attempt history
+      queryClient.invalidateQueries({ queryKey: ['quiz-history'] });
+    }
+  }, [attemptError, attemptId, queryClient]);
 
   const questions = attempt?.questions ?? [];
   const totalQuestions = questions.length;
@@ -149,7 +209,7 @@ export default function QuizAssessmentPage() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [handleFinishExam]);
 
-  if (isLoading || startQuiz.isPending) {
+  if (isLoading || startQuiz.isPending || historyLoading) {
     return (
       <>
         <StudentHeader
@@ -216,5 +276,25 @@ export default function QuizAssessmentPage() {
         cheatCount={cheatWarnings}
       />
     </>
+  );
+}
+
+export default function QuizAssessmentPage() {
+  return (
+    <Suspense fallback={
+      <>
+        <StudentHeader
+          breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Bài Test năng lực' }]}
+        />
+        <div className="flex flex-1 items-center justify-center bg-[#f0f2f5]">
+          <div className="text-sm text-slate-500">
+            <Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
+            Đang tải bài kiểm tra...
+          </div>
+        </div>
+      </>
+    }>
+      <QuizAssessmentContent />
+    </Suspense>
   );
 }

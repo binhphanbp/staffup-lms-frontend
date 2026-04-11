@@ -9,8 +9,7 @@ export default function ReportsPage() {
   const [activeTab, setActiveTab] = useState('overview');
 
   return (
-    <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 md:px-8 py-4 md:py-6">
-      {/* Header */
+    <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto px-4 py-4 md:px-8 md:py-6">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="m-0 text-[22px] font-normal text-[#202124]">
           Trung tâm Phân tích Dữ liệu (Analytics)
@@ -21,11 +20,10 @@ export default function ReportsPage() {
         </button>
       </div>
 
-      {/* Tabs */}
       <div className="mb-6 flex gap-8 border-b border-[#DADCE0]">
         <button
           onClick={() => setActiveTab('overview')}
-          className={`border-b-2 pb-3 text-[13px] font-medium tracking-[0.5px] uppercase transition-colors ${
+          className={`border-b-2 pb-3 text-[13px] font-medium uppercase tracking-[0.5px] transition-colors ${
             activeTab === 'overview'
               ? 'border-[#1A73E8] text-[#1A73E8]'
               : 'border-transparent text-[#5F6368] hover:text-[#202124]'
@@ -35,7 +33,7 @@ export default function ReportsPage() {
         </button>
         <button
           onClick={() => setActiveTab('courses')}
-          className={`border-b-2 pb-3 text-[13px] font-medium tracking-[0.5px] uppercase transition-colors ${
+          className={`border-b-2 pb-3 text-[13px] font-medium uppercase tracking-[0.5px] transition-colors ${
             activeTab === 'courses'
               ? 'border-[#1A73E8] text-[#1A73E8]'
               : 'border-transparent text-[#5F6368] hover:text-[#202124]'
@@ -45,7 +43,7 @@ export default function ReportsPage() {
         </button>
         <button
           onClick={() => setActiveTab('employees')}
-          className={`border-b-2 pb-3 text-[13px] font-medium tracking-[0.5px] uppercase transition-colors ${
+          className={`border-b-2 pb-3 text-[13px] font-medium uppercase tracking-[0.5px] transition-colors ${
             activeTab === 'employees'
               ? 'border-[#1A73E8] text-[#1A73E8]'
               : 'border-transparent text-[#5F6368] hover:text-[#202124]'
@@ -55,7 +53,6 @@ export default function ReportsPage() {
         </button>
       </div>
 
-      {/* Filters */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex gap-3">
           <div className="flex items-center gap-2 rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2">
@@ -82,10 +79,8 @@ export default function ReportsPage() {
         </button>
       </div>
 
-      {/* Stat Cards */}
       <ReportStatCards />
 
-      {/* Charts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-6">
         <div className="col-span-1 lg:col-span-2">
           <CompletionTrendChart />

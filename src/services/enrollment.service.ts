@@ -42,6 +42,15 @@ export const enrollmentService = {
     return data.data;
   },
 
+  // Self-enroll (user enrolls themselves)
+  selfEnroll: async (courseId: string): Promise<EnrollmentListItem> => {
+    const { data } = await api.post<ApiResponse<EnrollmentListItem>>(
+      `${API_BASE}/courses/${courseId}/self-enroll`,
+    );
+    return data.data;
+  },
+
+  // Admin enroll (admin assigns course to users)
   enroll: async (courseId: string, userIds: string[]): Promise<{ enrolled: number }> => {
     const { data } = await api.post<ApiResponse<{ enrolled: number }>>(
       `${API_BASE}/courses/${courseId}/enroll`,

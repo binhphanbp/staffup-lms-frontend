@@ -1,10 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import Link from 'next/link';
-import type { CourseDetailResponse } from '@/types';
+import type { CourseDetailResponse, EnrollmentListItem } from '@/types';
+import { EnrollButton } from './EnrollButton';
 
 interface CourseSidebarProps {
   course?: CourseDetailResponse;
+  isEnrolled?: boolean;
+  enrollment?: EnrollmentListItem;
+  hasCertificate?: boolean;
 }
 
 function formatDuration(minutes: number): string {
@@ -14,7 +18,7 @@ function formatDuration(minutes: number): string {
   return `${m}m`;
 }
 
-export const CourseSidebar = ({ course }: CourseSidebarProps) => {
+export const CourseSidebar = ({ course, isEnrolled, enrollment, hasCertificate = false }: CourseSidebarProps) => {
   const stats = course?.stats;
   const totalDuration = stats?.totalDurationMinutes
     ? formatDuration(stats.totalDurationMinutes)
@@ -26,12 +30,66 @@ export const CourseSidebar = ({ course }: CourseSidebarProps) => {
       <div className="sticky top-6 flex flex-col gap-6">
         {/* Course Progress & Actions */}
         <div className="card border-t-primary border-t-4 p-6 shadow-lg shadow-slate-200/50">
-          <Link
-            href={course ? `/courses/detail/learning-room?courseId=${course.id}` : '#'}
-            className="bg-primary hover:bg-primary-hover mb-4 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-500/20 transition-transform active:scale-95"
-          >
-            <i className="fa-solid fa-play"></i> Bắt đầu học
-          </Link>
+          {isEnrolled && enrollment ? (
+            <>
+              {/* Already Enrolled - Show Progress */}
+              <div className="mb-4 rounded-lg bg-green-50 border border-green-200 p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <i className="fa-solid fa-circle-check text-green-600"></i>
+                  <span className="text-sm font-semibold text-green-800">
+                    Đã ghi danh
+                  </span>
+                </div>
+                <div className="text-xs text-green-600">
+                  Tiến độ: {enrollment.progressPercent}%
+                </div>
+                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-green-100">
+                  <div
+                    className="h-full rounded-full bg-green-600 transition-all"
+                    style={{ width: `${enrollment.progressPercent}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Certificate Badge */}
+              {hasCertificate && (
+                <Link
+                  href="/certificates"
+                  className="mb-4 flex items-center gap-3 rounded-lg bg-gradient-to-r from-yellow-400 to-orange-500 p-4 text-white shadow-lg transition-transform hover:scale-105"
+                >
+                  <i className="fa-solid fa-award text-2xl"></i>
+                  <div>
+                    <div className="text-sm font-bold">Đã nhận chứng chỉ</div>
+                    <div className="text-xs opacity-90">Nhấn để xem chi tiết</div>
+                  </div>
+                </Link>
+              )}
+
+              {/* Start Learning Button */}
+              <Link
+                href={`/courses/detail/learning-room?courseId=${course?.id}`}
+                className="bg-primary hover:bg-primary-hover mb-4 flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-bold text-white shadow-md shadow-blue-500/20 transition-transform active:scale-95"
+              >
+                <i className="fa-solid fa-play"></i> 
+                {enrollment.progressPercent > 0 ? 'Tiếp tục học' : 'Bắt đầu học'}
+              </Link>
+            </>
+          ) : (
+            <>
+              {/* Not Enrolled - Show Enroll Button */}
+              <div className="mb-4">
+                <EnrollButton courseId={course?.id || ''} courseTitle={course?.title || ''} />
+              </div>
+
+              {/* Preview Button */}
+              <Link
+                href={course ? `/courses/detail/learning-room?courseId=${course.id}` : '#'}
+                className="mb-4 flex w-full items-center justify-center gap-2 rounded-lg border-2 border-blue-600 bg-white px-4 py-3 text-sm font-bold text-blue-600 transition-colors hover:bg-blue-50"
+              >
+                <i className="fa-solid fa-eye"></i> Xem trước khóa học
+              </Link>
+            </>
+          )}
 
           <div className="space-y-3.5 text-[13px] text-slate-600">
             <div className="flex items-center justify-between">

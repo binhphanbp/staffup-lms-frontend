@@ -360,6 +360,14 @@ export interface EnrollmentProgressResponse {
     timeSpentSeconds: number;
     lastActivityAt: string | null;
   };
+  certificate?: {
+    isEligible: boolean;
+    isIssued: boolean;
+    certificateId: string | null;
+    certificateCode: string | null;
+    issuedAt: string | null;
+    pdfUrl: string | null;
+  };
   modules: Array<{
     id: string;
     title: string;
@@ -624,6 +632,91 @@ export interface EmployeeDashboardStats {
       pdfUrl: string | null;
     }>;
   };
+}
+
+// ----- Question Bank -----
+export interface QuestionBank {
+  id: string;
+  title: string;
+  description: string | null;
+  categoryId: string | null;
+  ownerTrainerId: string;
+  isActive: boolean;
+  ownerTrainer: {
+    id: string;
+    fullName: string;
+    email: string;
+  };
+  category: {
+    id: string;
+    name: string;
+  } | null;
+  _count: {
+    questions: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Question {
+  id: string;
+  questionBankId: string;
+  questionText: string;
+  questionType: QuestionType;
+  explanation: string | null;
+  isActive: boolean;
+  difficultyLevel: 'easy' | 'medium' | 'hard' | null;
+  createdAt: string;
+  updatedAt: string;
+  options?: QuestionOption[];
+}
+
+export interface QuestionOption {
+  id: string;
+  questionId: string;
+  optionText: string;
+  isCorrect: boolean;
+  orderIndex: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface QuizQuestion {
+  id: string;
+  quizId: string;
+  questionId: string;
+  orderIndex: number;
+  points: number;
+  isRequired: boolean;
+  question: Question;
+}
+
+export interface QuizListResponse {
+  quizzes: Quiz[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface Quiz {
+  id: string;
+  courseId: string;
+  lessonId: string | null;
+  title: string;
+  description: string | null;
+  selectionMode: 'fixed' | 'random_pool';
+  passScorePercent: number;
+  timeLimitMinutes: number | null;
+  maxAttempts: number | null;
+  questionsToPull: number | null;
+  shuffleQuestions: boolean;
+  shuffleOptions: boolean;
+  createdAt: string;
+  updatedAt: string;
+  questions?: QuizQuestion[];
 }
 
 // ----- Navigation -----

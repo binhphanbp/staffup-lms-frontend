@@ -10,6 +10,15 @@ interface LessonProgress {
   lastPositionSeconds: number;
 }
 
+interface QuizInfo {
+  id: string;
+  title: string;
+  lessonId: string | null;
+  questionsToPull: number | null;
+  timeLimitMinutes: number | null;
+  passScorePercent: number | null;
+}
+
 interface SyllabusSidebarProps {
   isOpen: boolean;
   onToggle: () => void;
@@ -19,6 +28,8 @@ interface SyllabusSidebarProps {
   completedLessons: number;
   totalLessons: number;
   onSelectLesson: (lessonId: string) => void;
+  quizzes?: QuizInfo[];
+  enrollmentId?: string | null;
 }
 
 function formatDuration(seconds: number): string {
@@ -58,8 +69,21 @@ export const SyllabusSidebar = ({
   completedLessons,
   totalLessons,
   onSelectLesson,
+  quizzes = [],
+  enrollmentId,
 }: SyllabusSidebarProps) => {
   const sortedModules = [...modules].sort((a, b) => a.orderIndex - b.orderIndex);
+  
+  // Create a map of lessonId -> quiz
+  const lessonQuizMap = React.useMemo(() => {
+    const map = new Map<string, QuizInfo>();
+    quizzes.forEach((quiz) => {
+      if (quiz.lessonId) {
+        map.set(quiz.lessonId, quiz);
+      }
+    });
+    return map;
+  }, [quizzes]);
   // Open module containing active lesson by default
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
@@ -86,12 +110,24 @@ export const SyllabusSidebar = ({
           : 'relative w-0 border-l-0'
       } `}
     >
+      {/* Toggle button - Udemy style */}
       <button
         onClick={onToggle}
-        className="hover:text-primary hover:border-primary tooltip absolute top-4 -left-4 z-20 hidden h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-md transition-colors md:flex"
-        title="Bật/Tắt Giáo trình"
+        className={`absolute top-20 z-20 hidden md:flex items-center justify-center transition-all duration-300 ${
+          isOpen 
+            ? '-left-12 h-12 w-12 rounded-full border-2 border-slate-300 bg-white shadow-xl hover:border-slate-400 hover:shadow-2xl' 
+            : '-left-14 h-14 w-14 rounded-full border-2 border-slate-700 bg-slate-800 shadow-2xl hover:border-slate-600 hover:bg-slate-700'
+        }`}
+        title={isOpen ? 'Đóng giáo trình' : 'Mở giáo trình'}
       >
-        <i className={`fa-solid ${isOpen ? 'fa-chevron-right' : 'fa-chevron-left'} text-xs`}></i>
+        {isOpen ? (
+          <i className="fa-solid fa-chevron-right text-xl text-slate-700"></i>
+        ) : (
+          <div className="flex flex-col items-center gap-0.5">
+            <i className="fa-solid fa-bars text-lg text-white"></i>
+            <span className="text-[9px] font-bold text-white">Menu</span>
+          </div>
+        )}
       </button>
 
       <div
@@ -138,62 +174,108 @@ export const SyllabusSidebar = ({
                     const lp = lessonProgressMap.get(lesson.id);
                     const isActive = lesson.id === activeLessonId;
                     const isCompleted = lp?.status === 'completed';
+                    const hasQuiz = lessonQuizMap.has(lesson.id);
+                    const quiz = hasQuiz ? lessonQuizMap.get(lesson.id) : null;
 
                     if (isActive) {
                       return (
-                        <div
-                          key={lesson.id}
-                          className="bg-primary-bg/50 border-primary flex cursor-pointer items-start gap-3 border-l-2 p-3 transition-colors"
-                        >
-                          <div className="mt-0.5 flex h-3 w-4 items-end justify-center gap-px">
-                            <div className="eq-bar"></div>
-                            <div className="eq-bar"></div>
-                            <div className="eq-bar"></div>
+                        <React.Fragment key={lesson.id}>
+                          <div
+                            className="bg-primary-bg/50 border-primary flex cursor-pointer items-start gap-3 border-l-2 p-3 transition-colors"
+                          >
+                            <div className="mt-0.5 flex h-3 w-4 items-end justify-center gap-px">
+                              <div className="eq-bar"></div>
+                              <div className="eq-bar"></div>
+                              <div className="eq-bar"></div>
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-primary mb-1 text-[12px] leading-snug font-bold">
+                                {lesson.title}
+                              </div>
+                              <div className="text-primary font-mono text-[10px]">
+                                <i className={`${lessonTypeIcon(lesson.lessonType)} mr-1`}></i>
+                                {lesson.durationSeconds > 0
+                                  ? formatDuration(lesson.durationSeconds)
+                                  : ''}
+                              </div>
+                            </div>
                           </div>
+                          
+                          {/* Quiz item right after active lesson */}
+                          {hasQuiz && quiz && enrollmentId && (
+                            <a
+                              href={`/quiz-assessment?quizId=${quiz.id}&enrollmentId=${enrollmentId}`}
+                              className="flex w-full items-start gap-3 border-l-2 border-transparent bg-purple-50 p-3 text-left transition-colors hover:bg-purple-100"
+                            >
+                              <i className="fa-solid fa-clipboard-question mt-0.5 text-[12px] text-purple-600"></i>
+                              <div className="flex-1">
+                                <div className="mb-1 text-[12px] font-medium leading-snug text-purple-700">
+                                  {quiz.title}
+                                </div>
+                                <div className="font-mono text-[10px] text-purple-600/80">
+                                  <i className="fa-solid fa-list-check mr-1"></i>
+                                  {quiz.questionsToPull || 0} câu
+                                  {quiz.timeLimitMinutes && ` • ${quiz.timeLimitMinutes} phút`}
+                                </div>
+                              </div>
+                              <i className="fa-solid fa-arrow-right mt-1 text-[10px] text-purple-600"></i>
+                            </a>
+                          )}
+                        </React.Fragment>
+                      );
+                    }
+
+                    return (
+                      <React.Fragment key={lesson.id}>
+                        <button
+                          onClick={() => onSelectLesson(lesson.id)}
+                          className="flex w-full items-start gap-3 border-l-2 border-transparent bg-white p-3 text-left transition-colors hover:bg-slate-50"
+                        >
+                          <i
+                            className={`mt-0.5 text-[12px] ${
+                              isCompleted
+                                ? 'fa-solid fa-circle-check text-success/60'
+                                : `${lessonTypeIcon(lesson.lessonType)} text-slate-400`
+                            }`}
+                          ></i>
                           <div className="flex-1">
-                            <div className="text-primary mb-1 text-[12px] leading-snug font-bold">
+                            <div
+                              className={`mb-1 text-[12px] leading-snug font-medium ${
+                                isCompleted ? 'text-slate-400' : 'text-slate-700'
+                              }`}
+                            >
                               {lesson.title}
                             </div>
-                            <div className="text-primary font-mono text-[10px]">
+                            <div className="font-mono text-[10px] text-slate-400/80">
                               <i className={`${lessonTypeIcon(lesson.lessonType)} mr-1`}></i>
                               {lesson.durationSeconds > 0
                                 ? formatDuration(lesson.durationSeconds)
                                 : ''}
                             </div>
                           </div>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <button
-                        key={lesson.id}
-                        onClick={() => onSelectLesson(lesson.id)}
-                        className="flex w-full items-start gap-3 border-l-2 border-transparent bg-white p-3 text-left transition-colors hover:bg-slate-50"
-                      >
-                        <i
-                          className={`mt-0.5 text-[12px] ${
-                            isCompleted
-                              ? 'fa-solid fa-circle-check text-success/60'
-                              : `${lessonTypeIcon(lesson.lessonType)} text-slate-400`
-                          }`}
-                        ></i>
-                        <div className="flex-1">
-                          <div
-                            className={`mb-1 text-[12px] leading-snug font-medium ${
-                              isCompleted ? 'text-slate-400' : 'text-slate-700'
-                            }`}
+                        </button>
+                        
+                        {/* Quiz item right after lesson */}
+                        {hasQuiz && quiz && enrollmentId && (
+                          <a
+                            href={`/quiz-assessment?quizId=${quiz.id}&enrollmentId=${enrollmentId}`}
+                            className="flex w-full items-start gap-3 border-l-2 border-transparent bg-purple-50 p-3 text-left transition-colors hover:bg-purple-100"
                           >
-                            {lesson.title}
-                          </div>
-                          <div className="font-mono text-[10px] text-slate-400/80">
-                            <i className={`${lessonTypeIcon(lesson.lessonType)} mr-1`}></i>
-                            {lesson.durationSeconds > 0
-                              ? formatDuration(lesson.durationSeconds)
-                              : ''}
-                          </div>
-                        </div>
-                      </button>
+                            <i className="fa-solid fa-clipboard-question mt-0.5 text-[12px] text-purple-600"></i>
+                            <div className="flex-1">
+                              <div className="mb-1 text-[12px] font-medium leading-snug text-purple-700">
+                                {quiz.title}
+                              </div>
+                              <div className="font-mono text-[10px] text-purple-600/80">
+                                <i className="fa-solid fa-list-check mr-1"></i>
+                                {quiz.questionsToPull || 0} câu
+                                {quiz.timeLimitMinutes && ` • ${quiz.timeLimitMinutes} phút`}
+                              </div>
+                            </div>
+                            <i className="fa-solid fa-arrow-right mt-1 text-[10px] text-purple-600"></i>
+                          </a>
+                        )}
+                      </React.Fragment>
                     );
                   })}
                 </div>

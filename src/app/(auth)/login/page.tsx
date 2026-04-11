@@ -5,7 +5,7 @@
 // Professional login with react-hook-form + zod validation
 // ============================================================
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -30,10 +30,9 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
 
   const login = useAuthStore((state) => state.login);
 
@@ -63,7 +62,20 @@ export default function LoginPage() {
       // Set cookie for proxy.ts route protection
       setCookie('staffup-auth-token', response.token, 7);
 
-      router.push(callbackUrl);
+      // Redirect based on user role codes
+      const roleCodes = response.user.roleCodes || [];
+      
+      let redirectUrl = '/'; // Default for employee
+      
+      if (roleCodes.includes('admin')) {
+        redirectUrl = '/admin-dashboard';
+      } else if (roleCodes.includes('trainer')) {
+        redirectUrl = '/dashboard';
+      } else if (roleCodes.includes('employee')) {
+        redirectUrl = '/';
+      }
+
+      router.push(redirectUrl);
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
       setServerError(err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
@@ -189,5 +201,19 @@ export default function LoginPage() {
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="auth-form-container">
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

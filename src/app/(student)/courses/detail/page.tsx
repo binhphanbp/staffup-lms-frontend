@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { StudentHeader } from '@/components/shared/StudentHeader';
 import Link from 'next/link';
@@ -10,13 +10,22 @@ import Link from 'next/link';
 import { HeroBanner } from '@/components/course-detail/HeroBanner';
 import { CourseCurriculum } from '@/components/course-detail/CourseCurriculum';
 import { CourseSidebar } from '@/components/course-detail/CourseSidebar';
+import { CourseReviews } from '@/components/course-detail/CourseReviews';
+import { RelatedCourses } from '@/components/course-detail/RelatedCourses';
+import { CourseStats } from '@/components/course-detail/CourseStats';
 import { useCourseDetail } from '@/hooks/useCourses';
+import { useEnrollments } from '@/hooks/useEnrollments';
 
-export default function CourseDetailPage() {
+function CourseDetailContent() {
   const searchParams = useSearchParams();
   const courseId = searchParams.get('id');
 
   const { data: course, isLoading, isError } = useCourseDetail(courseId);
+  
+  // Check if user is enrolled in this course
+  const { data: enrollmentResponse } = useEnrollments({ courseId: courseId || undefined });
+  const userEnrollment = enrollmentResponse?.data?.[0]; // Get first enrollment for this course
+  const isEnrolled = !!userEnrollment;
 
   if (isLoading) {
     return (
@@ -174,7 +183,18 @@ export default function CourseDetailPage() {
               totalDurationMinutes={course.stats?.totalDurationMinutes}
             />
 
-            {/* 4. Phần Giảng viên */}
+            {/* 4. Course Stats */}
+            <CourseStats
+              totalStudents={course.stats?.totalEnrollments ?? 0}
+              completionRate={75}
+              averageRating={4.5}
+              totalReviews={127}
+              lastUpdated={course.updatedAt}
+              language="Tiếng Việt"
+              certificateAvailable={true}
+            />
+
+            {/* 5. Phần Giảng viên */}
             {course.trainer && (
               <section id="instructor" className="scroll-mt-20">
                 <h2 className="mb-4 text-lg font-bold text-slate-800">Giảng viên nội bộ</h2>
@@ -187,21 +207,45 @@ export default function CourseDetailPage() {
                     className="h-20 w-20 rounded-full shadow-sm"
                     alt={course.trainer.fullName}
                   />
-                  <div>
+                  <div className="flex-1">
                     <h3 className="mb-1 text-base font-bold text-slate-800">
                       {course.trainer.fullName}
                     </h3>
                     <div className="text-primary mb-3 font-mono text-[12px] tracking-tight">
                       {course.trainer.email}
                     </div>
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="text-lg font-bold text-slate-800">12</div>
+                        <div className="text-xs text-slate-500">Khóa học</div>
+                      </div>
+                      <div>
+                        <div className="text-lg font-bold text-slate-800">1,234</div>
+                        <div className="text-xs text-slate-500">Học viên</div>
+                      </div>
+                      <div>
+                        <div className="text-lg font-bold text-slate-800">4.8</div>
+                        <div className="text-xs text-slate-500">Đánh giá</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </section>
             )}
+
+            {/* 6. Reviews */}
+            <CourseReviews courseId={course.id} />
+
+            {/* 7. Related Courses */}
+            <RelatedCourses />
           </div>
 
           {/* Cột Phải: Thanh Sidebar chức năng */}
-          <CourseSidebar course={course} />
+          <CourseSidebar 
+            course={course} 
+            isEnrolled={isEnrolled}
+            enrollment={userEnrollment}
+          />
         </div>
 
         <footer className="border-t border-gray-200 bg-white py-6 text-center text-[11px] text-slate-400">
@@ -209,5 +253,19 @@ export default function CourseDetailPage() {
         </footer>
       </div>
     </>
+  );
+}
+
+export default function CourseDetailPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-sm text-slate-500">
+          <i className="fa-solid fa-spinner fa-spin mr-2"></i>Đang tải...
+        </div>
+      </div>
+    }>
+      <CourseDetailContent />
+    </Suspense>
   );
 }

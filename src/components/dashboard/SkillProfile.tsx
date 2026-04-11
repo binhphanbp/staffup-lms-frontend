@@ -1,5 +1,9 @@
 import React from 'react';
 
+// NOTE: This component uses mock data as the backend doesn't provide
+// skill profile/tech stack data yet. When the API endpoint is available,
+// update this component to fetch from the API.
+
 export const SkillProfile = () => {
   return (
     <div className="card p-5">

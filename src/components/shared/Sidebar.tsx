@@ -15,6 +15,7 @@ export const Sidebar = () => {
   // Danh sách cấu hình Menu (thêm bớt tùy ý ở đây)
   const learningMenus = [
     { name: 'Bảng điều khiển', href: '/', icon: 'fa-house' },
+    { name: 'Khóa học của tôi', href: '/my-courses', icon: 'fa-graduation-cap' },
     { name: 'Thư viện Khóa học', href: '/courses', icon: 'fa-book-open' },
     { name: 'Lộ trình phát triển', href: '/path', icon: 'fa-route' },
     { name: 'Môi trường Thực hành', href: '/lab', icon: 'fa-code' },
