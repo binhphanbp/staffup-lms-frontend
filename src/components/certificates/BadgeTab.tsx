@@ -7,7 +7,7 @@ export const BadgeTab = () => {
         <i className="fa-solid fa-circle-info text-primary mt-0.5"></i>
         <div>
           <h4 className="mb-1 text-sm font-bold text-blue-800">
-            Hệ thống Gamification của TechCorp
+            Hệ thống Gamification của Staffup
           </h4>
           <p className="text-xs leading-relaxed text-blue-700">
             Thu thập huy hiệu bằng cách hoàn thành các bài Lab thực hành hoặc bài thi trắc nghiệm.

@@ -18,9 +18,9 @@ export const InstructorSidebar = () => {
             <i className="fa-solid fa-layer-group text-[11px]"></i>
           </div>
           <span>
-            TechLearn{' '}
+            Staffup{' '}
             <span className="ml-1 rounded bg-slate-800 px-1.5 py-0.5 text-xs font-normal text-slate-400">
-              Lead
+              Giảng viên
             </span>
           </span>
         </div>

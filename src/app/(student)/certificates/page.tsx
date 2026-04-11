@@ -56,7 +56,7 @@ export default function CertificatesPage() {
         {activeTab === 'badges' && <BadgeTab />}
 
         <footer className="mt-8 border-t border-gray-200 py-6 text-center text-[11px] text-slate-400">
-          &copy; 2026 TechCorp LMS. Blockchain Credential Verification System Active.
+          &copy; 2026 Staffup LMS. Hệ thống Xác thực Chứng chỉ đang hoạt động.
         </footer>
       </div>
 

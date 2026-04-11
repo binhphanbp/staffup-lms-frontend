@@ -11,7 +11,7 @@ export const ForbiddenHeader = () => {
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1677ff] text-white shadow-md shadow-blue-500/30">
           <i className="fa-solid fa-laptop-code text-sm"></i>
         </div>
-        <span>TechLearn</span>
+        <span>Staffup LMS</span>
       </Link>
 
       <div className="flex items-center gap-3 rounded-full border border-gray-200 bg-white px-3 py-1.5 shadow-sm">
@@ -22,10 +22,10 @@ export const ForbiddenHeader = () => {
           alt="Avatar"
         />
         <span className="hidden text-xs font-semibold text-slate-600 sm:inline-block">
-          user.guest@techcorp.com
+          guest@staffup.local
         </span>
         <div className="mx-1 hidden h-4 w-px bg-gray-300 sm:block"></div>
-        <span className="text-[10px] font-bold text-slate-400 uppercase">Role: Learner</span>
+        <span className="text-[10px] font-bold text-slate-400 uppercase">Vai trò: Học viên</span>
       </div>
     </header>
   );

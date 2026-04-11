@@ -90,7 +90,7 @@ export const TaskPanel = () => {
                   <i className="fa-solid fa-robot text-xs"></i>
                 </div>
                 <div className="flex-1">
-                  <div className="mb-1 text-[11px] font-bold text-slate-500">TechLearn AI</div>
+                  <div className="mb-1 text-[11px] font-bold text-slate-500">Staffup AI</div>
                   <div className="rounded-lg rounded-tl-none border border-gray-200 bg-white p-3 text-[13px] leading-relaxed text-slate-700 shadow-sm">
                     Chào Bảo! Đây là bài Lab khá khó. Nếu bạn cần gợi ý về cách thiết lập mảng{' '}
                     <code>sorted_keys</code>, hãy hỏi tôi nhé!

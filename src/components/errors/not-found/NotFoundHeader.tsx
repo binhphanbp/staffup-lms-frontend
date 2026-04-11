@@ -11,11 +11,11 @@ export const NotFoundHeader = () => {
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1677ff] text-white shadow-md shadow-blue-500/30">
           <i className="fa-solid fa-laptop-code text-sm"></i>
         </div>
-        <span>TechLearn</span>
+        <span>Staffup LMS</span>
       </Link>
 
       <a
-        href="mailto:it-helpdesk@techcorp.com"
+        href="mailto:it-helpdesk@staffup.local"
         className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-500 shadow-sm transition-colors hover:text-[#1677ff]"
       >
         <i className="fa-solid fa-headset"></i> Báo lỗi hệ thống

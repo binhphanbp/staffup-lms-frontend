@@ -106,7 +106,7 @@ export default function ForgotPasswordPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="you@company.com"
+                placeholder="ten.ban@staffup.local"
                 autoComplete="email"
                 className={`auth-input ${errors.email ? 'auth-input-error' : ''}`}
                 {...register('email')}
