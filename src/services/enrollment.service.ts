@@ -90,7 +90,13 @@ export const enrollmentService = {
     await api.patch(`${API_BASE}/${enrollmentId}/lessons/${lessonId}/progress`, payload);
   },
 
-  completeLesson: async (enrollmentId: string, lessonId: string): Promise<void> => {
-    await api.post(`${API_BASE}/${enrollmentId}/lessons/${lessonId}/complete`);
+  completeLesson: async (
+    enrollmentId: string,
+    lessonId: string,
+  ): Promise<{ progressPercent: number; completedLessonsCount: number }> => {
+    const { data } = await api.post<
+      ApiResponse<{ enrollment: { progressPercent: number; completedLessonsCount: number } }>
+    >(`${API_BASE}/${enrollmentId}/lessons/${lessonId}/complete`);
+    return data.data.enrollment;
   },
 };

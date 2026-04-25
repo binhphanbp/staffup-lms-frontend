@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { dashboardService } from '@/services/dashboard.service';
+import { useAuthStore } from '@/store/useAuthStore';
 
 // ============================================================
 // React Query Hooks — Dashboard
@@ -20,9 +21,13 @@ export function useTrainerDashboard() {
 }
 
 export function useEmployeeDashboard() {
+  const hasRole = useAuthStore((s) => s.hasRole);
+  const isEmployee = hasRole('employee');
   return useQuery({
     queryKey: ['dashboard-employee'],
     queryFn: () => dashboardService.getEmployeeStats(),
+    enabled: isEmployee,
+    retry: false,
   });
 }
 
