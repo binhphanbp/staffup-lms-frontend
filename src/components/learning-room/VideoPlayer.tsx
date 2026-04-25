@@ -1,9 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import type { LessonDetail } from '@/types';
+import type { MediaListItem } from '@/services/media.service';
+import {
+  getEmbeddedVideoUrl,
+  isEmbeddableVideo,
+  normalizeMediaKey,
+  resolveMediaUrl,
+} from '@/lib/media';
 
 interface VideoPlayerProps {
   lesson?: LessonDetail & { moduleTitle?: string };
+  fallbackMediaItems?: MediaListItem[];
+  mediaError?: boolean;
 }
 
 function formatDuration(seconds: number): string {
@@ -12,24 +21,64 @@ function formatDuration(seconds: number): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-export const VideoPlayer = ({ lesson }: VideoPlayerProps) => {
+function pickFallbackVideoUrl(
+  lesson: (LessonDetail & { moduleTitle?: string }) | undefined,
+  fallbackMediaItems: MediaListItem[] | undefined,
+) {
+  if (!lesson || !fallbackMediaItems?.length) {
+    return null;
+  }
+
+  const lessonKey = normalizeMediaKey(lesson.title);
+
+  const exactMatch =
+    fallbackMediaItems.find((item) =>
+      normalizeMediaKey(item.originalFilename).includes(lessonKey),
+    ) ?? fallbackMediaItems.find((item) => normalizeMediaKey(item.publicId).includes(lessonKey));
+
+  return exactMatch?.playbackUrl ?? fallbackMediaItems[0]?.playbackUrl ?? null;
+}
+
+export const VideoPlayer = ({
+  lesson,
+  fallbackMediaItems,
+  mediaError = false,
+}: VideoPlayerProps) => {
   const totalDuration = lesson?.durationSeconds ? formatDuration(lesson.durationSeconds) : '--:--';
 
   // If lesson has videoUrl, show it in an iframe/video player
   // For now, keep the visual placeholder but use lesson data
-  const videoUrl = lesson?.videoUrl;
+  const resourceVideoUrl =
+    lesson?.resources?.find((resource) => resource.resourceType === 'video')?.fileUrl ?? null;
+  const fallbackCloudinaryVideoUrl = pickFallbackVideoUrl(lesson, fallbackMediaItems);
+  const videoUrl = resolveMediaUrl(
+    lesson?.videoUrl ?? resourceVideoUrl ?? fallbackCloudinaryVideoUrl,
+  );
+  const embeddedVideoUrl = getEmbeddedVideoUrl(videoUrl);
+  const shouldRenderIframe = isEmbeddableVideo(videoUrl);
 
   return (
     <div className="w-full flex-shrink-0 border-b border-slate-200 bg-black">
       <div className="mx-auto w-full max-w-6xl">
         <div className="video-container group">
           {videoUrl ? (
-            <video
-              src={videoUrl}
-              className="h-full w-full object-contain"
-              controls
-              controlsList="nodownload"
-            />
+            shouldRenderIframe && embeddedVideoUrl ? (
+              <iframe
+                src={embeddedVideoUrl}
+                className="h-full min-h-[420px] w-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={lesson?.title ?? 'Video lesson'}
+              />
+            ) : (
+              <video
+                key={videoUrl}
+                src={videoUrl}
+                className="h-full w-full object-contain"
+                controls
+                controlsList="nodownload"
+              />
+            )
           ) : (
             <>
               <img
@@ -38,6 +87,9 @@ export const VideoPlayer = ({ lesson }: VideoPlayerProps) => {
                 alt="Video frame"
               />
               <div className="absolute inset-0 bg-black/20"></div>
+              <div className="absolute top-4 left-4 z-20 max-w-md rounded-md bg-black/60 px-3 py-2 text-xs text-white">
+                {mediaError ? 'Không tải được video.' : 'Chưa tìm thấy video cho bài học này.'}
+              </div>
 
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                 <div className="bg-primary/90 pointer-events-auto flex h-16 w-16 transform cursor-pointer items-center justify-center rounded-full text-white shadow-[0_0_30px_rgba(22,119,255,0.5)] backdrop-blur-sm transition-transform group-hover:scale-110">

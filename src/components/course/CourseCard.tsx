@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import Link from 'next/link';
+import { resolveMediaUrl } from '@/lib/media';
 
 // Định nghĩa khung dữ liệu chuẩn cho 1 khóa học
 export interface CourseType {
@@ -23,6 +24,10 @@ export interface CourseType {
 }
 
 export const CourseCard = ({ course }: { course: CourseType }) => {
+  const imageUrl =
+    resolveMediaUrl(course.imageUrl) ??
+    'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80';
+
   return (
     <Link
       href={`/courses/detail?id=${course.id}`}
@@ -44,7 +49,7 @@ export const CourseCard = ({ course }: { course: CourseType }) => {
           </div>
         ) : (
           <img
-            src={course.imageUrl}
+            src={imageUrl}
             alt={course.title}
             className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 ${course.isCompleted ? 'grayscale-30 filter' : ''}`}
           />

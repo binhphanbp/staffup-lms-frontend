@@ -33,6 +33,10 @@ export const userService = {
     return data.data;
   },
 
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`${API_BASE}/${id}`);
+  },
+
   updateStatus: async (id: string, isActive: boolean): Promise<UserListItem> => {
     const { data } = await api.patch<ApiResponse<UserListItem>>(`/auth/users/${id}/status`, {
       isActive,
@@ -44,6 +48,32 @@ export const userService = {
     const { data } = await api.put<ApiResponse<UserListItem>>(`/auth/users/${id}/roles`, {
       roleCodes,
     });
+    return data.data;
+  },
+
+  importExcel: async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const { data } = await api.post<
+      ApiResponse<{
+        summary: {
+          totalRows: number;
+          successCount: number;
+          errorCount: number;
+          createdDepartmentCount: number;
+        };
+        createdDepartments: string[];
+        createdUsers: Array<Record<string, unknown>>;
+        errors: Array<{ row: number; email: string; reason: string }>;
+        acceptedColumns: string[];
+      }>
+    >(`${API_BASE}/import`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     return data.data;
   },
 };

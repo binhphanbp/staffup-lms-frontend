@@ -94,6 +94,7 @@ export interface CourseListItem {
   title: string;
   slug: string;
   description: string | null;
+  mediaFolder: string | null;
   thumbnailUrl: string | null;
   status: CourseStatus;
   estimatedDurationMinutes: number | null;
@@ -175,6 +176,7 @@ export interface CourseDetailResponse {
   title: string;
   slug: string;
   description: string | null;
+  mediaFolder: string | null;
   thumbnailUrl: string | null;
   status: CourseStatus;
   estimatedDurationMinutes: number | null;

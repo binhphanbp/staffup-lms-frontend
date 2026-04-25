@@ -105,7 +105,7 @@ export default function CourseCatalog() {
           )}
 
           {/* GRID HIỂN THỊ KHÓA HỌC */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {isLoading
               ? Array.from({ length: limit }).map((_, idx) => <CourseSkeleton key={idx} />)
               : courses.map((item) => <CourseCard key={item.id} course={toCourseType(item)} />)}

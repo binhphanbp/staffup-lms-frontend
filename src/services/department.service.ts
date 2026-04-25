@@ -18,9 +18,29 @@ export interface Department {
   updatedAt: string;
 }
 
+export interface DepartmentPayload {
+  name: string;
+  isActive?: boolean;
+  managerUserId?: string | null;
+}
+
 export const departmentService = {
   list: async (): Promise<Department[]> => {
     const { data } = await api.get<ApiResponse<Department[]>>('/departments');
     return data.data;
+  },
+
+  create: async (payload: DepartmentPayload): Promise<Department> => {
+    const { data } = await api.post<ApiResponse<Department>>('/departments', payload);
+    return data.data;
+  },
+
+  update: async (id: string, payload: Partial<DepartmentPayload>): Promise<Department> => {
+    const { data } = await api.put<ApiResponse<Department>>(`/departments/${id}`, payload);
+    return data.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/departments/${id}`);
   },
 };

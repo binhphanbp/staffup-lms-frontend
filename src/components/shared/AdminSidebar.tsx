@@ -4,10 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMobileNav } from '@/context/MobileNavContext';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const AdminSidebar = () => {
   const pathname = usePathname();
   const { closeMobileNav } = useMobileNav();
+  const user = useAuthStore((state) => state.user);
+  const isAdmin = user?.roleCodes?.includes('admin') ?? false;
 
   return (
     <aside className="z-100 flex h-full w-65 shrink-0 flex-col border-r border-[#DADCE0] bg-white">
@@ -162,6 +165,23 @@ export const AdminSidebar = () => {
           <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase">
             Hệ thống & AI
           </div>
+          {isAdmin && (
+            <Link
+              href="/departments"
+              className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+                pathname === '/departments'
+                  ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                  : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+              }`}
+            >
+              <span
+                className={`material-symbols-outlined mr-4 text-[20px] ${pathname === '/departments' ? "[font-variation-settings:'FILL'_1]" : ''}`}
+              >
+                apartment
+              </span>{' '}
+              Quáº£n lÃ½ PhÃ²ng ban
+            </Link>
+          )}
           <Link
             href="/company-documents"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
