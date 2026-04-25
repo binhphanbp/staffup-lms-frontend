@@ -5,6 +5,7 @@ import type {
   CourseDetailResponse,
   CourseListParams,
   CourseModuleItem,
+  LessonDetail,
   PaginatedResponse,
   LessonResource,
 } from '@/types';
@@ -44,6 +45,13 @@ export const courseService = {
   listModules: async (courseId: string): Promise<CourseModuleItem[]> => {
     const { data } = await api.get<ApiResponse<CourseModuleItem[]>>(
       `${API_BASE}/${courseId}/modules`,
+    );
+    return data.data;
+  },
+
+  listLessonsForModule: async (courseId: string, moduleId: string): Promise<LessonDetail[]> => {
+    const { data } = await api.get<ApiResponse<LessonDetail[]>>(
+      `${API_BASE}/${courseId}/modules/${moduleId}/lessons`,
     );
     return data.data;
   },

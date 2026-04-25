@@ -919,3 +919,76 @@ export interface QuizListParams {
   page?: number;
   limit?: number;
 }
+
+// ----- Roadmap -----
+export interface RoadmapCourseItem {
+  id: string;
+  courseId: string;
+  orderIndex: number;
+  isRequired: boolean;
+  course: {
+    id: string;
+    title: string;
+    slug: string;
+    thumbnailUrl: string | null;
+    status: string;
+  };
+}
+
+export interface RoadmapDetail {
+  id: string;
+  departmentId: string;
+  categoryId: string | null;
+  title: string;
+  description: string | null;
+  targetPosition: string | null;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  department: { id: string; name: string };
+  category: { id: string; name: string; slug: string } | null;
+  createdBy: { id: string; fullName: string } | null;
+  courses: RoadmapCourseItem[];
+  assignmentsCount: number;
+}
+
+export type RoadmapAssignmentStatus = 'assigned' | 'in_progress' | 'completed' | 'dropped';
+
+export interface RoadmapAssignment {
+  id: string;
+  userId: string;
+  roadmapId: string;
+  status: RoadmapAssignmentStatus;
+  assignedAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+  droppedAt: string | null;
+  progressPercent?: number;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+    avatarUrl: string | null;
+    department: { id: string; name: string };
+  };
+  roadmap: {
+    id: string;
+    title: string;
+    description: string | null;
+    targetPosition: string | null;
+    isActive: boolean;
+    department: { id: string; name: string };
+    category: { id: string; name: string; slug: string } | null;
+    coursesCount: number;
+  };
+  assignedBy: { id: string; fullName: string; email: string } | null;
+}
+
+export interface RoadmapAssignmentListParams {
+  userId?: string;
+  roadmapId?: string;
+  status?: string;
+  departmentId?: string;
+  page?: number;
+  limit?: number;
+}
