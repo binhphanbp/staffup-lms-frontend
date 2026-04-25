@@ -49,11 +49,31 @@ export function useToggleUserStatus() {
   });
 }
 
+export function useDeleteUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => userService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+}
+
 export function useAssignRoles() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, roleCodes }: { id: string; roleCodes: string[] }) =>
       userService.assignRoles(id, roleCodes),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+}
+
+export function useImportUsers() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => userService.importExcel(file),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
     },

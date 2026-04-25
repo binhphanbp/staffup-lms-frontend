@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { StudentHeader } from '@/components/shared/StudentHeader';
 import { QuestionContent } from '@/components/quiz/QuestionContent';
 import { QuestionPalette } from '@/components/quiz/QuestionPalette';
@@ -19,6 +20,7 @@ export default function QuizAssessmentPage() {
   const attemptIdParam = searchParams.get('attemptId');
   const quizIdParam = searchParams.get('quizId');
   const enrollmentIdParam = searchParams.get('enrollmentId');
+  const [startError, setStartError] = useState<string | null>(null);
 
   // If no attemptId, start a new quiz
   const startQuiz = useStartQuiz();
@@ -28,12 +30,23 @@ export default function QuizAssessmentPage() {
   useEffect(() => {
     if (!attemptId && quizIdParam && enrollmentIdParam && !startCalledRef.current) {
       startCalledRef.current = true;
+      setStartError(null);
       startQuiz.mutate(
         { quizId: quizIdParam, enrollmentId: enrollmentIdParam },
         {
           onSuccess: (data) => setAttemptId(data.attemptId),
-          onError: () => {
+          onError: (error: unknown) => {
             startCalledRef.current = false;
+            const message =
+              typeof error === 'object' &&
+              error !== null &&
+              'response' in error &&
+              typeof (error as { response?: { data?: { message?: string } } }).response?.data
+                ?.message === 'string'
+                ? ((error as { response?: { data?: { message?: string } } }).response?.data
+                    ?.message ?? null)
+                : null;
+            setStartError(message ?? 'Không thể khởi tạo bài test này.');
           },
         },
       );
@@ -120,6 +133,17 @@ export default function QuizAssessmentPage() {
     [activeQuestionData, saveResponse],
   );
 
+  const handleAnswerText = useCallback(
+    (value: string) => {
+      if (!activeQuestionData) return;
+      saveResponse.mutate({
+        attemptQuestionId: activeQuestionData.id,
+        responseText: value.trim(),
+      });
+    },
+    [activeQuestionData, saveResponse],
+  );
+
   const handleToggleReview = () => {
     if (reviewQs.includes(activeQuestion)) {
       setReviewQs(reviewQs.filter((q) => q !== activeQuestion));
@@ -169,6 +193,46 @@ export default function QuizAssessmentPage() {
     );
   }
 
+  if (!attemptId && (!quizIdParam || !enrollmentIdParam)) {
+    return (
+      <>
+        <StudentHeader
+          breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Bài Test năng lực' }]}
+        />
+        <div className="flex flex-1 items-center justify-center bg-[#f0f2f5] p-6">
+          <div className="max-w-lg rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+            <div className="mb-3 text-lg font-bold text-slate-800">Chưa có bài test được chọn</div>
+            <p className="mb-4 text-sm text-slate-500">
+              Hãy mở bài học có quiz trong phòng học và bắt đầu bài test từ đó.
+            </p>
+            <Link href="/courses" className="text-primary text-sm font-medium hover:underline">
+              → Mở thư viện khóa học
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (startError) {
+    return (
+      <>
+        <StudentHeader
+          breadcrumbs={[{ label: 'Trang chủ', href: '/' }, { label: 'Bài Test năng lực' }]}
+        />
+        <div className="flex flex-1 items-center justify-center bg-[#f0f2f5] p-6">
+          <div className="max-w-lg rounded-xl border border-amber-200 bg-white p-6 text-center shadow-sm">
+            <div className="mb-3 text-lg font-bold text-slate-800">Không thể mở bài test</div>
+            <p className="mb-4 text-sm text-slate-600">{startError}</p>
+            <Link href="/courses" className="text-primary text-sm font-medium hover:underline">
+              → Quay lại khóa học
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <StudentHeader
@@ -185,6 +249,7 @@ export default function QuizAssessmentPage() {
           setActiveQuestion={setActiveQuestion}
           answeredQs={answeredQs}
           onSelectOption={handleSelectOption}
+          onAnswerText={handleAnswerText}
           reviewQs={reviewQs}
           onToggleReview={handleToggleReview}
           questionData={activeQuestionData}

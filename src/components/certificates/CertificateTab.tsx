@@ -1,7 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
+import Link from 'next/link';
 import { useCertificates } from '@/hooks/useCertificates';
+import { useAuthStore } from '@/store/useAuthStore';
 import type { CertificateResponse } from '@/types';
+import { resolveMediaUrl } from '@/lib/media';
 
 interface CertificateTabProps {
   onCopy: (text: string) => void;
@@ -19,7 +22,8 @@ function CertificateCard({
   onCopy: (text: string) => void;
 }) {
   const courseTitle = cert.enrollment?.course?.title ?? 'Khóa học';
-  const thumbnailUrl = cert.enrollment?.course?.thumbnailUrl;
+  const thumbnailUrl = resolveMediaUrl(cert.enrollment?.course?.thumbnailUrl);
+  const pdfUrl = resolveMediaUrl(cert.pdfUrl);
 
   return (
     <div className="card cert-card border-t-primary flex h-full flex-col border-t-4 bg-white p-5">
@@ -30,16 +34,24 @@ function CertificateCard({
           <div className="font-bold text-slate-300">{courseTitle}</div>
         )}
         <div className="absolute inset-0 z-20 flex items-center justify-center gap-3 bg-slate-900/40 opacity-0 backdrop-blur-[2px] transition-opacity group-hover:opacity-100">
-          {cert.pdfUrl && (
+          {pdfUrl ? (
             <a
-              href={cert.pdfUrl}
+              href={pdfUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary hover:bg-primary flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg transition-colors hover:text-white"
+              title="Tải PDF"
             >
               <i className="fa-solid fa-download"></i>
             </a>
-          )}
+          ) : null}
+          <Link
+            href={`/certificates/${cert.id}`}
+            className="text-primary hover:bg-primary flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg transition-colors hover:text-white"
+            title={pdfUrl ? 'Xem chứng chỉ' : 'Xem và tải chứng chỉ'}
+          >
+            <i className="fa-regular fa-eye"></i>
+          </Link>
         </div>
       </div>
 
@@ -80,12 +92,12 @@ function CertificateCard({
 }
 
 export const CertificateTab = ({ onCopy }: CertificateTabProps) => {
-  const { data, isLoading } = useCertificates();
+  const userId = useAuthStore((state) => state.user?.id);
+  const { data, isLoading } = useCertificates(userId ? { userId } : undefined);
   const certificates = data?.certificates ?? [];
 
   return (
     <div className="animate-[fadeIn_0.3s_ease-in-out] space-y-6 pb-12">
-      {/* Thanh công cụ lọc */}
       <div className="mb-2 flex items-center justify-between">
         <div className="text-sm font-bold text-slate-800">
           Chứng chỉ đã đạt được ({data?.pagination?.total ?? 0})

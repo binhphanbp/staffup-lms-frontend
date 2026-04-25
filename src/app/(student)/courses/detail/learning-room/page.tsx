@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import type { LessonProgressStatus } from '@/types';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { LearningHeader } from '@/components/learning-room/LearningHeader';
 import { VideoPlayer } from '@/components/learning-room/VideoPlayer';
@@ -10,8 +10,11 @@ import { LearningTabs } from '@/components/learning-room/LearningTabs';
 import { SyllabusSidebar } from '@/components/learning-room/SyllabusSidebar';
 import { useCourseDetail } from '@/hooks/useCourses';
 import { useEnrollments, useEnrollmentProgress } from '@/hooks/useEnrollments';
+import { useCourseVideoMedia } from '@/hooks/useMedia';
+import { buildMediaModules } from '@/lib/course-media';
 
 export default function LearningRoomPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const courseId = searchParams.get('courseId');
 
@@ -26,12 +29,24 @@ export default function LearningRoomPage() {
   const { data: enrollmentData } = useEnrollments(courseId ? { courseId, limit: 1 } : undefined);
   const enrollment = enrollmentData?.data?.[0] ?? null;
   const enrollmentId = enrollment?.id ?? null;
+  const { data: fallbackEnrollments, isLoading: fallbackEnrollmentsLoading } = useEnrollments(
+    !courseId ? { limit: 1 } : undefined,
+  );
+  const fallbackEnrollment = fallbackEnrollments?.data?.[0] ?? null;
 
   // Fetch per-lesson progress
   const { data: progress } = useEnrollmentProgress(enrollmentId);
+  const { data: courseVideoMedia, isError: courseVideoMediaError } = useCourseVideoMedia(
+    course?.mediaFolder ?? null,
+    Boolean(course?.mediaFolder),
+  );
+  const fallbackModules = useMemo(
+    () => buildMediaModules(courseVideoMedia?.items),
+    [courseVideoMedia?.items],
+  );
 
   // Build a flat list of all lessons with module context
-  const modules = course?.modules;
+  const modules = course?.modules?.length ? course.modules : fallbackModules;
   const allLessons = useMemo(() => {
     if (!modules) return [];
     return modules
@@ -51,6 +66,8 @@ export default function LearningRoomPage() {
   const activeLesson = useMemo(() => {
     if (!allLessons.length) return null;
     if (activeLessonId) return allLessons.find((l) => l.id === activeLessonId) ?? allLessons[0];
+    const firstVideoLesson = allLessons.find((lesson) => lesson.lessonType === 'video');
+    if (firstVideoLesson) return firstVideoLesson;
     // Try to resume from last accessed via progress modules
     if (progress?.modules) {
       for (const mod of progress.modules) {
@@ -85,6 +102,35 @@ export default function LearningRoomPage() {
     return map;
   }, [progress]);
 
+  React.useEffect(() => {
+    if (!courseId && fallbackEnrollment?.course?.id) {
+      router.replace(`/courses/detail/learning-room?courseId=${fallbackEnrollment.course.id}`);
+    }
+  }, [courseId, fallbackEnrollment?.course?.id, router]);
+
+  if (!courseId && fallbackEnrollmentsLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-900">
+        <div className="text-sm text-slate-400">
+          <i className="fa-solid fa-spinner fa-spin mr-2"></i>Đang tìm khóa học gần nhất...
+        </div>
+      </div>
+    );
+  }
+
+  if (!courseId && !fallbackEnrollment) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-900">
+        <div className="text-center">
+          <p className="mb-4 text-sm text-slate-300">Bạn chưa có khóa học nào để vào phòng học.</p>
+          <Link href="/courses" className="text-primary text-sm hover:underline">
+            → Mở thư viện khóa học
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (courseLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-900">
@@ -115,7 +161,7 @@ export default function LearningRoomPage() {
         lessonTitle={activeLesson?.title}
         progressPercent={progress?.summary?.progressPercent ?? 0}
         completedLessons={progress?.summary?.completedLessonsCount ?? 0}
-        totalLessons={progress?.summary?.totalLessonsCount ?? 0}
+        totalLessons={progress?.summary?.totalLessonsCount ?? allLessons.length}
         courseId={course.id}
         enrollmentId={enrollmentId}
         lessonId={activeLesson?.id ?? null}
@@ -125,8 +171,16 @@ export default function LearningRoomPage() {
       <div className="relative flex flex-1 overflow-hidden bg-slate-900">
         {/* KHỐI TRÁI: Video và Tabs */}
         <div className="custom-scrollbar flex h-full flex-1 flex-col overflow-y-auto bg-white">
-          <VideoPlayer lesson={activeLesson ?? undefined} />
-          <LearningTabs lesson={activeLesson ?? undefined} trainer={course.trainer} />
+          <VideoPlayer
+            lesson={activeLesson ?? undefined}
+            fallbackMediaItems={courseVideoMedia?.items}
+            mediaError={courseVideoMediaError}
+          />
+          <LearningTabs
+            lesson={activeLesson ?? undefined}
+            trainer={course.trainer}
+            enrollmentId={enrollmentId}
+          />
         </div>
 
         {/* Backdrop — chỉ hiện trên mobile khi sidebar mở */}
@@ -141,11 +195,11 @@ export default function LearningRoomPage() {
         <SyllabusSidebar
           isOpen={isSidebarOpen}
           onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-          modules={course.modules ?? []}
+          modules={modules ?? []}
           activeLessonId={activeLesson?.id ?? null}
           lessonProgressMap={lessonProgressMap}
           completedLessons={progress?.summary?.completedLessonsCount ?? 0}
-          totalLessons={progress?.summary?.totalLessonsCount ?? 0}
+          totalLessons={progress?.summary?.totalLessonsCount ?? allLessons.length}
           onSelectLesson={(lessonId) => setActiveLessonId(lessonId)}
         />
       </div>

@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react';
 import type { CourseDetailResponse } from '@/types';
+import { resolveMediaUrl } from '@/lib/media';
 
 interface HeroBannerProps {
   course?: CourseDetailResponse;
@@ -11,7 +12,7 @@ export const HeroBanner = ({ course }: HeroBannerProps) => {
   const description = course?.description ?? '';
   const categoryName = course?.category?.name ?? 'General';
   const departmentName = course?.ownerDepartment?.name;
-  const thumbnailUrl = course?.thumbnailUrl;
+  const thumbnailUrl = resolveMediaUrl(course?.thumbnailUrl);
   const totalEnrollments = course?.stats?.totalEnrollments ?? 0;
   const updatedAt = course?.updatedAt
     ? new Date(course.updatedAt).toLocaleDateString('vi-VN', { month: 'short', year: 'numeric' })
