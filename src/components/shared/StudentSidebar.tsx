@@ -22,7 +22,7 @@ export const StudentSidebar = () => {
   const learningMenus = [
     { name: 'Bảng điều khiển', href: '/', icon: 'fa-house' },
     { name: 'Thư viện Khoa học', href: '/courses', icon: 'fa-book-open' },
-    { name: 'Lộ trình phát triển', href: '/path', icon: 'fa-route' },
+    { name: 'Lộ trình phát triển', href: '/roadmaps', icon: 'fa-route' },
     { name: 'Môi trường Thực hành', href: '/courses/detail/learning-room', icon: 'fa-code' },
   ];
 

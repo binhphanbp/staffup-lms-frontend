@@ -32,18 +32,34 @@ export default function CourseDetailPage() {
   );
   const courseModules = (course?.modules?.length ? course.modules : fallbackModules) ?? [];
 
-  const previewLesson = useMemo(() => {
-    const lessons =
-      courseModules.flatMap((module) =>
-        module.lessons.map((lesson) => ({
-          ...lesson,
-          moduleTitle: module.title,
-        })),
-      ) ?? [];
+  // Compute stats from loaded modules when API doesn't return them
+  const computedStats = useMemo(() => {
+    if (course?.stats) return course.stats;
+    if (!courseModules.length) return undefined;
+    const totalLessons = courseModules.reduce((s, m) => s + m.lessons.length, 0);
+    const totalDurationMinutes = Math.round(
+      courseModules.reduce(
+        (s, m) => s + m.lessons.reduce((ls, l) => ls + (l.durationSeconds ?? 0), 0),
+        0,
+      ) / 60,
+    );
+    return {
+      totalModules: courseModules.length,
+      totalLessons,
+      totalDurationMinutes,
+      totalEnrollments: 0,
+    };
+  }, [course?.stats, courseModules]);
 
+  const previewLesson = useMemo(() => {
+    const lessons = courseModules.flatMap((module) =>
+      module.lessons.map((lesson) => ({ ...lesson, moduleTitle: module.title })),
+    );
+    // Prefer lesson marked isPreview, then first video, then first lesson of any type
     return (
-      lessons.find((lesson) => lesson.lessonType === 'video' && lesson.isPreview) ??
-      lessons.find((lesson) => lesson.lessonType === 'video') ??
+      lessons.find((l) => l.lessonType === 'video' && l.isPreview) ??
+      lessons.find((l) => l.lessonType === 'video') ??
+      lessons[0] ??
       null
     );
   }, [courseModules]);
@@ -200,25 +216,9 @@ export default function CourseDetailPage() {
 
             <CourseCurriculum
               modules={courseModules}
-              totalModules={course.stats?.totalModules ?? courseModules.length}
-              totalLessons={
-                course.stats?.totalLessons ??
-                courseModules.reduce((sum, module) => sum + module.lessons.length, 0)
-              }
-              totalDurationMinutes={
-                course.stats?.totalDurationMinutes ??
-                Math.round(
-                  courseModules.reduce(
-                    (sum, module) =>
-                      sum +
-                      module.lessons.reduce(
-                        (lessonSum, lesson) => lessonSum + lesson.durationSeconds,
-                        0,
-                      ),
-                    0,
-                  ) / 60,
-                )
-              }
+              totalModules={computedStats?.totalModules}
+              totalLessons={computedStats?.totalLessons}
+              totalDurationMinutes={computedStats?.totalDurationMinutes}
             />
 
             {course.trainer && (
@@ -247,7 +247,7 @@ export default function CourseDetailPage() {
           </div>
 
           <CourseSidebar
-            course={course}
+            course={computedStats ? { ...course, stats: computedStats } : course}
             enrollment={enrollment}
             isEnrolling={selfEnroll.isPending}
             onSelfEnroll={handleSelfEnroll}
