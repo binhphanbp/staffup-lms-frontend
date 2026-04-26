@@ -4,6 +4,7 @@ import { StudentHeader } from '@/components/shared/StudentHeader';
 import { FilterSidebar } from '@/components/course/FilterSidebar';
 import { CourseSkeleton } from '@/components/course/CourseSkeleton';
 import { CourseCard, type CourseType } from '@/components/course/CourseCard';
+import { AiRecommendationsSection } from '@/components/course/AiRecommendationsSection';
 import { Pagination } from '@/components/shared/Pagination';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCourses } from '@/hooks/useCourses';
@@ -217,6 +218,9 @@ export default function CourseCatalog() {
                 </div>
               );
             })()}
+
+            {/* ── AI Recommendations (only on "All" tab) ── */}
+            {tab === 'all' && <AiRecommendationsSection />}
 
             {/* ── Tab bar ── */}
             <div className="mb-4 flex gap-1 border-b border-gray-200">
