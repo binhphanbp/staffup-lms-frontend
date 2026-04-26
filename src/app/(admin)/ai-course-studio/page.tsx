@@ -265,21 +265,23 @@ export default function AiCourseStudioPage() {
     );
   };
   const removeModule = (mTempId: string) => {
-    setOutline((prev) => {
-      if (!prev) return prev;
-      const removed = prev.modules.find((m) => m.tempId === mTempId);
-      if (removed) {
-        const lessonIds = new Set(removed.lessons.map((l) => l.tempId));
-        setLessonContents((curr) => {
-          const next: Record<string, LessonContentState> = {};
-          for (const [key, value] of Object.entries(curr)) {
-            if (!lessonIds.has(key)) next[key] = value;
-          }
-          return next;
-        });
-      }
-      return { ...prev, modules: prev.modules.filter((m) => m.tempId !== mTempId) };
-    });
+    // Compute lesson IDs to clean up BEFORE dispatching, so the setOutline
+    // updater stays a pure function (Devin Review #44 — React 19 strict mode
+    // double-invokes updaters in dev; nested state setters would dispatch twice).
+    const removed = outline?.modules.find((m) => m.tempId === mTempId);
+    setOutline((prev) =>
+      prev ? { ...prev, modules: prev.modules.filter((m) => m.tempId !== mTempId) } : prev,
+    );
+    if (removed) {
+      const lessonIds = new Set(removed.lessons.map((l) => l.tempId));
+      setLessonContents((curr) => {
+        const next: Record<string, LessonContentState> = {};
+        for (const [key, value] of Object.entries(curr)) {
+          if (!lessonIds.has(key)) next[key] = value;
+        }
+        return next;
+      });
+    }
   };
   const moveModule = (mTempId: string, dir: -1 | 1) => {
     setOutline((prev) => {
