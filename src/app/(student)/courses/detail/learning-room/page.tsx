@@ -232,6 +232,7 @@ export default function LearningRoomPage() {
             trainer={course.trainer}
             enrollmentId={enrollmentId}
             courseId={courseId}
+            courseTitle={course.title}
           />
         </div>
 
