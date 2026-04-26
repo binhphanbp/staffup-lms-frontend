@@ -197,7 +197,7 @@ export default function AIChatWidget() {
   if (!isAuthenticated) return null;
 
   return (
-    <>
+    <div className="print:hidden">
       {/* Toggle Button */}
       <button
         className="chat-toggle-btn"
@@ -327,6 +327,6 @@ export default function AIChatWidget() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
