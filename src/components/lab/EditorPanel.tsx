@@ -324,7 +324,7 @@ export const EditorPanel = ({
       <div className="relative flex flex-1 overflow-hidden bg-[var(--color-code-bg)] font-mono text-[13px] leading-relaxed text-[var(--color-code-text)]">
         <div
           ref={lineNumbersRef}
-          className="w-12 flex-shrink-0 overflow-hidden border-r border-white/5 bg-[#282c34] pt-4 pr-3 text-right font-mono text-[12px] leading-relaxed text-[#4b5263] select-none"
+          className="w-12 flex-shrink-0 overflow-hidden border-r border-white/5 bg-[#282c34] pt-4 pr-3 text-right font-mono text-[13px] leading-relaxed text-[#4b5263] select-none"
         >
           {lineNumbers.map((n) => (
             <div key={n}>{n}</div>
@@ -360,10 +360,18 @@ export const EditorPanel = ({
                 className={`ml-1 rounded-full px-1.5 py-0.5 text-[9px] font-bold ${
                   evaluation.overallStatus === 'passed'
                     ? 'bg-emerald-500/15 text-emerald-300'
-                    : 'bg-rose-500/15 text-rose-300'
+                    : evaluation.overallStatus === 'partial'
+                      ? 'bg-amber-500/15 text-amber-300'
+                      : 'bg-rose-500/15 text-rose-300'
                 }`}
               >
-                {failedTestCount > 0 ? `${failedTestCount} fail` : 'pass'}
+                {evaluation.overallStatus === 'passed'
+                  ? 'pass'
+                  : evaluation.overallStatus === 'error'
+                    ? 'error'
+                    : failedTestCount > 0
+                      ? `${failedTestCount} fail`
+                      : evaluation.overallStatus}
               </span>
             )}
           </button>
