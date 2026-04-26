@@ -45,9 +45,9 @@ export default function QuestionBankPage() {
     showToast('Đã lưu câu hỏi thành công!');
   };
 
-  const handleSaveAI = () => {
+  const handleSaveAI = (createdCount: number) => {
     setIsAIModalOpen(false);
-    showToast('Đã thêm câu hỏi từ AI vào Ngân hàng!');
+    showToast(`Đã thêm ${createdCount} câu hỏi từ AI vào Ngân hàng!`);
   };
 
   const formatDate = (iso: string) =>

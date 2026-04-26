@@ -9,7 +9,8 @@ import type { LessonProgressUpdate } from '@/types';
 export function useEnrollments(params?: EnrollmentListParams) {
   return useQuery({
     queryKey: ['enrollments', params],
-    queryFn: () => enrollmentService.list(params),
+    queryFn: () => enrollmentService.list(params!),
+    enabled: !!params,
   });
 }
 
@@ -40,6 +41,17 @@ export function useEnrollUser() {
   });
 }
 
+export function useSelfEnroll() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (courseId: string) => enrollmentService.selfEnroll(courseId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['enrollments'] });
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
+    },
+  });
+}
+
 export function useStartLesson() {
   return useMutation({
     mutationFn: ({ enrollmentId, lessonId }: { enrollmentId: string; lessonId: string }) =>
@@ -66,7 +78,10 @@ export function useCompleteLesson() {
   return useMutation({
     mutationFn: ({ enrollmentId, lessonId }: { enrollmentId: string; lessonId: string }) =>
       enrollmentService.completeLesson(enrollmentId, lessonId),
-    onSuccess: (_, variables) => {
+    onSuccess: async (result, variables) => {
+      if (result?.progressPercent >= 100) {
+        await enrollmentService.updateStatus(variables.enrollmentId, 'completed');
+      }
       queryClient.invalidateQueries({
         queryKey: ['enrollment-progress', variables.enrollmentId],
       });

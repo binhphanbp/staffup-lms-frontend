@@ -4,14 +4,22 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import type { LessonDetail } from '@/types';
+import { resolveMediaUrl } from '@/lib/media';
 
 interface LearningTabsProps {
   lesson?: LessonDetail & { moduleTitle?: string };
   trainer?: { id: string; fullName: string; email: string; avatarUrl: string | null };
+  enrollmentId?: string | null;
 }
 
-export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
+export const LearningTabs = ({ lesson, trainer, enrollmentId }: LearningTabsProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'qa'>('overview');
+  const downloadableResource = lesson?.resources?.find((resource) => resource.fileUrl);
+  const downloadUrl = resolveMediaUrl(downloadableResource?.fileUrl);
+  const quizHref =
+    lesson?.quiz && enrollmentId
+      ? `/quiz-assessment?quizId=${lesson.quiz.id}&enrollmentId=${enrollmentId}`
+      : null;
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-6 py-6 lg:px-10">
@@ -38,6 +46,7 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
             {lesson?.moduleTitle && <span>{lesson.moduleTitle}</span>}
           </div>
         </div>
+
         <div className="flex gap-2">
           <button
             className="hover:text-primary hover:border-primary flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-sm transition-colors"
@@ -45,12 +54,25 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
           >
             <i className="fa-regular fa-bookmark"></i>
           </button>
-          <button
-            className="hover:text-primary hover:border-primary flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-sm transition-colors"
-            title="Tải tài liệu"
-          >
-            <i className="fa-solid fa-download"></i>
-          </button>
+
+          {downloadUrl ? (
+            <Link
+              href={downloadUrl}
+              target="_blank"
+              className="hover:text-primary hover:border-primary flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-sm transition-colors"
+              title="Tải tài liệu"
+            >
+              <i className="fa-solid fa-download"></i>
+            </Link>
+          ) : (
+            <button
+              disabled
+              className="flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-full border border-gray-200 bg-slate-100 text-slate-300 shadow-sm"
+              title="Chưa có tài liệu"
+            >
+              <i className="fa-solid fa-download"></i>
+            </button>
+          )}
         </div>
       </div>
 
@@ -66,7 +88,7 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
             onClick={() => setActiveTab('notes')}
             className={`flex items-center gap-1 border-b-2 py-3 transition-colors ${activeTab === 'notes' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
           >
-            Ghi chú{' '}
+            Ghi chú
             <span className="bg-primary rounded-full px-1.5 py-0.5 text-[9px] text-white">2</span>
           </button>
           <button
@@ -81,6 +103,24 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
       <div className="flex-1 pb-10">
         {activeTab === 'overview' && (
           <div className="max-w-4xl animate-[fadeIn_0.3s_ease-in-out] space-y-4 text-[14px] leading-relaxed text-slate-600">
+            {quizHref && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+                <div className="mb-2 flex items-center gap-2 text-sm font-bold text-amber-900">
+                  <i className="fa-solid fa-flask-vial"></i> Bài test cho bài học này
+                </div>
+                <p className="mb-3 text-sm text-amber-800">
+                  {lesson?.quiz?.title ?? 'Bài test'} sẵn sàng. Bạn có thể bắt đầu ngay từ bài học
+                  hiện tại.
+                </p>
+                <Link
+                  href={quizHref}
+                  className="inline-flex items-center gap-2 rounded-md bg-amber-500 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-amber-600"
+                >
+                  <i className="fa-solid fa-play"></i> Bắt đầu bài test
+                </Link>
+              </div>
+            )}
+
             {lesson?.contentText ? (
               <div dangerouslySetInnerHTML={{ __html: lesson.contentText }} />
             ) : (
@@ -96,7 +136,7 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
                   {lesson.resources.map((res) => (
                     <Link
                       key={res.id}
-                      href={res.fileUrl ?? '#'}
+                      href={resolveMediaUrl(res.fileUrl) ?? '#'}
                       target="_blank"
                       className="text-primary flex items-center gap-2 text-[13px] hover:underline"
                     >
@@ -123,7 +163,7 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
               </div>
               <textarea
                 className="focus:ring-primary focus:border-primary h-24 w-full resize-none rounded-md border border-gray-300 p-3 font-mono text-[13px] transition-all outline-none focus:ring-1"
-                placeholder="Gõ ghi chú hoặc dán đoạn code vào đây... Markdown được hỗ trợ."
+                placeholder="Ghi chú hoặc đoạn code vào đây... Markdown được hỗ trợ."
               ></textarea>
               <div className="mt-3 flex items-center justify-between">
                 <div className="text-[10px] text-slate-400">
@@ -132,23 +172,6 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
                 <button className="rounded bg-slate-800 px-4 py-1.5 text-xs font-bold text-white transition-colors hover:bg-black">
                   Lưu ghi chú
                 </button>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="group rounded-lg border border-gray-100 p-4 transition-colors hover:border-gray-300">
-                <div className="flex items-start gap-3">
-                  <button className="bg-primary-bg text-primary border-primary/20 hover:bg-primary mt-0.5 flex-shrink-0 cursor-pointer rounded border px-2 py-1 font-mono text-[11px] font-bold transition-colors hover:text-white">
-                    04:15
-                  </button>
-                  <div className="flex-1">
-                    <p className="font-mono text-[13px] leading-relaxed text-slate-700">
-                      Sự khác biệt chính giữa Master-Slave: Master xử lý Write, Slave xử lý Read.
-                      Cần cẩn thận với Replication Lag (tức là ghi xong đọc liền có thể không thấy
-                      data).
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -168,29 +191,6 @@ export const LearningTabs = ({ lesson, trainer }: LearningTabsProps) => {
               <button className="hover:border-primary hover:text-primary rounded-md border border-slate-300 bg-white px-4 py-2 text-[13px] font-bold whitespace-nowrap text-slate-700 transition-colors">
                 Đặt câu hỏi mới
               </button>
-            </div>
-
-            <div className="space-y-6">
-              <div className="flex gap-4">
-                <div className="flex w-8 flex-shrink-0 flex-col items-center gap-1">
-                  <button className="hover:text-primary text-slate-300">
-                    <i className="fa-solid fa-caret-up text-2xl leading-none"></i>
-                  </button>
-                  <span className="text-sm font-bold text-slate-600">12</span>
-                  <button className="hover:text-danger text-slate-300">
-                    <i className="fa-solid fa-caret-down text-2xl leading-none"></i>
-                  </button>
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-primary mb-1 cursor-pointer text-[14px] font-bold hover:underline">
-                    Xử lý vấn đề Split-Brain trong Active-Active DB như thế nào?
-                  </h4>
-                  <p className="mb-2 line-clamp-2 text-[13px] text-slate-600">
-                    Giảng viên có nhắc đến việc setup 2 con Master đồng thời. Nhưng nếu đường mạng
-                    bị đứt...
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         )}

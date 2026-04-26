@@ -6,6 +6,7 @@ interface QuestionContentProps {
   setActiveQuestion: React.Dispatch<React.SetStateAction<number>>;
   answeredQs: number[];
   onSelectOption: (optionIds: string[]) => void;
+  onAnswerText: (value: string) => void;
   reviewQs: number[];
   onToggleReview: () => void;
   questionData?: QuizAttemptQuestionDetail;
@@ -17,6 +18,7 @@ export const QuestionContent = ({
   setActiveQuestion,
   answeredQs,
   onSelectOption,
+  onAnswerText,
   reviewQs,
   onToggleReview,
   questionData,
@@ -25,13 +27,21 @@ export const QuestionContent = ({
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     questionData?.response?.selectedOptionIds ?? [],
   );
+  const [responseText, setResponseText] = useState(questionData?.response?.responseText ?? '');
 
-  // Sync selection when active question changes
   React.useEffect(() => {
     setSelectedOptions(questionData?.response?.selectedOptionIds ?? []);
-  }, [questionData?.id, questionData?.response?.selectedOptionIds]);
+    setResponseText(questionData?.response?.responseText ?? '');
+  }, [
+    questionData?.id,
+    questionData?.response?.selectedOptionIds,
+    questionData?.response?.responseText,
+  ]);
 
   const isMultiSelect = questionData?.questionSnapshot?.questionType === 'multiple_choice';
+  const isTextQuestion =
+    questionData?.questionSnapshot.questionType === 'short_answer' ||
+    questionData?.questionSnapshot.questionType === 'essay';
 
   const handleOptionChange = (optionId: string) => {
     let newSelection: string[];
@@ -42,13 +52,13 @@ export const QuestionContent = ({
     } else {
       newSelection = [optionId];
     }
+
     setSelectedOptions(newSelection);
     onSelectOption(newSelection);
   };
 
   return (
     <div className="relative flex h-full flex-1 flex-col bg-white">
-      {/* Thanh công cụ nhỏ trên câu hỏi */}
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-gray-100 bg-slate-50 px-4 py-3 md:px-8 md:py-4">
         <div className="flex items-center gap-3">
           <span className="bg-primary rounded px-3 py-1 text-[13px] font-bold text-white shadow-sm">
@@ -60,6 +70,7 @@ export const QuestionContent = ({
             </span>
           )}
         </div>
+
         <div className="flex items-center gap-4">
           <label className="group flex cursor-pointer items-center gap-2">
             <input
@@ -75,7 +86,6 @@ export const QuestionContent = ({
         </div>
       </div>
 
-      {/* Nội dung câu hỏi */}
       <div className="custom-scrollbar flex-1 overflow-y-auto p-4 md:p-8">
         <div className="mx-auto w-full max-w-3xl pb-10">
           {questionData ? (
@@ -85,19 +95,22 @@ export const QuestionContent = ({
                 dangerouslySetInnerHTML={{ __html: questionData.questionSnapshot.questionText }}
               />
 
-              <div className="mb-4 text-[13px] font-bold text-slate-700">
-                {isMultiSelect ? 'Chọn tất cả đáp án đúng:' : 'Chọn 1 đáp án đúng nhất:'}
-              </div>
+              {!isTextQuestion && (
+                <div className="mb-4 text-[13px] font-bold text-slate-700">
+                  {isMultiSelect ? 'Chọn tất cả đáp án đúng:' : 'Chọn 1 đáp án đúng nhất:'}
+                </div>
+              )}
 
               <form className="space-y-3">
                 {questionData.optionsSnapshot?.map((opt) => {
                   const isChecked = selectedOptions.includes(opt.optionId);
                   const inputType = isMultiSelect ? 'checkbox' : 'radio';
+
                   return (
                     <div key={opt.optionId} className="relative">
                       <input
                         type={inputType}
-                        name="answer"
+                        name={`answer-${questionData.id}`}
                         id={`opt-${opt.optionId}`}
                         className="option-input absolute h-0 w-0 opacity-0"
                         onChange={() => handleOptionChange(opt.optionId)}
@@ -115,17 +128,23 @@ export const QuestionContent = ({
                   );
                 })}
 
-                {/* Short answer / essay */}
-                {(questionData.questionSnapshot.questionType === 'short_answer' ||
-                  questionData.questionSnapshot.questionType === 'essay') && (
+                {isTextQuestion && (
                   <textarea
                     className="focus:ring-primary focus:border-primary w-full rounded-md border border-gray-300 p-3 text-[13px] outline-none focus:ring-1"
                     placeholder="Nhập câu trả lời..."
                     rows={questionData.questionSnapshot.questionType === 'essay' ? 6 : 2}
-                    defaultValue={questionData.response?.responseText ?? ''}
+                    value={responseText}
+                    onChange={(event) => setResponseText(event.target.value)}
+                    onBlur={(event) => onAnswerText(event.target.value)}
                   />
                 )}
               </form>
+
+              {answeredQs.includes(activeQuestion) && (
+                <div className="mt-4 text-xs font-medium text-emerald-600">
+                  Câu trả lời đã được lưu.
+                </div>
+              )}
             </>
           ) : (
             <div className="text-center text-sm text-slate-400">Không có câu hỏi.</div>
@@ -133,7 +152,6 @@ export const QuestionContent = ({
         </div>
       </div>
 
-      {/* Điều hướng Trái / Phải */}
       <div className="flex shrink-0 items-center justify-between border-t border-gray-200 bg-white px-8 py-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <button
           onClick={() => setActiveQuestion((prev) => Math.max(1, prev - 1))}
@@ -142,6 +160,7 @@ export const QuestionContent = ({
         >
           <i className="fa-solid fa-arrow-left"></i> Câu trước
         </button>
+
         <button
           onClick={() => setActiveQuestion((prev) => Math.min(totalQuestions, prev + 1))}
           disabled={activeQuestion >= totalQuestions}
