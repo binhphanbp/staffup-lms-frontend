@@ -231,6 +231,7 @@ export default function LearningRoomPage() {
             lesson={activeLesson ?? undefined}
             trainer={course.trainer}
             enrollmentId={enrollmentId}
+            courseId={courseId}
           />
         </div>
 

@@ -10,15 +10,16 @@ interface LearningTabsProps {
   lesson?: LessonDetail & { moduleTitle?: string };
   trainer?: { id: string; fullName: string; email: string; avatarUrl: string | null };
   enrollmentId?: string | null;
+  courseId?: string | null;
 }
 
-export const LearningTabs = ({ lesson, trainer, enrollmentId }: LearningTabsProps) => {
+export const LearningTabs = ({ lesson, trainer, enrollmentId, courseId }: LearningTabsProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'qa'>('overview');
   const downloadableResource = lesson?.resources?.find((resource) => resource.fileUrl);
   const downloadUrl = resolveMediaUrl(downloadableResource?.fileUrl);
   const quizHref =
-    lesson?.quiz && enrollmentId
-      ? `/quiz-assessment?quizId=${lesson.quiz.id}&enrollmentId=${enrollmentId}`
+    lesson?.quiz && enrollmentId && courseId
+      ? `/quiz-assessment/start?courseId=${courseId}&lessonId=${lesson.id}&quizId=${lesson.quiz.id}&enrollmentId=${enrollmentId}`
       : null;
 
   return (
