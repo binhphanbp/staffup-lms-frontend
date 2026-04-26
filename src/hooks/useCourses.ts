@@ -1,5 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { courseService } from '@/services/course.service';
+import {
+  courseService,
+  type GenerateCourseOutlinePayload,
+  type GenerateLessonContentPayload,
+  type SaveCourseFromOutlinePayload,
+} from '@/services/course.service';
 import { categoryService } from '@/services/category.service';
 import { tagService } from '@/services/tag.service';
 import type { CourseListParams, ModuleDetail } from '@/types';
@@ -140,6 +145,34 @@ export function useUpdateCourse() {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['courses'] });
       queryClient.invalidateQueries({ queryKey: ['course-detail', variables.id] });
+    },
+  });
+}
+
+// ============================================================
+// AI Course Authoring mutations
+// ============================================================
+
+export function useGenerateCourseOutline() {
+  return useMutation({
+    mutationFn: (payload: GenerateCourseOutlinePayload) => courseService.generateOutline(payload),
+  });
+}
+
+export function useGenerateLessonContent() {
+  return useMutation({
+    mutationFn: (payload: GenerateLessonContentPayload) =>
+      courseService.generateLessonContent(payload),
+  });
+}
+
+export function useSaveCourseFromOutline() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: SaveCourseFromOutlinePayload) =>
+      courseService.saveCourseFromOutline(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['courses'] });
     },
   });
 }

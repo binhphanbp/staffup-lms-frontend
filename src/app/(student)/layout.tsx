@@ -7,7 +7,7 @@ import { RoleGuard } from '@/components/shared/RoleGuard';
 function StudentLayoutContent({ children }: { children: React.ReactNode }) {
   const { mobileOpen, closeMobileNav } = useMobileNav();
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#f0f2f5]">
+    <div className="flex h-screen w-full overflow-hidden bg-[#f0f2f5] print:block print:h-auto print:overflow-visible">
       {/* Mobile backdrop */}
       {mobileOpen && (
         <div
@@ -18,13 +18,15 @@ function StudentLayoutContent({ children }: { children: React.ReactNode }) {
       )}
       {/* Sidebar: slide-in on mobile, always visible on lg+ */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 lg:relative lg:z-auto ${
+        className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 lg:relative lg:z-auto print:hidden ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0`}
       >
         <StudentSidebar />
       </div>
-      <main className="flex h-screen min-w-0 flex-1 flex-col overflow-hidden">{children}</main>
+      <main className="flex h-screen min-w-0 flex-1 flex-col overflow-hidden print:block print:h-auto print:overflow-visible">
+        {children}
+      </main>
     </div>
   );
 }

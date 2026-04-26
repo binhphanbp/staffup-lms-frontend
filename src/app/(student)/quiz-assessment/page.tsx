@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { StudentHeader } from '@/components/shared/StudentHeader';
 import { QuestionContent } from '@/components/quiz/QuestionContent';
@@ -16,6 +16,7 @@ import {
 import type { QuizAttemptQuestionDetail } from '@/types';
 
 export default function QuizAssessmentPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const attemptIdParam = searchParams.get('attemptId');
   const quizIdParam = searchParams.get('quizId');
@@ -73,13 +74,13 @@ export default function QuizAssessmentPage() {
     setIsSubmitting(true);
     submitQuiz.mutate(attemptId, {
       onSuccess: () => {
-        window.location.href = '/';
+        router.push(`/quiz-assessment/result?attemptId=${attemptId}`);
       },
       onError: () => {
         setIsSubmitting(false);
       },
     });
-  }, [attemptId, submitQuiz]);
+  }, [attemptId, router, submitQuiz]);
 
   // 1. Logic Timer
   const [timeLeft, setTimeLeft] = useState(timeRemaining);

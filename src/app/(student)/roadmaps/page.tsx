@@ -88,7 +88,7 @@ function RoadmapCard({ assignment }: { assignment: RoadmapAssignment }) {
   const { roadmap } = assignment;
 
   const progressWidth =
-    assignment.progressPercent !== null
+    assignment.progressPercent !== null && assignment.progressPercent !== undefined
       ? `${assignment.progressPercent}%`
       : assignment.status === 'completed'
         ? '100%'
@@ -97,7 +97,7 @@ function RoadmapCard({ assignment }: { assignment: RoadmapAssignment }) {
           : '0%';
 
   const progressLabel =
-    assignment.progressPercent !== null
+    assignment.progressPercent !== null && assignment.progressPercent !== undefined
       ? `${assignment.progressPercent}%`
       : assignment.status === 'completed'
         ? '100%'

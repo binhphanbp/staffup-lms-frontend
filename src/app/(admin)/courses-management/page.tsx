@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Toast } from '@/components/shared/Toast';
 import { resolveMediaUrl } from '@/lib/media';
 import {
@@ -368,6 +369,7 @@ function CourseFormModal({
 
 /* ── Page ──────────────────────────────────────────────── */
 export default function CoursesManagementPage() {
+  const router = useRouter();
   const [toast, setToast] = useState({ visible: false, message: '' });
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -503,13 +505,23 @@ export default function CoursesManagementPage() {
         {/* Header */}
         <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <h1 className="m-0 text-[22px] font-normal text-[#202124]">Quản lý Khóa học</h1>
-          <button
-            onClick={openCreate}
-            className="flex items-center gap-2 rounded bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white shadow-sm hover:bg-[#174EA6]"
-          >
-            <span className="material-symbols-outlined text-[18px]">add</span>
-            Thêm khóa học
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => router.push('/ai-course-studio')}
+              className="flex items-center gap-2 rounded border border-[#1A73E8] bg-white px-4 py-2 text-[13px] font-medium text-[#1A73E8] shadow-sm hover:bg-[#E8F0FE]"
+              title="Sinh nguyên khoá học bằng AI từ chủ đề / tài liệu"
+            >
+              <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+              Tạo bằng AI
+            </button>
+            <button
+              onClick={openCreate}
+              className="flex items-center gap-2 rounded bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white shadow-sm hover:bg-[#174EA6]"
+            >
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              Thêm khóa học
+            </button>
+          </div>
         </div>
 
         {/* Stat Cards */}

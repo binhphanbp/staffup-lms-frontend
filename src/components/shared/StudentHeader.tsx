@@ -6,7 +6,7 @@ import { useMobileNav } from '@/context/MobileNavContext';
 export const StudentHeader = ({ breadcrumbs }: { breadcrumbs: BreadcrumbItem[] }) => {
   const { openMobileNav } = useMobileNav();
   return (
-    <header className="z-20 flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 md:px-8">
+    <header className="z-20 flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 md:px-8 print:hidden">
       <div className="flex items-center gap-3">
         {/* Hamburger — mobile only */}
         <button

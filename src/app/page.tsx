@@ -163,18 +163,24 @@ function UpcomingDeadlines({
 }) {
   if (deadlines.length === 0)
     return (
-      <div className="card p-4 text-center text-[11px] text-slate-400">
-        <i className="fa-solid fa-check-circle mb-2 block text-2xl text-green-400"></i>
-        Không có deadline nào sắp tới.
+      <div className="flex flex-col items-center gap-1.5 py-5 text-center">
+        <i className="fa-solid fa-circle-check text-2xl text-green-400"></i>
+        <p className="text-[11px] text-slate-400">Không có deadline nào sắp tới.</p>
       </div>
     );
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col divide-y divide-slate-100">
       {deadlines.map((d) => (
         <Link
           key={d.courseId}
           href={`/courses/detail/learning-room?courseId=${d.courseId}`}
-          className="card group flex flex-col gap-2 p-3 transition-shadow hover:shadow-md"
+          className={`group flex flex-col gap-2 border-l-2 px-3 py-3 transition-colors hover:bg-slate-50 ${
+            d.daysRemaining <= 3
+              ? 'border-red-400'
+              : d.daysRemaining <= 7
+                ? 'border-orange-400'
+                : 'border-slate-200'
+          }`}
         >
           <div className="flex items-start justify-between gap-2">
             <span className="group-hover:text-primary min-w-0 flex-1 truncate text-[12px] leading-tight font-bold text-slate-800 transition-colors">
@@ -183,7 +189,7 @@ function UpcomingDeadlines({
             <span
               className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold ${daysTag(d.daysRemaining)}`}
             >
-              {d.daysRemaining === 0 ? 'Hôm nay' : `${d.daysRemaining} ngày`}
+              {d.daysRemaining === 0 ? 'Hôm nay' : `${d.daysRemaining}d`}
             </span>
           </div>
           <div>
@@ -277,13 +283,13 @@ function DashboardContent() {
                 </div>
 
                 {/* ── Right column ── */}
-                <div className="flex w-full shrink-0 flex-col gap-6 xl:w-80">
+                <div className="flex w-full shrink-0 flex-col gap-5 xl:w-[340px]">
                   {/* Deadlines */}
-                  <div>
-                    <div className="mb-3 flex items-end justify-between">
-                      <h3 className="flex items-center gap-2 text-sm font-bold text-slate-800">
-                        <i className="fa-solid fa-clock text-sm text-orange-400"></i> Deadline sắp
-                        tới
+                  <div className="card overflow-hidden p-0">
+                    <div className="flex items-center justify-between border-b border-orange-100 bg-gradient-to-r from-orange-50 to-white px-4 py-3">
+                      <h3 className="flex items-center gap-2 text-[13px] font-bold text-slate-800">
+                        <i className="fa-solid fa-clock text-sm text-orange-400"></i>
+                        Deadline sắp tới
                         {deadlines.length > 0 && (
                           <span className="rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-bold text-orange-600">
                             {deadlines.length}
@@ -291,39 +297,89 @@ function DashboardContent() {
                         )}
                       </h3>
                     </div>
-                    <UpcomingDeadlines deadlines={deadlines} />
+                    <div className="p-3">
+                      <UpcomingDeadlines deadlines={deadlines} />
+                    </div>
                   </div>
 
                   {/* Skill Profile */}
                   <SkillProfile />
 
                   {/* AI Suggestions */}
-                  <div className="card overflow-hidden border-purple-200">
-                    <div className="flex items-center justify-between border-b border-purple-100 bg-gradient-to-r from-purple-50 to-white px-4 py-3">
-                      <h3 className="flex items-center gap-2 text-sm font-bold text-purple-800">
-                        <i className="fa-solid fa-wand-magic-sparkles"></i> AI đề xuất
+                  <div className="card overflow-hidden p-0">
+                    <div className="flex items-center justify-between border-b border-purple-100 bg-gradient-to-r from-purple-50 via-white to-white px-4 py-3">
+                      <h3 className="flex items-center gap-2 text-[13px] font-bold text-purple-900">
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-100">
+                          <i className="fa-solid fa-wand-magic-sparkles text-[10px] text-purple-600"></i>
+                        </span>
+                        AI đề xuất cho bạn
                       </h3>
+                      <span className="rounded-full bg-purple-100 px-2 py-0.5 text-[9px] font-bold tracking-wider text-purple-600 uppercase">
+                        Beta
+                      </span>
                     </div>
-                    <div className="divide-y divide-gray-100">
-                      <div className="group cursor-pointer p-4 transition-colors hover:bg-slate-50">
-                        <div className="group-hover:text-primary mb-1 text-[13px] leading-tight font-bold text-slate-800 transition-colors">
-                          Bảo mật Web và Phòng chống tấn công
+
+                    <div className="divide-y divide-slate-100">
+                      {/* Suggestion 1 */}
+                      <div className="group flex gap-3 p-4 transition-colors hover:bg-slate-50">
+                        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-100">
+                          <i className="fa-solid fa-shield-halved text-[13px] text-purple-600"></i>
                         </div>
-                        <div className="mb-3 text-[11px] text-slate-500">
-                          Để lấp đầy khoảng trống kỹ năng Security.
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="rounded bg-purple-50 px-1.5 py-0.5 text-[10px] font-bold text-purple-600">
-                            Ưu tiên cao
-                          </span>
-                          <Link
-                            href="/courses"
-                            className="text-primary border-primary hover:bg-primary rounded border px-2 py-1 text-[10px] font-bold transition-colors hover:text-white"
-                          >
-                            Đăng ký
-                          </Link>
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-0.5 text-[12px] leading-snug font-bold text-slate-800 transition-colors group-hover:text-purple-700">
+                            Bảo mật Web &amp; Phòng chống tấn công
+                          </div>
+                          <div className="mb-2 text-[11px] leading-relaxed text-slate-500">
+                            Lấp đầy khoảng trống kỹ năng Security bắt buộc trong Quý này.
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="rounded-full bg-red-50 px-2 py-0.5 text-[9px] font-bold tracking-wide text-red-600 uppercase">
+                              Ưu tiên cao
+                            </span>
+                            <Link
+                              href="/courses"
+                              className="text-primary border-primary hover:bg-primary ml-auto rounded-md border px-2.5 py-1 text-[10px] font-bold transition-colors hover:text-white"
+                            >
+                              Xem khóa học
+                            </Link>
+                          </div>
                         </div>
                       </div>
+
+                      {/* Suggestion 2 */}
+                      <div className="group flex gap-3 p-4 transition-colors hover:bg-slate-50">
+                        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
+                          <i className="fa-brands fa-aws text-[13px] text-[#ff9900]"></i>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-0.5 text-[12px] leading-snug font-bold text-slate-800 transition-colors group-hover:text-purple-700">
+                            AWS Solutions Architect
+                          </div>
+                          <div className="mb-2 text-[11px] leading-relaxed text-slate-500">
+                            Nâng cấp AWS từ Lvl 3 lên Lvl 4 theo lộ trình phát triển.
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-bold tracking-wide text-blue-600 uppercase">
+                              Gợi ý
+                            </span>
+                            <Link
+                              href="/courses"
+                              className="text-primary border-primary hover:bg-primary ml-auto rounded-md border px-2.5 py-1 text-[10px] font-bold transition-colors hover:text-white"
+                            >
+                              Xem khóa học
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-slate-100 bg-slate-50/60 px-4 py-2.5 text-center">
+                      <Link
+                        href="/courses"
+                        className="text-primary text-[11px] font-semibold hover:underline"
+                      >
+                        Xem tất cả đề xuất →
+                      </Link>
                     </div>
                   </div>
                 </div>
