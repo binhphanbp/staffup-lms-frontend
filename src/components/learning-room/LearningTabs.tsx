@@ -5,16 +5,24 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import type { LessonDetail } from '@/types';
 import { resolveMediaUrl } from '@/lib/media';
+import { CourseQAChat } from '@/components/learning-room/CourseQAChat';
 
 interface LearningTabsProps {
   lesson?: LessonDetail & { moduleTitle?: string };
   trainer?: { id: string; fullName: string; email: string; avatarUrl: string | null };
   enrollmentId?: string | null;
   courseId?: string | null;
+  courseTitle?: string;
 }
 
-export const LearningTabs = ({ lesson, trainer, enrollmentId, courseId }: LearningTabsProps) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'notes' | 'qa'>('overview');
+export const LearningTabs = ({
+  lesson,
+  trainer,
+  enrollmentId,
+  courseId,
+  courseTitle,
+}: LearningTabsProps) => {
+  const [activeTab, setActiveTab] = useState<'overview' | 'ai' | 'notes' | 'qa'>('overview');
   const downloadableResource = lesson?.resources?.find((resource) => resource.fileUrl);
   const downloadUrl = resolveMediaUrl(downloadableResource?.fileUrl);
   const quizHref =
@@ -84,6 +92,16 @@ export const LearningTabs = ({ lesson, trainer, enrollmentId, courseId }: Learni
             className={`border-b-2 py-3 transition-colors ${activeTab === 'overview' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
           >
             Tổng quan
+          </button>
+          <button
+            onClick={() => setActiveTab('ai')}
+            className={`flex items-center gap-1.5 border-b-2 py-3 transition-colors ${activeTab === 'ai' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+          >
+            <i className="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+            Trợ lý AI
+            <span className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
+              MỚI
+            </span>
           </button>
           <button
             onClick={() => setActiveTab('notes')}
@@ -175,6 +193,23 @@ export const LearningTabs = ({ lesson, trainer, enrollmentId, courseId }: Learni
                 </button>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'ai' && (
+          <div className="animate-[fadeIn_0.3s_ease-in-out]">
+            {courseId ? (
+              <CourseQAChat
+                key={courseId}
+                courseId={courseId}
+                courseTitle={courseTitle}
+                currentLessonTitle={lesson?.title}
+              />
+            ) : (
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+                Chưa có khóa học để hỏi AI.
+              </div>
+            )}
           </div>
         )}
 
