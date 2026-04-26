@@ -265,9 +265,23 @@ export default function AiCourseStudioPage() {
     );
   };
   const removeModule = (mTempId: string) => {
+    // Compute lesson IDs to clean up BEFORE dispatching, so the setOutline
+    // updater stays a pure function (Devin Review #44 — React 19 strict mode
+    // double-invokes updaters in dev; nested state setters would dispatch twice).
+    const removed = outline?.modules.find((m) => m.tempId === mTempId);
     setOutline((prev) =>
       prev ? { ...prev, modules: prev.modules.filter((m) => m.tempId !== mTempId) } : prev,
     );
+    if (removed) {
+      const lessonIds = new Set(removed.lessons.map((l) => l.tempId));
+      setLessonContents((curr) => {
+        const next: Record<string, LessonContentState> = {};
+        for (const [key, value] of Object.entries(curr)) {
+          if (!lessonIds.has(key)) next[key] = value;
+        }
+        return next;
+      });
+    }
   };
   const moveModule = (mTempId: string, dir: -1 | 1) => {
     setOutline((prev) => {
@@ -1135,9 +1149,17 @@ interface Step3Props {
 function Step3Confirm(props: Step3Props) {
   const { outline, lessonContents, categories, categoryId, setCategoryId } = props;
 
-  const generatedLessonsCount = Object.values(lessonContents).filter(
-    (c) => c.content && c.content.length > 0,
-  ).length;
+  // Count only lessons that are still part of the current outline — avoids stale
+  // entries (e.g. after reordering or interim deletes) from inflating the total.
+  const generatedLessonsCount = outline.modules.reduce(
+    (sum, m) =>
+      sum +
+      m.lessons.filter((l) => {
+        const content = lessonContents[l.tempId]?.content;
+        return Boolean(content && content.length > 0);
+      }).length,
+    0,
+  );
   const totalLessons = totalLessonCount(outline.modules);
 
   return (
