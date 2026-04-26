@@ -1,8 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
+import {
+  type LabProblem,
+  difficultyLabel,
+  difficultyBadgeClass,
+} from '@/components/lab/labProblems';
 
-export const TaskPanel = () => {
+interface TaskPanelProps {
+  problem: LabProblem;
+}
+
+export const TaskPanel = ({ problem }: TaskPanelProps) => {
   const [leftTab, setLeftTab] = useState<'task' | 'ai'>('task');
 
   return (
@@ -26,57 +35,65 @@ export const TaskPanel = () => {
         {/* Tab: Task */}
         {leftTab === 'task' && (
           <div className="custom-scrollbar prose prose-slate h-full overflow-y-auto p-5 pb-20">
-            <h2 className="mb-3 text-xl font-bold text-slate-900">Triển khai Consistent Hashing</h2>
+            <h2 className="mb-3 text-xl font-bold text-slate-900">{problem.title}</h2>
 
             <div className="mb-6 flex gap-2">
-              <span className="rounded border border-red-100 bg-red-50 px-2 py-1 text-[11px] font-bold text-red-600">
-                Hard
+              <span
+                className={`rounded px-2 py-1 text-[11px] font-bold ${difficultyBadgeClass(problem.difficulty)}`}
+              >
+                {difficultyLabel(problem.difficulty)}
               </span>
               <span className="rounded bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-600">
-                System Design
+                {problem.category}
+              </span>
+              <span className="text-primary rounded bg-blue-50 px-2 py-1 text-[11px] font-medium">
+                {problem.language}
               </span>
             </div>
 
-            <div className="space-y-4 text-[13px] leading-relaxed text-slate-700">
-              <p>
-                Trong các hệ thống phân tán, việc phân bổ dữ liệu đều lên các server (nodes) là rất
-                quan trọng. Thuật toán modulo thông thường (<code>hash(key) % N</code>) sẽ gặp vấn
-                đề lớn (re-hashing) khi thêm hoặc bớt server.
-              </p>
-              <p>
-                <strong>Nhiệm vụ của bạn:</strong> Cài đặt class <code>ConsistentHash</code> hỗ trợ
-                các thao tác:
-              </p>
-              <ul className="marker:text-primary list-disc space-y-1 pl-5">
-                <li>
-                  <code>add_node(node_name)</code>: Thêm server mới vào vòng (Ring).
-                </li>
-                <li>
-                  <code>remove_node(node_name)</code>: Xóa server khỏi vòng.
-                </li>
-                <li>
-                  <code>get_node(key)</code>: Trả về tên server lưu trữ key.
-                </li>
-              </ul>
+            <div className="space-y-3 text-[13px] leading-relaxed whitespace-pre-line text-slate-700">
+              {problem.problemStatement}
+            </div>
 
-              <h4 className="mt-6 mb-2 font-bold text-slate-800">
-                Điều kiện ràng buộc (Constraints):
-              </h4>
-              <ul className="list-disc space-y-1 pl-5 text-slate-600">
-                <li>
-                  Số lượng virtual nodes mặc định là <strong>100</strong>.
-                </li>
-                <li>
-                  Độ phức tạp của <code>get_node</code> không được vượt quá{' '}
-                  <strong>O(log N)</strong>. Dùng <code>bisect</code> trong Python.
-                </li>
-              </ul>
+            <h4 className="mt-6 mb-2 font-bold text-slate-800">Test cases mẫu:</h4>
+            <div className="space-y-2">
+              {problem.testCases.map((tc, i) => (
+                <div
+                  key={i}
+                  className="overflow-hidden rounded-md border border-slate-200 bg-slate-50"
+                >
+                  <div className="flex items-center justify-between border-b border-slate-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-slate-600">
+                    <span>Case #{i + 1}</span>
+                    {tc.description && (
+                      <span className="font-normal text-slate-500">{tc.description}</span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 gap-3 p-3 sm:grid-cols-2">
+                    <div>
+                      <div className="mb-1 text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+                        Input
+                      </div>
+                      <pre className="overflow-x-auto rounded bg-slate-900 p-2 font-mono text-[11px] text-green-300">
+                        {tc.input}
+                      </pre>
+                    </div>
+                    <div>
+                      <div className="mb-1 text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+                        Expected
+                      </div>
+                      <pre className="overflow-x-auto rounded bg-slate-900 p-2 font-mono text-[11px] text-amber-200">
+                        {tc.expectedOutput}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-              <div className="mt-6 rounded border border-yellow-200 bg-yellow-50 p-3 text-xs text-yellow-800">
-                <i className="fa-solid fa-lightbulb text-warning mr-1"></i> <strong>Gợi ý:</strong>{' '}
-                Bạn cần duy trì một mảng chứa các giá trị hash đã được sắp xếp (sorted keys) để dùng
-                Binary Search.
-              </div>
+            <div className="mt-6 rounded border border-blue-100 bg-blue-50 p-3 text-xs text-blue-800">
+              <i className="fa-solid fa-circle-info text-primary mr-1"></i> <strong>Lưu ý:</strong>{' '}
+              Khi bấm <strong>Run AI Review</strong>, AI sẽ phân tích code + mô phỏng chạy với từng
+              test case (không thực thi thật) và đưa ra nhận xét chi tiết tiếng Việt.
             </div>
           </div>
         )}
@@ -92,8 +109,8 @@ export const TaskPanel = () => {
                 <div className="flex-1">
                   <div className="mb-1 text-[11px] font-bold text-slate-500">Staffup AI</div>
                   <div className="rounded-lg rounded-tl-none border border-gray-200 bg-white p-3 text-[13px] leading-relaxed text-slate-700 shadow-sm">
-                    Chào Bảo! Đây là bài Lab khá khó. Nếu bạn cần gợi ý về cách thiết lập mảng{' '}
-                    <code>sorted_keys</code>, hãy hỏi tôi nhé!
+                    Bấm <strong>Run AI Review</strong> ở panel bên phải để mình chấm bài. Bạn cũng
+                    có thể hỏi mình bất kỳ gợi ý nào về thuật toán này.
                   </div>
                 </div>
               </div>
@@ -102,10 +119,14 @@ export const TaskPanel = () => {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Hỏi AI Copilot..."
-                  className="w-full rounded-lg border border-gray-200 bg-slate-50 py-2.5 pr-10 pl-4 font-sans text-[13px] transition-all outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400"
+                  placeholder="Hỏi AI Copilot... (sắp ra mắt)"
+                  disabled
+                  className="w-full rounded-lg border border-gray-200 bg-slate-50 py-2.5 pr-10 pl-4 font-sans text-[13px] transition-all outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 disabled:cursor-not-allowed disabled:opacity-60"
                 />
-                <button className="absolute top-1/2 right-2 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-slate-400 transition-colors hover:text-purple-600">
+                <button
+                  disabled
+                  className="absolute top-1/2 right-2 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-slate-400 transition-colors hover:text-purple-600 disabled:cursor-not-allowed disabled:opacity-50"
+                >
                   <i className="fa-solid fa-paper-plane text-sm"></i>
                 </button>
               </div>
