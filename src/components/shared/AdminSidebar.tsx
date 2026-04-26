@@ -67,6 +67,24 @@ export const AdminSidebar = () => {
             </span>{' '}
             Báo cáo & Thống kê
           </Link>
+          <Link
+            href="/manager/coach"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/manager/coach'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span
+              className={`material-symbols-outlined mr-4 text-[20px] ${pathname === '/manager/coach' ? "[font-variation-settings:'FILL'_1]" : ''}`}
+            >
+              psychology
+            </span>
+            Manager Coach
+            <span className="ml-auto rounded-full bg-[#E8F0FE] px-2 py-0.5 text-[10px] font-semibold text-[#1A73E8]">
+              AI
+            </span>
+          </Link>
         </div>
 
         {/* Phân hệ Học viên */}
