@@ -1,5 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { questionBankService } from '@/services/question-bank.service';
+import {
+  questionBankService,
+  type GenerateAiQuestionsPayload,
+  type AiDraftQuestion,
+} from '@/services/question-bank.service';
 import type { QuestionBankListParams } from '@/types';
 
 export function useQuestionBanks(params?: QuestionBankListParams) {
@@ -59,5 +63,25 @@ export function useQuestionBankQuestions(bankId: string | null) {
     queryKey: ['question-bank-questions', bankId],
     queryFn: () => questionBankService.listQuestions(bankId!),
     enabled: !!bankId,
+  });
+}
+
+export function useGenerateAiQuestions() {
+  return useMutation({
+    mutationFn: ({ bankId, payload }: { bankId: string; payload: GenerateAiQuestionsPayload }) =>
+      questionBankService.generateAiQuestions(bankId, payload),
+  });
+}
+
+export function useSaveAiQuestions() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ bankId, questions }: { bankId: string; questions: AiDraftQuestion[] }) =>
+      questionBankService.saveAiQuestions(bankId, { questions }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['question-banks'] });
+      queryClient.invalidateQueries({ queryKey: ['question-bank', variables.bankId] });
+      queryClient.invalidateQueries({ queryKey: ['question-bank-questions', variables.bankId] });
+    },
   });
 }
