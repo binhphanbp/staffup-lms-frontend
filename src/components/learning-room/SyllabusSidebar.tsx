@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import type { ModuleDetail, LessonProgressStatus } from '@/types';
+import { CourseCertificatePanel } from './CourseCertificatePanel';
 
 interface LessonProgress {
   lessonId: string;
@@ -19,6 +21,8 @@ interface SyllabusSidebarProps {
   completedLessons: number;
   totalLessons: number;
   onSelectLesson: (lessonId: string) => void;
+  courseId?: string | null;
+  enrollmentId?: string | null;
 }
 
 function formatDuration(seconds: number): string {
@@ -58,6 +62,8 @@ export const SyllabusSidebar = ({
   completedLessons,
   totalLessons,
   onSelectLesson,
+  courseId,
+  enrollmentId,
 }: SyllabusSidebarProps) => {
   const sortedModules = [...modules].sort((a, b) => a.orderIndex - b.orderIndex);
   // Open module containing active lesson by default
@@ -104,7 +110,7 @@ export const SyllabusSidebar = ({
           </span>
         </div>
 
-        <div className="dark-scrollbar flex-1 overflow-y-auto pb-10">
+        <div className="dark-scrollbar flex-1 overflow-y-auto">
           {sortedModules.map((mod, modIdx) => {
             const isOpen = openSections[mod.id] ?? false;
             const sortedLessons = [...mod.lessons].sort((a, b) => a.orderIndex - b.orderIndex);
@@ -196,10 +202,54 @@ export const SyllabusSidebar = ({
                       </button>
                     );
                   })}
+
+                  {/* ── Module-level quizzes ──────────────────────── */}
+                  {mod.quizzes && mod.quizzes.length > 0 && courseId && enrollmentId
+                    ? mod.quizzes.map((quiz) => (
+                        <Link
+                          key={quiz.id}
+                          href={`/quiz-assessment/start?courseId=${courseId}&moduleId=${mod.id}&quizId=${quiz.id}&enrollmentId=${enrollmentId}`}
+                          className="group flex w-full items-start gap-3 border-l-2 border-amber-400 bg-gradient-to-r from-amber-50 to-amber-50/50 p-3 text-left transition-colors hover:from-amber-100 hover:to-amber-50"
+                        >
+                          <i className="fa-solid fa-flask-vial mt-0.5 text-[13px] text-amber-500"></i>
+                          <div className="flex-1">
+                            <div className="mb-1 flex items-center gap-1.5 text-[12px] leading-snug font-bold text-amber-900">
+                              <span>{quiz.title}</span>
+                              <span className="rounded-full bg-amber-500 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-white uppercase">
+                                Quiz
+                              </span>
+                            </div>
+                            <div className="font-mono text-[10px] text-amber-700/80">
+                              <i className="fa-solid fa-list-ol mr-1"></i>
+                              {quiz.totalQuestions ?? quiz._count?.quizQuestions ?? 0} câu
+                              {quiz.timeLimitMinutes && (
+                                <>
+                                  {' · '}
+                                  <i className="fa-regular fa-clock mr-1"></i>
+                                  {quiz.timeLimitMinutes}p
+                                </>
+                              )}
+                              {' · '}
+                              Đạt {quiz.passScorePercent}%
+                            </div>
+                          </div>
+                          <i className="fa-solid fa-chevron-right mt-1 text-[10px] text-amber-400 transition-transform group-hover:translate-x-0.5"></i>
+                        </Link>
+                      ))
+                    : null}
                 </div>
               </div>
             );
           })}
+
+          {/* ── Certificate panel ── */}
+          {enrollmentId && (
+            <CourseCertificatePanel
+              enrollmentId={enrollmentId}
+              completedLessons={completedLessons}
+              totalLessons={totalLessons}
+            />
+          )}
         </div>
       </div>
     </div>
