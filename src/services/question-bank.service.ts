@@ -75,4 +75,68 @@ export const questionBankService = {
   deactivateQuestion: async (bankId: string, questionId: string): Promise<void> => {
     await api.patch(`${API_BASE}/${bankId}/questions/${questionId}/deactivate`);
   },
+
+  // ----- AI Question Generator -----
+
+  generateAiQuestions: async (
+    bankId: string,
+    payload: GenerateAiQuestionsPayload,
+  ): Promise<GenerateAiQuestionsResult> => {
+    const { data } = await api.post<ApiResponse<GenerateAiQuestionsResult>>(
+      `${API_BASE}/${bankId}/generate-ai`,
+      payload,
+    );
+    return data.data;
+  },
+
+  saveAiQuestions: async (
+    bankId: string,
+    payload: { questions: AiDraftQuestion[] },
+  ): Promise<SaveAiQuestionsResult> => {
+    const { data } = await api.post<ApiResponse<SaveAiQuestionsResult>>(
+      `${API_BASE}/${bankId}/save-ai-questions`,
+      payload,
+    );
+    return data.data;
+  },
 };
+
+// ----- AI Question Generator types -----
+
+export type AiQuestionType = 'single_choice' | 'multiple_choice' | 'essay';
+export type AiDifficulty = 'easy' | 'medium' | 'hard' | 'mixed';
+
+export interface GenerateAiQuestionsPayload {
+  topic?: string;
+  sourceContent?: string;
+  count: number;
+  difficulty: AiDifficulty;
+  questionTypes: AiQuestionType[];
+  language?: 'vi' | 'en';
+}
+
+export interface AiDraftOption {
+  content: string;
+  isCorrect: boolean;
+  orderIndex: number;
+}
+
+export interface AiDraftQuestion {
+  tempId?: string;
+  questionType: AiQuestionType;
+  content: string;
+  explanation: string | null;
+  defaultPoints: number;
+  options?: AiDraftOption[];
+}
+
+export interface GenerateAiQuestionsResult {
+  questions: AiDraftQuestion[];
+  model: string;
+  generatedAt: string;
+}
+
+export interface SaveAiQuestionsResult {
+  createdCount: number;
+  questions: unknown[];
+}

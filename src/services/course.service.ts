@@ -91,4 +91,136 @@ export const courseService = {
   updateStatus: async (id: string, status: string): Promise<void> => {
     await api.patch(`${API_BASE}/${id}/status`, { status });
   },
+
+  // ----- AI Course Authoring -----
+
+  generateOutline: async (
+    payload: GenerateCourseOutlinePayload,
+  ): Promise<GenerateCourseOutlineResult> => {
+    const { data } = await api.post<ApiResponse<GenerateCourseOutlineResult>>(
+      `${API_BASE}/ai/generate-outline`,
+      payload,
+    );
+    return data.data;
+  },
+
+  generateLessonContent: async (
+    payload: GenerateLessonContentPayload,
+  ): Promise<GenerateLessonContentResult> => {
+    const { data } = await api.post<ApiResponse<GenerateLessonContentResult>>(
+      `${API_BASE}/ai/generate-lesson-content`,
+      payload,
+    );
+    return data.data;
+  },
+
+  saveCourseFromOutline: async (
+    payload: SaveCourseFromOutlinePayload,
+  ): Promise<SaveCourseFromOutlineResult> => {
+    const { data } = await api.post<ApiResponse<SaveCourseFromOutlineResult>>(
+      `${API_BASE}/ai/save-from-outline`,
+      payload,
+    );
+    return data.data;
+  },
 };
+
+// ============================================================
+// AI Course Authoring — types
+// ============================================================
+
+export type AiCourseLessonType = 'article' | 'video' | 'quiz';
+export type AiCourseLevel = 'beginner' | 'intermediate' | 'advanced' | 'mixed';
+export type AiLanguage = 'vi' | 'en';
+export type AiLengthHint = 'short' | 'medium' | 'long';
+
+export interface GenerateCourseOutlinePayload {
+  topic: string;
+  description?: string;
+  audience?: string;
+  level?: AiCourseLevel;
+  moduleCount?: number;
+  lessonsPerModule?: number;
+  sourceContent?: string;
+  language?: AiLanguage;
+}
+
+export interface AiDraftLesson {
+  tempId: string;
+  title: string;
+  description: string;
+  lessonType: AiCourseLessonType;
+  estimatedDurationMinutes: number;
+}
+
+export interface AiDraftModule {
+  tempId: string;
+  title: string;
+  description: string;
+  lessons: AiDraftLesson[];
+}
+
+export interface AiDraftCourseMeta {
+  title: string;
+  description: string;
+  estimatedDurationMinutes: number;
+  learningObjectives: string[];
+}
+
+export interface GenerateCourseOutlineResult {
+  course: AiDraftCourseMeta;
+  modules: AiDraftModule[];
+  model: string;
+  generatedAt: string;
+}
+
+export interface GenerateLessonContentPayload {
+  courseTitle: string;
+  courseDescription?: string;
+  moduleTitle: string;
+  lessonTitle: string;
+  lessonDescription?: string;
+  sourceContent?: string;
+  language?: AiLanguage;
+  lengthHint?: AiLengthHint;
+}
+
+export interface GenerateLessonContentResult {
+  content: string;
+  model: string;
+  generatedAt: string;
+}
+
+export interface SaveCourseFromOutlinePayload {
+  course: {
+    title: string;
+    description?: string;
+    estimatedDurationMinutes?: number;
+    categoryId?: string;
+    ownerDepartmentId?: string;
+    thumbnailUrl?: string;
+  };
+  modules: {
+    title: string;
+    description?: string;
+    lessons: {
+      title: string;
+      description?: string;
+      lessonType: AiCourseLessonType;
+      contentText?: string | null;
+      estimatedDurationMinutes?: number;
+    }[];
+  }[];
+}
+
+export interface SaveCourseFromOutlineResult {
+  course: {
+    id: string;
+    title: string;
+    slug: string;
+    status: string;
+    createdAt: string;
+  };
+  moduleCount: number;
+  lessonCount: number;
+}
