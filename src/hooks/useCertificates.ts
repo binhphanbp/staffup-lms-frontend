@@ -20,6 +20,19 @@ export function useCertificateDetail(id: string | null) {
   });
 }
 
+export function useCertificateByEnrollment(enrollmentId: string | null) {
+  return useQuery({
+    queryKey: ['certificate', 'enrollment', enrollmentId],
+    queryFn: () => certificateService.getByEnrollment(enrollmentId!),
+    enabled: !!enrollmentId,
+    retry: (failureCount, error: unknown) => {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404) return false;
+      return failureCount < 2;
+    },
+  });
+}
+
 export function useIssueCertificate() {
   const queryClient = useQueryClient();
   return useMutation({
