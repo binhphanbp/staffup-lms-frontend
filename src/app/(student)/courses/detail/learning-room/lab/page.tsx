@@ -67,6 +67,7 @@ export default function CodeLabPage() {
           consoleTab={consoleTab}
           setConsoleTab={setConsoleTab}
           onRunCode={handleRunCode}
+          testCaseCount={problem.testCases.length}
         />
       </div>
     </div>

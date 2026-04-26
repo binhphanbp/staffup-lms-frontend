@@ -21,6 +21,7 @@ interface EditorPanelProps {
   consoleTab: 'tests' | 'result';
   setConsoleTab: (tab: 'tests' | 'result') => void;
   onRunCode: () => void;
+  testCaseCount: number;
 }
 
 // ─── Status / severity styling maps ─────────────────────────────────────────
@@ -271,11 +272,19 @@ export const EditorPanel = ({
   consoleTab,
   setConsoleTab,
   onRunCode,
+  testCaseCount,
 }: EditorPanelProps) => {
+  const lineNumbersRef = React.useRef<HTMLDivElement | null>(null);
   const lineNumbers = React.useMemo(() => {
     const total = Math.max(20, code.split('\n').length);
     return Array.from({ length: total }, (_, i) => i + 1);
   }, [code]);
+
+  const handleEditorScroll = (e: React.UIEvent<HTMLTextAreaElement>) => {
+    if (lineNumbersRef.current) {
+      lineNumbersRef.current.scrollTop = e.currentTarget.scrollTop;
+    }
+  };
 
   const failedTestCount = evaluation?.testResults.filter((t) => !t.passed).length ?? 0;
 
@@ -313,7 +322,10 @@ export const EditorPanel = ({
 
       {/* Editor Area */}
       <div className="relative flex flex-1 overflow-hidden bg-[var(--color-code-bg)] font-mono text-[13px] leading-relaxed text-[var(--color-code-text)]">
-        <div className="dark-scrollbar w-12 flex-shrink-0 overflow-hidden border-r border-white/5 bg-[#282c34] pt-4 pr-3 text-right font-mono text-[12px] text-[#4b5263] select-none">
+        <div
+          ref={lineNumbersRef}
+          className="w-12 flex-shrink-0 overflow-hidden border-r border-white/5 bg-[#282c34] pt-4 pr-3 text-right font-mono text-[12px] leading-relaxed text-[#4b5263] select-none"
+        >
           {lineNumbers.map((n) => (
             <div key={n}>{n}</div>
           ))}
@@ -322,6 +334,7 @@ export const EditorPanel = ({
         <textarea
           value={code}
           onChange={(e) => onCodeChange(e.target.value)}
+          onScroll={handleEditorScroll}
           spellCheck={false}
           className="dark-scrollbar flex-1 resize-none overflow-auto bg-transparent pt-4 pb-10 pl-4 font-mono text-[13px] leading-relaxed text-[var(--color-code-text)] outline-none"
           placeholder="// Viết code của bạn ở đây..."
@@ -360,7 +373,7 @@ export const EditorPanel = ({
           {consoleTab === 'tests' && (
             <div className="space-y-2 font-mono text-[12px] text-slate-300">
               <div className="text-[10px] tracking-wider text-slate-500 uppercase">
-                Bài này có {Math.max(0, lineNumbers.length > 0 ? 0 : 0)} test cases ở panel
+                Bài này có {testCaseCount} test case{testCaseCount !== 1 ? 's' : ''} ở panel
                 &quot;Yêu cầu đề bài&quot; — bấm{' '}
                 <strong className="text-white">Run AI Review</strong> để chấm.
               </div>
