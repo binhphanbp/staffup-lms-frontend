@@ -1201,3 +1201,65 @@ body.quiz-mode {
   opacity: 0.7 !important;
   cursor: not-allowed !important;
 }
+
+/* ── Certificate Print Styles ── */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  header,
+  nav,
+  aside,
+  footer,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:overflow-visible {
+    overflow: visible !important;
+  }
+
+  .print\:bg-white {
+    background: white !important;
+  }
+
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+
+  .print\:max-w-full {
+    max-width: 100% !important;
+  }
+
+  #certificate-print {
+    width: 100%;
+    box-shadow: none !important;
+  }
+
+  /* Force certificate onto one page */
+  .certificate-outer {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    box-shadow: none !important;
+  }
+
+  .certificate-scroll-area {
+    overflow: visible !important;
+    height: auto !important;
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  /* Scale the entire certificate to fit A4 landscape (one page) */
+  .certificate-scale-wrapper {
+    zoom: 0.68;
+  }
+}
