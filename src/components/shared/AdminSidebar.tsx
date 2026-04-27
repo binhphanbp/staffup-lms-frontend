@@ -245,6 +245,39 @@ export const AdminSidebar = () => {
               MỚI
             </span>
           </Link>
+          <Link
+            href="/admin/skills"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname.startsWith('/admin/skills')
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
+            }`}
+          >
+            <span
+              className={`material-symbols-outlined mr-4 text-[20px] ${pathname.startsWith('/admin/skills') ? "[font-variation-settings:'FILL'_1]" : ''}`}
+            >
+              hub
+            </span>
+            Quản lý Skill
+            <span className="ml-auto rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-2 py-0.5 text-[10px] font-bold text-white">
+              MỚI
+            </span>
+          </Link>
+          <Link
+            href="/manager/skill-gap"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname.startsWith('/manager/skill-gap')
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
+            }`}
+          >
+            <span
+              className={`material-symbols-outlined mr-4 text-[20px] ${pathname.startsWith('/manager/skill-gap') ? "[font-variation-settings:'FILL'_1]" : ''}`}
+            >
+              radar
+            </span>
+            Skill Gap đội
+          </Link>
         </div>
 
         {/* Hệ thống & AI */}

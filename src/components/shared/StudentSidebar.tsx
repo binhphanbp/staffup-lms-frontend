@@ -27,6 +27,7 @@ export const StudentSidebar = () => {
     { name: 'Voice Roleplay', href: '/voice-roleplay', icon: 'fa-microphone' },
     { name: 'Quiz thích nghi', href: '/adaptive-quiz', icon: 'fa-brain' },
     { name: 'Onboarding của tôi', href: '/onboarding', icon: 'fa-rocket' },
+    { name: 'Hồ sơ kỹ năng', href: '/skill-profile', icon: 'fa-bullseye' },
     { name: 'Bài học đã lưu', href: '/saved-lessons', icon: 'fa-bookmark' },
   ];
 
