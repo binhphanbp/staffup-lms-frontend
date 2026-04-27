@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { Student } from '@/components/admin/students/types';
 import { StudentsTable } from '@/components/admin/students/StudentsTable';
-import { Toast } from '@/components/shared/Toast';
+import { toast } from '@/lib/toast';
 import {
   useCreateUser,
   useDeleteUser,
@@ -186,7 +186,6 @@ function LearnerFormModal({
 }
 
 export default function StudentsPage() {
-  const [toast, setToast] = useState({ visible: false, message: '' });
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<'' | 'active' | 'inactive'>('');
@@ -255,10 +254,7 @@ export default function StudentsPage() {
   const meta = data?.meta;
   const totalPages = meta?.totalPages ?? 1;
 
-  const showToast = (message: string) => {
-    setToast({ visible: true, message });
-    window.setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string) => toast.success(message);
 
   const openCreateModal = () => {
     setFormMode('create');
@@ -538,8 +534,6 @@ export default function StudentsPage() {
         onSubmit={submitForm}
         submitting={createUser.isPending || updateUser.isPending}
       />
-
-      <Toast visible={toast.visible} message={toast.message} />
     </>
   );
 }

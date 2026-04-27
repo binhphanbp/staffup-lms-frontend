@@ -13,8 +13,8 @@ export const AdminSidebar = () => {
   const isAdmin = user?.roleCodes?.includes('admin') ?? false;
 
   return (
-    <aside className="z-100 flex h-full w-65 shrink-0 flex-col border-r border-[#DADCE0] bg-white">
-      <div className="flex h-16 items-center justify-between border-b border-[#DADCE0] px-6 text-[20px] font-medium text-[#202124]">
+    <aside className="z-100 flex h-full w-65 shrink-0 flex-col border-r border-[#DADCE0] bg-white dark:border-slate-800 dark:bg-slate-900">
+      <div className="flex h-16 items-center justify-between border-b border-[#DADCE0] px-6 text-[20px] font-medium text-[#202124] dark:border-slate-800 dark:text-slate-100">
         <div className="flex items-center">
           <span className="material-symbols-outlined mr-3 text-[28px] text-[#1A73E8] [font-variation-settings:'FILL'_1]">
             hub
@@ -23,7 +23,7 @@ export const AdminSidebar = () => {
         </div>
         {/* Mobile close button */}
         <button
-          className="text-[#5F6368] hover:text-[#202124] lg:hidden"
+          className="text-[#5F6368] hover:text-[#202124] lg:hidden dark:text-slate-300 dark:hover:text-white"
           onClick={closeMobileNav}
           aria-label="Đóng menu"
         >
@@ -33,16 +33,16 @@ export const AdminSidebar = () => {
 
       <div className="custom-scrollbar flex-1 overflow-y-auto py-3">
         {/* Tổng quan Hệ thống */}
-        <div className="mb-2 border-b border-[#DADCE0] pb-2">
-          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase">
+        <div className="mb-2 border-b border-[#DADCE0] pb-2 dark:border-slate-800">
+          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase dark:text-slate-500">
             Tổng quan Hệ thống
           </div>
           <Link
             href="/admin-dashboard"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/admin-dashboard'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span
@@ -56,8 +56,8 @@ export const AdminSidebar = () => {
             href="/reports"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/reports'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span
@@ -71,8 +71,8 @@ export const AdminSidebar = () => {
             href="/manager/coach"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/manager/coach'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span
@@ -89,8 +89,8 @@ export const AdminSidebar = () => {
             href="/risk-assessment"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/risk-assessment'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span
@@ -106,16 +106,16 @@ export const AdminSidebar = () => {
         </div>
 
         {/* Phân hệ Học viên */}
-        <div className="mb-2 border-b border-[#DADCE0] pb-2">
-          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase">
+        <div className="mb-2 border-b border-[#DADCE0] pb-2 dark:border-slate-800">
+          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase dark:text-slate-500">
             Phân hệ Học viên
           </div>
           <Link
             href="/students"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/students'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span className="material-symbols-outlined mr-4 text-[20px]">school</span> Danh sách Học
@@ -125,8 +125,8 @@ export const AdminSidebar = () => {
             href="/learning-progress"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/learning-progress'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span className="material-symbols-outlined mr-4 text-[20px]">local_library</span> Tiến
@@ -136,8 +136,8 @@ export const AdminSidebar = () => {
             href="/certificates-management"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/certificates-management'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span className="material-symbols-outlined mr-4 text-[20px]">workspace_premium</span>{' '}
@@ -146,16 +146,16 @@ export const AdminSidebar = () => {
         </div>
 
         {/* Phân hệ Giảng viên */}
-        <div className="mb-2 border-b border-[#DADCE0] pb-2">
-          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase">
+        <div className="mb-2 border-b border-[#DADCE0] pb-2 dark:border-slate-800">
+          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase dark:text-slate-500">
             Phân hệ Giảng viên
           </div>
           <Link
             href="/instructors"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/instructors'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span className="material-symbols-outlined mr-4 text-[20px]">co_present</span> Danh sách
@@ -165,8 +165,8 @@ export const AdminSidebar = () => {
             href="/courses-management"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/courses-management'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span className="material-symbols-outlined mr-4 text-[20px]">menu_book</span> Quản lý
@@ -176,8 +176,8 @@ export const AdminSidebar = () => {
             href="/grading-evaluation"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/grading-evaluation'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span className="material-symbols-outlined mr-4 text-[20px]">grading</span> Chấm bài &
@@ -187,8 +187,8 @@ export const AdminSidebar = () => {
             href="/question-bank"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/question-bank'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span className="material-symbols-outlined mr-4 text-[20px]">quiz</span> Ngân hàng câu
@@ -197,8 +197,8 @@ export const AdminSidebar = () => {
         </div>
 
         {/* Hệ thống & AI */}
-        <div className="mb-2 border-b border-[#DADCE0] pb-2">
-          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase">
+        <div className="mb-2 border-b border-[#DADCE0] pb-2 dark:border-slate-800">
+          <div className="flex items-center gap-2 px-6 py-3 text-[12px] font-medium tracking-[0.8px] text-[#5F6368] uppercase dark:text-slate-500">
             Hệ thống & AI
           </div>
           {isAdmin && (
@@ -222,8 +222,8 @@ export const AdminSidebar = () => {
             href="/company-documents"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/company-documents'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span
@@ -237,8 +237,8 @@ export const AdminSidebar = () => {
             href="/ai-configuration"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/ai-configuration'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span
@@ -252,8 +252,8 @@ export const AdminSidebar = () => {
             href="/role-permission"
             className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
               pathname === '/role-permission'
-                ? 'bg-[#E8F0FE] text-[#1A73E8]'
-                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
             }`}
           >
             <span

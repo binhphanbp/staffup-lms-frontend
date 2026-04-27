@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { toast } from '@/lib/toast';
 import { useRouter } from 'next/navigation';
 import { RiskHeatmap } from '@/components/admin/risk/RiskHeatmap';
 import { RiskLearnerTable } from '@/components/admin/risk/RiskLearnerTable';
@@ -37,12 +38,7 @@ export default function RiskAssessmentPage() {
   // UI state
   const [selectedAssessment, setSelectedAssessment] = useState<RiskAssessmentListItem | null>(null);
   const [recalculatingIds, setRecalculatingIds] = useState<Set<string>>(new Set());
-  const [toast, setToast] = useState({ visible: false, message: '' });
-
-  const showToast = (message: string) => {
-    setToast({ visible: true, message });
-    setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string) => toast.success(message);
 
   // Heatmap: fetch a wide slice (latest-only) to build aggregations
   const heatmapQuery = useRiskList({
@@ -346,14 +342,6 @@ export default function RiskAssessmentPage() {
         }
         onRemind={handleRemind}
       />
-
-      {/* Toast */}
-      <div
-        className={`fixed bottom-6 left-6 z-[3000] flex items-center gap-3 rounded-[4px] bg-[#323232] px-6 py-[14px] text-white shadow-lg transition-transform duration-300 ${toast.visible ? 'translate-y-0' : 'translate-y-[100px]'}`}
-      >
-        <span className="material-symbols-outlined text-[20px]">info</span>
-        <span className="text-[14px]">{toast.message}</span>
-      </div>
     </>
   );
 }

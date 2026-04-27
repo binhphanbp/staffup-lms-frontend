@@ -7,7 +7,7 @@ import { RoleGuard } from '@/components/shared/RoleGuard';
 function StudentLayoutContent({ children }: { children: React.ReactNode }) {
   const { mobileOpen, closeMobileNav } = useMobileNav();
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#f0f2f5] print:block print:h-auto print:overflow-visible">
+    <div className="flex h-screen w-full overflow-hidden bg-[#f0f2f5] dark:bg-slate-950 print:block print:h-auto print:overflow-visible">
       {/* Mobile backdrop */}
       {mobileOpen && (
         <div

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
+import { toast } from '@/lib/toast';
 import {
   companyDocumentApi,
   type CompanyDocument,
@@ -31,12 +32,6 @@ export default function CompanyDocumentsPage() {
   const [meta, setMeta] = useState({ total: 0, page: 1, limit: 10, totalPages: 0 });
   const [categories, setCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [toast, setToast] = useState({
-    visible: false,
-    message: '',
-    type: 'success' as 'success' | 'error',
-  });
-
   // Filters
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
@@ -59,10 +54,8 @@ export default function CompanyDocumentsPage() {
   const [indexingAll, setIndexingAll] = useState(false);
 
   // ----- Toast -----
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
-    setToast({ visible: true, message, type });
-    setTimeout(() => setToast((t) => ({ ...t, visible: false })), 3000);
-  };
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   // ----- Data fetching -----
   const fetchDocuments = useCallback(async () => {
@@ -650,20 +643,6 @@ export default function CompanyDocumentsPage() {
       )}
 
       {/* ===== TOAST ===== */}
-      <div
-        className={`fixed bottom-6 left-6 z-[3000] flex items-center gap-3 rounded-[4px] bg-[#323232] px-6 py-[14px] text-white shadow-[0_4px_6px_0_rgba(60,64,67,0.15),0_12px_16px_0_rgba(60,64,67,0.15)] transition-transform duration-300 ${
-          toast.visible ? 'translate-y-0' : 'translate-y-[100px]'
-        }`}
-      >
-        <span
-          className={`material-symbols-outlined text-[24px] ${
-            toast.type === 'success' ? 'text-[#81C995]' : 'text-[#F28B82]'
-          }`}
-        >
-          {toast.type === 'success' ? 'check_circle' : 'error'}
-        </span>
-        <span className="text-[14px]">{toast.message}</span>
-      </div>
     </>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { toast } from '@/lib/toast';
 import type { QuizAttemptQuestionDetail, AiGradingFeedback } from '@/types';
 import {
   useQuizAttemptDetail,
@@ -25,11 +26,6 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [draftScore, setDraftScore] = useState('');
   const [draftFeedback, setDraftFeedback] = useState('');
-  const [toast, setToast] = useState({
-    visible: false,
-    message: '',
-    type: 'success' as 'success' | 'error',
-  });
   const [confirmFinalizeOpen, setConfirmFinalizeOpen] = useState(false);
   const [pendingNavIndex, setPendingNavIndex] = useState<number | null>(null);
 
@@ -78,10 +74,10 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
 
   const hasUnsavedFeedback = draftFeedback.trim() !== initialFeedbackRef.current.trim();
 
-  const showToast = useCallback((msg: string, type: 'success' | 'error' = 'success') => {
-    setToast({ visible: true, message: msg, type });
-    setTimeout(() => setToast({ visible: false, message: '', type: 'success' }), 3500);
-  }, []);
+  const showToast = useCallback(
+    (message: string, type: 'success' | 'error' = 'success') => toast[type](message),
+    [],
+  );
 
   // AI Grade single essay
   const handleAiGrade = async () => {
@@ -611,18 +607,6 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
           </div>
         </div>
       )}
-
-      {/* Toast */}
-      <div
-        className={`fixed bottom-6 left-6 z-[3000] flex items-center gap-3 rounded-[4px] px-6 py-[14px] text-white shadow-lg transition-transform duration-300 ${
-          toast.type === 'error' ? 'bg-[#D93025]' : 'bg-[#323232]'
-        } ${toast.visible ? 'translate-y-0' : 'translate-y-[100px]'}`}
-      >
-        <span className="material-symbols-outlined text-[24px]">
-          {toast.type === 'error' ? 'error' : 'check_circle'}
-        </span>
-        <span className="text-[14px]">{toast.message}</span>
-      </div>
     </div>
   );
 };

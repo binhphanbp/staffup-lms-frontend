@@ -3,6 +3,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { motion } from 'motion/react';
 import { resolveMediaUrl } from '@/lib/media';
 import { useMyRecommendations, useRefreshRecommendations } from '@/hooks/useRecommendations';
 import type { RecommendationItem, RecommendationPriority } from '@/services/recommendation.service';
@@ -77,7 +78,13 @@ function RecommendationCard({ item, index }: { item: RecommendationItem; index: 
   const duration = formatDuration(course.estimatedDurationMinutes);
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+    <motion.article
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
+      whileHover={{ y: -4, transition: { duration: 0.18 } }}
+      className="group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+    >
       {/* Order badge — visual cue for "học theo thứ tự" */}
       <div className="text-primary absolute top-3 left-3 z-10 flex h-7 min-w-7 items-center justify-center rounded-full bg-white/95 px-2 text-xs font-bold shadow-sm ring-1 ring-blue-100">
         #{index + 1}
@@ -139,7 +146,7 @@ function RecommendationCard({ item, index }: { item: RecommendationItem; index: 
           </Link>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }
 

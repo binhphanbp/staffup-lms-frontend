@@ -3,6 +3,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { QueryProvider } from '@/components/providers/QueryProvider';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import { ToastProvider } from '@/components/providers/ToastProvider';
 import AIChatWidget from '@/components/ai-chat/AIChatWidget';
 import './globals.css';
 
@@ -40,9 +42,15 @@ export default function RootLayout({
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         />
       </head>
-      <body className="flex min-h-full flex-col font-sans" suppressHydrationWarning>
-        <QueryProvider>{children}</QueryProvider>
-        <AIChatWidget />
+      <body
+        className="bg-background text-foreground flex min-h-full flex-col font-sans"
+        suppressHydrationWarning
+      >
+        <ThemeProvider>
+          <QueryProvider>{children}</QueryProvider>
+          <AIChatWidget />
+          <ToastProvider />
+        </ThemeProvider>
       </body>
     </html>
   );

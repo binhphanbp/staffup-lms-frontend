@@ -1,18 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import { toast } from '@/lib/toast';
 import { ApiConnection } from '@/components/admin/ai-config/ApiConnection';
 import { AiModules } from '@/components/admin/ai-config/AiModules';
 import { UsageChart } from '@/components/admin/ai-config/UsageChart';
 import { SystemPrompt } from '@/components/admin/ai-config/SystemPrompt';
 
 export default function AIConfigurationPage() {
-  const [toast, setToast] = useState({ visible: false, message: '' });
-
-  const showToast = (msg: string) => {
-    setToast({ visible: true, message: msg });
-    setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string) => toast.success(message);
 
   return (
     <>
@@ -64,12 +60,6 @@ export default function AIConfigurationPage() {
       </div>
 
       {/* TOAST NOTIFICATION */}
-      <div
-        className={`fixed bottom-6 left-6 z-[3000] flex items-center gap-3 rounded-[4px] bg-[#323232] px-6 py-[14px] text-white shadow-[0_4px_6px_0_rgba(60,64,67,0.15),0_12px_16px_0_rgba(60,64,67,0.15)] transition-transform duration-300 ${toast.visible ? 'translate-y-0' : 'translate-y-[100px]'}`}
-      >
-        <span className="material-symbols-outlined text-[24px] text-[#81C995]">check_circle</span>
-        <span className="text-[14px]">{toast.message}</span>
-      </div>
     </>
   );
 }
