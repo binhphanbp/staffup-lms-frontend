@@ -20,11 +20,15 @@ export const ActivityWidgets = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th className="w-1/2">Tên khóa học</th>
-                <th>Trạng thái</th>
-                <th>Học viên</th>
-                <th>Tiến độ</th>
-                <th className="text-right">Action</th>
+                <th scope="col" className="w-1/2">
+                  Tên khóa học
+                </th>
+                <th scope="col">Trạng thái</th>
+                <th scope="col">Học viên</th>
+                <th scope="col">Tiến độ</th>
+                <th scope="col" className="text-right">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>

@@ -64,7 +64,7 @@ export function Dialog({
       {open ? (
         <motion.div
           key="dialog-backdrop"
-          className="fixed inset-0 z-[2000] flex items-center justify-center bg-slate-950/55 px-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[2000] flex items-center justify-center bg-slate-950/55 p-4 px-0 py-0 backdrop-blur-sm sm:px-4 sm:py-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -80,7 +80,7 @@ export function Dialog({
             key="dialog-panel"
             ref={panelRef}
             className={cn(
-              'relative w-full overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700',
+              'relative h-full w-full overflow-hidden rounded-none bg-white shadow-2xl ring-0 sm:h-auto sm:rounded-2xl sm:ring-1 sm:ring-slate-200 dark:bg-slate-900 dark:sm:ring-slate-700',
               widthClassName,
             )}
             initial={{ opacity: 0, y: 24, scale: 0.96 }}

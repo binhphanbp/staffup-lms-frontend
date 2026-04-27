@@ -24,7 +24,7 @@ function StudentLayoutContent({ children }: { children: React.ReactNode }) {
       >
         <StudentSidebar />
       </div>
-      <main className="flex h-screen min-w-0 flex-1 flex-col overflow-hidden print:block print:h-auto print:overflow-visible">
+      <main id="main-content" className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {children}
       </main>
     </div>

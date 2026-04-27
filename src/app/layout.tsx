@@ -47,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} h-full antialiased`}>
+    <html lang="vi" suppressHydrationWarning className={`${inter.variable} h-full antialiased`}>
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=optional"
@@ -66,6 +66,12 @@ export default function RootLayout({
         className="bg-background text-foreground flex min-h-full flex-col font-sans"
         suppressHydrationWarning
       >
+        <a
+          href="#main-content"
+          className="focus:bg-primary sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+        >
+          Chuyển đến nội dung chính
+        </a>
         <ThemeProvider>
           <QueryProvider>{children}</QueryProvider>
           <AIChatWidget />

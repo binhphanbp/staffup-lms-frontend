@@ -316,12 +316,24 @@ export default function CompanyDocumentsPage() {
           <table className="w-full border-collapse text-[14px]">
             <thead>
               <tr className="border-b border-[#DADCE0] bg-[#F8F9FA]">
-                <th className="px-4 py-3 text-left font-medium text-[#5F6368]">Tiêu đề</th>
-                <th className="px-4 py-3 text-left font-medium text-[#5F6368]">Danh mục</th>
-                <th className="px-4 py-3 text-center font-medium text-[#5F6368]">Chunks</th>
-                <th className="px-4 py-3 text-center font-medium text-[#5F6368]">Trạng thái</th>
-                <th className="px-4 py-3 text-left font-medium text-[#5F6368]">Cập nhật</th>
-                <th className="px-4 py-3 text-center font-medium text-[#5F6368]">Thao tác</th>
+                <th scope="col" className="px-4 py-3 text-left font-medium text-[#5F6368]">
+                  Tiêu đề
+                </th>
+                <th scope="col" className="px-4 py-3 text-left font-medium text-[#5F6368]">
+                  Danh mục
+                </th>
+                <th scope="col" className="px-4 py-3 text-center font-medium text-[#5F6368]">
+                  Chunks
+                </th>
+                <th scope="col" className="px-4 py-3 text-center font-medium text-[#5F6368]">
+                  Trạng thái
+                </th>
+                <th scope="col" className="px-4 py-3 text-left font-medium text-[#5F6368]">
+                  Cập nhật
+                </th>
+                <th scope="col" className="px-4 py-3 text-center font-medium text-[#5F6368]">
+                  Thao tác
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -409,17 +421,29 @@ export default function CompanyDocumentsPage() {
                         </button>
                         <button
                           title="Chỉnh sửa"
+                          aria-label="Chỉnh sửa tài liệu"
                           onClick={() => handleOpenEdit(doc.id)}
                           className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F6368] transition-colors hover:bg-[#E8F0FE] hover:text-[#1A73E8]"
                         >
-                          <span className="material-symbols-outlined text-[18px]">edit</span>
+                          <span
+                            className="material-symbols-outlined text-[18px]"
+                            aria-hidden="true"
+                          >
+                            edit
+                          </span>
                         </button>
                         <button
                           title="Xoá"
+                          aria-label="Xóa tài liệu"
                           onClick={() => setDeleteTarget({ id: doc.id, title: doc.title })}
                           className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F6368] transition-colors hover:bg-[#FCE8E6] hover:text-[#D93025]"
                         >
-                          <span className="material-symbols-outlined text-[18px]">delete</span>
+                          <span
+                            className="material-symbols-outlined text-[18px]"
+                            aria-hidden="true"
+                          >
+                            delete
+                          </span>
                         </button>
                       </div>
                     </td>

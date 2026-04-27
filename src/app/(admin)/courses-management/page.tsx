@@ -653,25 +653,46 @@ export default function CoursesManagementPage() {
               <table className="w-full border-collapse">
                 <thead className="bg-[#F8F9FA]">
                   <tr>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Khóa học
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Danh mục
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Giảng viên
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Thông tin
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Media folder
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Trạng thái
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Thao tác
                     </th>
                   </tr>
@@ -774,17 +795,27 @@ export default function CoursesManagementPage() {
                               <button
                                 onClick={() => openEdit(course)}
                                 title="Sửa"
+                                aria-label="Sửa khóa học"
                                 className="flex h-8 w-8 items-center justify-center rounded border border-[#DADCE0] text-[#5F6368] hover:bg-[#F1F3F4]"
                               >
-                                <span className="material-symbols-outlined text-[16px]">edit</span>
+                                <span
+                                  className="material-symbols-outlined text-[16px]"
+                                  aria-hidden="true"
+                                >
+                                  edit
+                                </span>
                               </button>
                               {course.status === 'draft' && (
                                 <button
                                   onClick={() => handleStatusChange(course.id, 'published')}
                                   title="Xuất bản"
+                                  aria-label="Xuất bản khóa học"
                                   className="flex h-8 w-8 items-center justify-center rounded bg-[#E6F4EA] text-[#1E8E3E] hover:bg-[#CEEAD6]"
                                 >
-                                  <span className="material-symbols-outlined text-[16px]">
+                                  <span
+                                    className="material-symbols-outlined text-[16px]"
+                                    aria-hidden="true"
+                                  >
                                     publish
                                   </span>
                                 </button>
@@ -793,9 +824,13 @@ export default function CoursesManagementPage() {
                                 <button
                                   onClick={() => handleStatusChange(course.id, 'archived')}
                                   title="Lưu trữ"
+                                  aria-label="Lưu trữ khóa học"
                                   className="flex h-8 w-8 items-center justify-center rounded bg-[#FEF7E0] text-[#F9AB00] hover:bg-[#FEEFC3]"
                                 >
-                                  <span className="material-symbols-outlined text-[16px]">
+                                  <span
+                                    className="material-symbols-outlined text-[16px]"
+                                    aria-hidden="true"
+                                  >
                                     archive
                                   </span>
                                 </button>
@@ -804,9 +839,13 @@ export default function CoursesManagementPage() {
                                 <button
                                   onClick={() => handleStatusChange(course.id, 'draft')}
                                   title="Chuyển về nháp"
+                                  aria-label="Chuyển về nháp"
                                   className="flex h-8 w-8 items-center justify-center rounded bg-[#F1F3F4] text-[#5F6368] hover:bg-[#E0E0E0]"
                                 >
-                                  <span className="material-symbols-outlined text-[16px]">
+                                  <span
+                                    className="material-symbols-outlined text-[16px]"
+                                    aria-hidden="true"
+                                  >
                                     undo
                                   </span>
                                 </button>
@@ -814,9 +853,13 @@ export default function CoursesManagementPage() {
                               <button
                                 onClick={() => handleDelete(course)}
                                 title="Xóa"
+                                aria-label="Xóa khóa học"
                                 className="flex h-8 w-8 items-center justify-center rounded bg-red-50 text-red-600 hover:bg-red-100"
                               >
-                                <span className="material-symbols-outlined text-[16px]">
+                                <span
+                                  className="material-symbols-outlined text-[16px]"
+                                  aria-hidden="true"
+                                >
                                   delete
                                 </span>
                               </button>
