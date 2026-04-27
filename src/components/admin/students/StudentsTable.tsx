@@ -1,5 +1,6 @@
 import type { Student } from './types';
 import { resolveMediaUrl } from '@/lib/media';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface StudentsTableProps {
   students: Student[];
@@ -9,6 +10,17 @@ interface StudentsTableProps {
 }
 
 export function StudentsTable({ students, onEdit, onToggleStatus, onDelete }: StudentsTableProps) {
+  if (students.length === 0) {
+    return (
+      <div className="flex-1 overflow-hidden rounded-lg border border-[#DADCE0] bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+        <EmptyState
+          icon={<span className="material-symbols-outlined text-[28px]">person_search</span>}
+          title="Không tìm thấy học viên nào"
+          description="Thử bỏ bớt bộ lọc, hoặc thêm học viên mới để bắt đầu."
+        />
+      </div>
+    );
+  }
   return (
     <div className="flex-1 overflow-hidden rounded-lg border border-[#DADCE0] bg-white">
       <table className="w-full border-collapse">

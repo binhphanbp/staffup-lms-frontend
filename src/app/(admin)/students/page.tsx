@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { Student } from '@/components/admin/students/types';
 import { StudentsTable } from '@/components/admin/students/StudentsTable';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/lib/toast';
 import {
   useCreateUser,
@@ -254,7 +255,8 @@ export default function StudentsPage() {
   const meta = data?.meta;
   const totalPages = meta?.totalPages ?? 1;
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const openCreateModal = () => {
     setFormMode('create');
@@ -288,12 +290,12 @@ export default function StudentsPage() {
 
   const submitForm = async () => {
     if (!form.fullName.trim() || !form.email.trim() || !form.departmentId) {
-      showToast('Vui lòng nhập đủ thông tin bắt buộc.');
+      showToast('Vui lòng nhập đủ thông tin bắt buộc.', 'error');
       return;
     }
 
     if (formMode === 'create' && !form.password.trim()) {
-      showToast('Vui lòng nhập mật khẩu cho học viên mới.');
+      showToast('Vui lòng nhập mật khẩu cho học viên mới.', 'error');
       return;
     }
 
@@ -322,7 +324,10 @@ export default function StudentsPage() {
 
       closeModal();
     } catch (error: any) {
-      showToast(error?.response?.data?.message || error?.message || 'Không thể lưu học viên.');
+      showToast(
+        error?.response?.data?.message || error?.message || 'Không thể lưu học viên.',
+        'error',
+      );
     }
   };
 
@@ -336,6 +341,7 @@ export default function StudentsPage() {
     } catch (error: any) {
       showToast(
         error?.response?.data?.message || error?.message || 'Không thể cập nhật trạng thái.',
+        'error',
       );
     }
   };
@@ -349,7 +355,10 @@ export default function StudentsPage() {
       await deleteUser.mutateAsync(student.userId);
       showToast('Đã xóa học viên');
     } catch (error: any) {
-      showToast(error?.response?.data?.message || error?.message || 'Không thể xóa học viên.');
+      showToast(
+        error?.response?.data?.message || error?.message || 'Không thể xóa học viên.',
+        'error',
+      );
     }
   };
 
@@ -378,7 +387,7 @@ export default function StudentsPage() {
     } catch (error: any) {
       const message =
         error?.response?.data?.message || error?.message || 'Không thể import file Excel.';
-      showToast(message);
+      showToast(message, 'error');
     }
   };
 
@@ -480,8 +489,20 @@ export default function StudentsPage() {
         )}
 
         {isLoading ? (
-          <div className="flex flex-1 items-center justify-center py-20">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DADCE0] border-t-[#1A73E8]" />
+          <div className="flex-1 overflow-hidden rounded-lg border border-[#DADCE0] bg-white dark:border-slate-800 dark:bg-slate-900">
+            <div className="space-y-2 p-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 rounded-md p-2">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3.5 w-1/3" />
+                    <Skeleton className="h-3 w-1/4" />
+                  </div>
+                  <Skeleton className="h-6 w-24 rounded-full" />
+                  <Skeleton className="h-6 w-20 rounded" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : isError ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20 text-[#D93025]">

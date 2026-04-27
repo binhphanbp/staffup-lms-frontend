@@ -145,7 +145,8 @@ export default function GradingEvaluationPage() {
   const pagination = data?.pagination;
   const totalPages = pagination?.totalPages ?? 1;
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const resetFilters = () => {
     setSearchInput('');

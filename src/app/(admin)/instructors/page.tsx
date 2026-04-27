@@ -4,6 +4,8 @@ import { useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from '@/lib/toast';
 import { resolveMediaUrl } from '@/lib/media';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   useCreateUser,
   useDeleteUser,
@@ -252,7 +254,8 @@ export default function InstructorsPage() {
 
   const meta = data?.meta ?? { total: 0, page: 1, limit: LIMIT, totalPages: 1 };
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const openCreateModal = () => {
     setFormMode('create');
@@ -286,12 +289,12 @@ export default function InstructorsPage() {
 
   const submitForm = async () => {
     if (!form.fullName.trim() || !form.email.trim()) {
-      showToast('Vui lòng nhập đủ thông tin bắt buộc.');
+      showToast('Vui lòng nhập đủ thông tin bắt buộc.', 'error');
       return;
     }
 
     if (formMode === 'create' && !form.password.trim()) {
-      showToast('Vui lòng nhập mật khẩu cho giảng viên mới.');
+      showToast('Vui lòng nhập mật khẩu cho giảng viên mới.', 'error');
       return;
     }
 
@@ -320,7 +323,10 @@ export default function InstructorsPage() {
 
       closeModal();
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể lưu giảng viên.');
+      showToast(
+        err?.response?.data?.message || err?.message || 'Không thể lưu giảng viên.',
+        'error',
+      );
     }
   };
 
@@ -332,7 +338,10 @@ export default function InstructorsPage() {
       });
       showToast(instructor.isActive ? 'Đã khóa tài khoản' : 'Đã mở khóa tài khoản');
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể cập nhật trạng thái.');
+      showToast(
+        err?.response?.data?.message || err?.message || 'Không thể cập nhật trạng thái.',
+        'error',
+      );
     }
   };
 
@@ -345,7 +354,10 @@ export default function InstructorsPage() {
       await deleteUser.mutateAsync(instructor.id);
       showToast('Đã xóa giảng viên');
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể xóa giảng viên.');
+      showToast(
+        err?.response?.data?.message || err?.message || 'Không thể xóa giảng viên.',
+        'error',
+      );
     }
   };
 
@@ -374,7 +386,7 @@ export default function InstructorsPage() {
     } catch (err: any) {
       const message =
         err?.response?.data?.message || err?.message || 'Không thể import file Excel.';
-      showToast(message);
+      showToast(message, 'error');
     }
   };
 
@@ -519,10 +531,19 @@ export default function InstructorsPage() {
 
         {/* Loading / Error / Table */}
         {isLoading ? (
-          <div className="flex flex-1 items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DADCE0] border-t-[#1A73E8]" />
-              <span className="text-[13px] text-[#5F6368]">Đang tải dữ liệu...</span>
+          <div className="flex-1 overflow-hidden rounded-lg border border-[#DADCE0] bg-white dark:border-slate-800 dark:bg-slate-900">
+            <div className="space-y-2 p-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 rounded-md p-2">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3.5 w-1/3" />
+                    <Skeleton className="h-3 w-1/4" />
+                  </div>
+                  <Skeleton className="h-6 w-24 rounded-full" />
+                  <Skeleton className="h-6 w-20 rounded" />
+                </div>
+              ))}
             </div>
           </div>
         ) : isError ? (
@@ -561,8 +582,17 @@ export default function InstructorsPage() {
                 <tbody>
                   {instructors.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-4 py-12 text-center text-[13px] text-[#5F6368]">
-                        Không tìm thấy giảng viên nào
+                      <td colSpan={5} className="px-4 py-10">
+                        <EmptyState
+                          icon={
+                            <span className="material-symbols-outlined text-[28px]">
+                              person_search
+                            </span>
+                          }
+                          title="Không tìm thấy giảng viên nào"
+                          description="Thử bỏ bớt bộ lọc, hoặc thêm giảng viên mới để bắt đầu."
+                          variant="compact"
+                        />
                       </td>
                     </tr>
                   ) : (

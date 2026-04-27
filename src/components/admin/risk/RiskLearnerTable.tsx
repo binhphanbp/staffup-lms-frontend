@@ -2,6 +2,8 @@
 
 import type { RiskAssessmentListItem, RiskLevel } from '@/services/risk.service';
 import { RiskScoreGauge } from './RiskScoreGauge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface RiskLearnerTableProps {
   assessments: RiskAssessmentListItem[];
@@ -84,27 +86,27 @@ export function RiskLearnerTable({
                   <tr key={i} className="border-t border-[#F1F3F4]">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 animate-pulse rounded-full bg-[#E8EAED]" />
-                        <div className="flex-1">
-                          <div className="h-3 w-32 animate-pulse rounded bg-[#E8EAED]" />
-                          <div className="mt-1 h-2 w-40 animate-pulse rounded bg-[#E8EAED]" />
+                        <Skeleton className="h-9 w-9 rounded-full" />
+                        <div className="flex-1 space-y-1.5">
+                          <Skeleton className="h-3 w-32" />
+                          <Skeleton className="h-2 w-40" />
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="h-3 w-36 animate-pulse rounded bg-[#E8EAED]" />
+                      <Skeleton className="h-3 w-36" />
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <div className="mx-auto h-10 w-10 animate-pulse rounded-full bg-[#E8EAED]" />
+                      <Skeleton className="mx-auto h-10 w-10 rounded-full" />
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <div className="mx-auto h-5 w-16 animate-pulse rounded bg-[#E8EAED]" />
+                      <Skeleton className="mx-auto h-5 w-16" />
                     </td>
                     <td className="px-4 py-3">
-                      <div className="h-3 w-24 animate-pulse rounded bg-[#E8EAED]" />
+                      <Skeleton className="h-3 w-24" />
                     </td>
                     <td className="px-4 py-3">
-                      <div className="ml-auto h-8 w-20 animate-pulse rounded bg-[#E8EAED]" />
+                      <Skeleton className="ml-auto h-8 w-20" />
                     </td>
                   </tr>
                 ))}
@@ -113,8 +115,15 @@ export function RiskLearnerTable({
 
             {!isLoading && assessments.length === 0 && (
               <tr>
-                <td colSpan={6} className="py-12 text-center text-sm text-[#5F6368]">
-                  Không có assessment nào khớp bộ lọc.
+                <td colSpan={6} className="py-10">
+                  <EmptyState
+                    icon={
+                      <span className="material-symbols-outlined text-[28px]">filter_alt_off</span>
+                    }
+                    title="Không có assessment nào khớp bộ lọc"
+                    description="Thử bỏ bớt bộ lọc để xem nhiều học viên hơn."
+                    variant="compact"
+                  />
                 </td>
               </tr>
             )}

@@ -38,7 +38,8 @@ export default function RiskAssessmentPage() {
   // UI state
   const [selectedAssessment, setSelectedAssessment] = useState<RiskAssessmentListItem | null>(null);
   const [recalculatingIds, setRecalculatingIds] = useState<Set<string>>(new Set());
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   // Heatmap: fetch a wide slice (latest-only) to build aggregations
   const heatmapQuery = useRiskList({
@@ -98,7 +99,7 @@ export default function RiskAssessmentPage() {
       showToast('Đã tính toán lại điểm rủi ro');
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Không thể tính toán lại';
-      showToast(msg);
+      showToast(msg, 'error');
     } finally {
       setRecalculatingIds((prev) => {
         const next = new Set(prev);
@@ -116,7 +117,7 @@ export default function RiskAssessmentPage() {
       );
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Batch thất bại';
-      showToast(msg);
+      showToast(msg, 'error');
     }
   };
 
@@ -129,7 +130,7 @@ export default function RiskAssessmentPage() {
   const handleExportCsv = () => {
     const all = heatmapAssessments;
     if (all.length === 0) {
-      showToast('Không có dữ liệu để xuất');
+      showToast('Không có dữ liệu để xuất', 'error');
       return;
     }
     const rows: string[][] = [

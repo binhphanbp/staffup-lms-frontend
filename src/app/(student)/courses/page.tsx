@@ -6,6 +6,7 @@ import { CourseSkeleton } from '@/components/course/CourseSkeleton';
 import { CourseCard, type CourseType } from '@/components/course/CourseCard';
 import { AiRecommendationsSection } from '@/components/course/AiRecommendationsSection';
 import { Pagination } from '@/components/shared/Pagination';
+import { EmptyState } from '@/components/ui/empty-state';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCourses } from '@/hooks/useCourses';
 import { useEnrollments } from '@/hooks/useEnrollments';
@@ -343,21 +344,19 @@ export default function CourseCatalog() {
                       ))}
                 </div>
                 {!isLoading && courses.length === 0 && !isError && (
-                  <div className="py-20 text-center">
-                    <div className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-                      <i className="fa-solid fa-book-open text-xl"></i>
-                    </div>
-                    <p className="text-sm font-semibold text-slate-700">
-                      Không tìm thấy khóa học phù hợp
-                    </p>
-                    <p className="mt-1 text-xs text-slate-400">Thử thay đổi từ khoá hoặc bộ lọc</p>
-                    <button
-                      onClick={handleReset}
-                      className="bg-primary hover:bg-primary-hover mt-4 rounded-lg px-4 py-2 text-sm font-semibold text-white"
-                    >
-                      Xóa bộ lọc
-                    </button>
-                  </div>
+                  <EmptyState
+                    icon={<i className="fa-solid fa-book-open text-xl" />}
+                    title="Không tìm thấy khóa học phù hợp"
+                    description="Thử thay đổi từ khoá hoặc bộ lọc để xem nhiều kết quả hơn."
+                    action={
+                      <button
+                        onClick={handleReset}
+                        className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-semibold text-white"
+                      >
+                        Xóa bộ lọc
+                      </button>
+                    }
+                  />
                 )}
                 {meta && meta.totalPages > 1 && (
                   <Pagination
@@ -385,21 +384,20 @@ export default function CourseCatalog() {
                   ))}
                 </div>
                 {inProgressList.length === 0 && (
-                  <div className="py-20 text-center">
-                    <div className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-amber-400">
-                      <i className="fa-solid fa-spinner text-xl"></i>
-                    </div>
-                    <p className="text-sm font-semibold text-slate-700">
-                      Bạn chưa bắt đầu khóa học nào
-                    </p>
-                    <p className="mt-1 text-xs text-slate-400">Đăng ký và bắt đầu học ngay</p>
-                    <button
-                      onClick={() => setTab('all')}
-                      className="bg-primary hover:bg-primary-hover mt-4 rounded-lg px-4 py-2 text-sm font-semibold text-white"
-                    >
-                      <i className="fa-solid fa-compass mr-2 text-xs"></i>Khám phá khóa học
-                    </button>
-                  </div>
+                  <EmptyState
+                    icon={<i className="fa-solid fa-spinner text-xl" />}
+                    title="Bạn chưa bắt đầu khóa học nào"
+                    description="Đăng ký và bắt đầu học ngay để tiến bộ mỗi ngày."
+                    action={
+                      <button
+                        onClick={() => setTab('all')}
+                        className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-semibold text-white"
+                      >
+                        <i className="fa-solid fa-compass mr-2 text-xs" />
+                        Khám phá khóa học
+                      </button>
+                    }
+                  />
                 )}
               </>
             )}
@@ -418,21 +416,20 @@ export default function CourseCatalog() {
                   ))}
                 </div>
                 {completedList.length === 0 && (
-                  <div className="py-20 text-center">
-                    <div className="mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full bg-green-50 text-green-400">
-                      <i className="fa-solid fa-circle-check text-xl"></i>
-                    </div>
-                    <p className="text-sm font-semibold text-slate-700">
-                      Bạn chưa hoàn thành khóa học nào
-                    </p>
-                    <p className="mt-1 text-xs text-slate-400">Tiếp tục học để đạt chứng chỉ</p>
-                    <button
-                      onClick={() => setTab('inProgress')}
-                      className="bg-primary hover:bg-primary-hover mt-4 rounded-lg px-4 py-2 text-sm font-semibold text-white"
-                    >
-                      <i className="fa-solid fa-play mr-2 text-xs"></i>Các khóa đang học
-                    </button>
-                  </div>
+                  <EmptyState
+                    icon={<i className="fa-solid fa-circle-check text-xl" />}
+                    title="Bạn chưa hoàn thành khóa học nào"
+                    description="Tiếp tục học để nhận chứng chỉ đầu tiên của bạn."
+                    action={
+                      <button
+                        onClick={() => setTab('inProgress')}
+                        className="bg-primary hover:bg-primary-hover rounded-lg px-4 py-2 text-sm font-semibold text-white"
+                      >
+                        <i className="fa-solid fa-play mr-2 text-xs" />
+                        Các khóa đang học
+                      </button>
+                    }
+                  />
                 )}
               </>
             )}

@@ -8,7 +8,8 @@ import { UsageChart } from '@/components/admin/ai-config/UsageChart';
 import { SystemPrompt } from '@/components/admin/ai-config/SystemPrompt';
 
 export default function AIConfigurationPage() {
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   return (
     <>
