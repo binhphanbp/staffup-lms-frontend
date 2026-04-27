@@ -24,6 +24,7 @@ export const StudentSidebar = () => {
     { name: 'Thư viện Khoa học', href: '/courses', icon: 'fa-book-open' },
     { name: 'Lộ trình phát triển', href: '/roadmaps', icon: 'fa-route' },
     { name: 'Môi trường Thực hành', href: '/courses/detail/learning-room', icon: 'fa-code' },
+    { name: 'Voice Roleplay', href: '/voice-roleplay', icon: 'fa-microphone' },
   ];
 
   const achievementMenus = [
