@@ -28,6 +28,7 @@ export const StudentSidebar = () => {
     { name: 'Quiz thích nghi', href: '/adaptive-quiz', icon: 'fa-brain' },
     { name: 'Onboarding của tôi', href: '/onboarding', icon: 'fa-rocket' },
     { name: 'Hồ sơ kỹ năng', href: '/skill-profile', icon: 'fa-bullseye' },
+    { name: 'Lịch sử kỹ năng', href: '/skill-history', icon: 'fa-clock-rotate-left' },
     { name: 'Bài học đã lưu', href: '/saved-lessons', icon: 'fa-bookmark' },
   ];
 

@@ -9,6 +9,8 @@ export const SKILL_GAP_KEYS = {
   positionSkills: (title: string) => [...SKILL_GAP_KEYS.all, 'position-skills', title] as const,
   myProfile: () => [...SKILL_GAP_KEYS.all, 'my-profile'] as const,
   myGap: () => [...SKILL_GAP_KEYS.all, 'my-gap'] as const,
+  myAssessments: (filters?: { skillId?: string; source?: string }) =>
+    [...SKILL_GAP_KEYS.all, 'my-assessments', filters ?? {}] as const,
   userGap: (userId: string) => [...SKILL_GAP_KEYS.all, 'user-gap', userId] as const,
   teamRollUp: (departmentId: string) =>
     [...SKILL_GAP_KEYS.all, 'team-roll-up', departmentId] as const,
@@ -95,6 +97,16 @@ export function useMyGap() {
   return useQuery({
     queryKey: SKILL_GAP_KEYS.myGap(),
     queryFn: () => skillGapService.getMyGap(),
+  });
+}
+
+export function useMyAssessmentHistory(filters?: {
+  skillId?: string;
+  source?: 'self' | 'manager' | 'auto';
+}) {
+  return useQuery({
+    queryKey: SKILL_GAP_KEYS.myAssessments(filters),
+    queryFn: () => skillGapService.listMyAssessmentHistory(filters),
   });
 }
 

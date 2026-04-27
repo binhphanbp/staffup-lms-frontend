@@ -103,3 +103,17 @@ export interface SkillRecommendationEntry {
   maxLevel: number;
   priority: number;
 }
+
+export interface SkillAssessmentHistoryEntry {
+  id: string;
+  skillId: string;
+  skillName: string;
+  skillCategory: string | null;
+  level: number;
+  previousLevel: number | null;
+  delta: number | null;
+  source: string;
+  notes: string | null;
+  assessor: { id: string; fullName: string } | null;
+  assessedAt: string;
+}
