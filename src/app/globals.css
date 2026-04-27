@@ -1,11 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
 @import 'tailwindcss';
 
+/* Class-based dark mode — `<html class="dark">` (managed by ThemeProvider). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* CẤU HÌNH TAILWIND V4 TẠI ĐÂY */
 @theme {
   --color-primary: #1677ff;
   --color-primary-hover: #4096ff;
   --color-primary-bg: #e6f7ff;
+  --color-primary-foreground: #ffffff;
   --color-success: #52c41a;
   --color-warning: #faad14;
   --color-danger: #ff4d4f;
@@ -20,10 +24,61 @@
   --color-code-operator: #56b6c2;
   --color-code-property: #e06c75;
   --color-code-type: #e5c07b;
+
+  /* Semantic tokens (light defaults). Mirrored under `.dark` below. The
+     UI primitives (shadcn-style Button/Card/Input) reference these via
+     classes like `bg-card`, `text-foreground`, `bg-muted`, etc. */
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f172a;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #e6f7ff;
+  --color-accent-foreground: #1677ff;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #1677ff;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
   --font-sans: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   --animate-shimmer: shimmer 1.5s infinite linear;
+}
+
+/* Dark theme overrides (class-based). */
+.dark {
+  --color-background: #0b1220;
+  --color-foreground: #e2e8f0;
+  --color-card: #111827;
+  --color-card-foreground: #e2e8f0;
+  --color-popover: #111827;
+  --color-popover-foreground: #e2e8f0;
+  --color-secondary: #1e293b;
+  --color-secondary-foreground: #e2e8f0;
+  --color-muted: #1e293b;
+  --color-muted-foreground: #94a3b8;
+  --color-accent: #1e3a8a;
+  --color-accent-foreground: #bfdbfe;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #fef2f2;
+  --color-border: #1f2937;
+  --color-input: #1f2937;
+  --color-ring: #4096ff;
+
+  --color-primary-bg: #1e3a8a;
+  --color-code-bg: #0f172a;
 }
 
 @keyframes shimmer {
@@ -38,13 +93,40 @@
 /* CSS TÙY CHỈNH CỦA BẠN */
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f8fafc;
+  background-color: var(--color-background, #f8fafc);
+  color: var(--color-foreground, #0f172a);
   -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* A11y — consistent focus-visible ring on interactive elements (keyboard users
+   only). Uses the brand ring colour so it is visible in both themes. */
+:where(button, a, [role='button'], [role='link'], [role='tab'], [tabindex]):focus-visible,
+:where(input, textarea, select):focus-visible {
+  outline: 2px solid var(--color-ring, #1677ff);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect users who prefer reduced motion — disable any decorative animations
+   while preserving instant state changes. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .card {
-  background-color: white;
-  border: 1px solid #e2e8f0;
+  background-color: var(--color-card, white);
+  border: 1px solid var(--color-border, #e2e8f0);
+  color: var(--color-card-foreground, #0f172a);
   border-radius: 12px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
@@ -125,6 +207,18 @@ body {
   background-repeat: no-repeat;
   background-size: 1000px 100%;
   animation: shimmer 1.5s infinite linear forwards;
+}
+.dark .skeleton {
+  background: #1e293b;
+  background-image: linear-gradient(to right, #1e293b 0%, #334155 20%, #1e293b 40%, #1e293b 100%);
+}
+
+/* Dark-mode scrollbar tweak for the global custom-scrollbar utility. */
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #334155;
+}
+.dark .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #475569;
 }
 
 .line-clamp-2 {

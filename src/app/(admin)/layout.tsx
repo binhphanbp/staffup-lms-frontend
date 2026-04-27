@@ -14,7 +14,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{ fontFamily: "'Roboto', sans-serif" }}
-      className="flex h-screen overflow-hidden bg-[#F8F9FA] text-[#202124] antialiased"
+      className="flex h-screen overflow-hidden bg-[#F8F9FA] text-[#202124] antialiased dark:bg-slate-950 dark:text-slate-100"
     >
       {/* Mobile backdrop */}
       {mobileOpen && (

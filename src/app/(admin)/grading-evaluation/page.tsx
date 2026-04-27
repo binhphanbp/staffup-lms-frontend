@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
+import { toast } from '@/lib/toast';
 import { GradingWorkspace } from '@/components/instructor/grading/GradingWorkspace';
 import { useCourses } from '@/hooks/useCourses';
 import { useAiGradeQuiz, useAllQuizAttempts } from '@/hooks/useQuiz';
@@ -96,10 +97,6 @@ export default function GradingEvaluationPage() {
     useState<NonNullable<QuizAttemptAdminListParams['sortOrder']>>('desc');
   const [page, setPage] = useState(1);
   const [activeAttemptId, setActiveAttemptId] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ visible: boolean; message: string }>({
-    visible: false,
-    message: '',
-  });
   const [batchProgress, setBatchProgress] = useState<{
     total: number;
     done: number;
@@ -148,10 +145,7 @@ export default function GradingEvaluationPage() {
   const pagination = data?.pagination;
   const totalPages = pagination?.totalPages ?? 1;
 
-  const showToast = (message: string) => {
-    setToast({ visible: true, message });
-    window.setTimeout(() => setToast({ visible: false, message: '' }), 3200);
-  };
+  const showToast = (message: string) => toast.success(message);
 
   const resetFilters = () => {
     setSearchInput('');
@@ -466,17 +460,6 @@ export default function GradingEvaluationPage() {
           onGraded={() => refetch()}
         />
       )}
-
-      <div
-        role="status"
-        aria-live="polite"
-        className={`fixed bottom-6 left-6 z-[3000] flex items-center gap-3 rounded-[4px] bg-[#323232] px-6 py-[14px] text-white shadow-lg transition-transform duration-300 ${
-          toast.visible ? 'translate-y-0' : 'translate-y-[120px]'
-        }`}
-      >
-        <span className="material-symbols-outlined text-[24px] text-[#81C995]">check_circle</span>
-        <span className="text-[14px]">{toast.message}</span>
-      </div>
     </>
   );
 }

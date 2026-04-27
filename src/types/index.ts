@@ -159,6 +159,19 @@ export interface ModuleDetail {
   title: string;
   orderIndex: number;
   lessons: LessonDetail[];
+  /**
+   * Optional module-level quizzes — populated by the course-detail endpoint.
+   * Listed inline in the syllabus sidebar so learners can launch them
+   * without leaving the learning room.
+   */
+  quizzes?: Array<{
+    id: string;
+    title: string;
+    totalQuestions?: number;
+    timeLimitMinutes?: number | null;
+    passScorePercent?: number | null;
+    _count?: { quizQuestions?: number };
+  }>;
 }
 
 export interface CourseModuleItem {

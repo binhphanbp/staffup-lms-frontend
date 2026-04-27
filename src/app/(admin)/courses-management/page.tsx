@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Toast } from '@/components/shared/Toast';
+import { toast } from '@/lib/toast';
 import { resolveMediaUrl } from '@/lib/media';
 import {
   useCategories,
@@ -370,7 +370,6 @@ function CourseFormModal({
 /* ── Page ──────────────────────────────────────────────── */
 export default function CoursesManagementPage() {
   const router = useRouter();
-  const [toast, setToast] = useState({ visible: false, message: '' });
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<CourseStatus | ''>('');
@@ -407,10 +406,7 @@ export default function CoursesManagementPage() {
     [trainersData],
   );
 
-  const showToast = (msg: string) => {
-    setToast({ visible: true, message: msg });
-    window.setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string) => toast.success(message);
 
   const openCreate = () => {
     setFormMode('create');
@@ -841,8 +837,6 @@ export default function CoursesManagementPage() {
         onClose={() => setMediaModalCourse(null)}
         onSuccess={showToast}
       />
-
-      <Toast visible={toast.visible} message={toast.message} />
     </>
   );
 }

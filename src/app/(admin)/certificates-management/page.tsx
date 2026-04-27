@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { toast } from '@/lib/toast';
 import { useCertificates, useRevokeCertificate } from '@/hooks/useCertificates';
 
 const LIMIT = 10;
@@ -16,18 +17,13 @@ function getInitial(name: string) {
 
 export default function CertificatesManagementPage() {
   const [page, setPage] = useState(1);
-  const [toast, setToast] = useState({ visible: false, message: '' });
-
   const { data, isLoading, isError } = useCertificates({ page, limit: LIMIT });
   const revokeMutation = useRevokeCertificate();
 
   const certificates = data?.certificates ?? [];
   const pagination = data?.pagination;
 
-  const showToast = (msg: string) => {
-    setToast({ visible: true, message: msg });
-    setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string) => toast.success(message);
 
   const handleRevoke = (id: string) => {
     revokeMutation.mutate(id, {
@@ -243,14 +239,6 @@ export default function CertificatesManagementPage() {
             )}
           </div>
         )}
-      </div>
-
-      {/* Toast */}
-      <div
-        className={`fixed bottom-6 left-6 z-[3000] flex items-center gap-3 rounded-[4px] bg-[#323232] px-6 py-[14px] text-white shadow-lg transition-transform duration-300 ${toast.visible ? 'translate-y-0' : 'translate-y-[100px]'}`}
-      >
-        <span className="material-symbols-outlined text-[24px] text-[#81C995]">check_circle</span>
-        <span className="text-[14px]">{toast.message}</span>
       </div>
     </>
   );

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Toast } from '@/components/shared/Toast';
+import { toast } from '@/lib/toast';
 import { departmentService, type Department } from '@/services/department.service';
 import { userService } from '@/services/user.service';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -156,7 +156,6 @@ export default function DepartmentsPage() {
   const isAdmin = user?.roleCodes?.includes('admin') ?? false;
   const queryClient = useQueryClient();
 
-  const [toast, setToast] = useState({ visible: false, message: '' });
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [modalOpen, setModalOpen] = useState(false);
@@ -207,10 +206,7 @@ export default function DepartmentsPage() {
     },
   });
 
-  const showToast = (message: string) => {
-    setToast({ visible: true, message });
-    window.setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string) => toast.success(message);
 
   const filteredDepartments = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -499,8 +495,6 @@ export default function DepartmentsPage() {
         onClose={resetModal}
         onSubmit={handleSubmit}
       />
-
-      <Toast visible={toast.visible} message={toast.message} />
     </>
   );
 }

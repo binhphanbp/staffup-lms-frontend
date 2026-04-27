@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { toast } from '@/lib/toast';
 import { ReviewHeader } from '@/components/instructor/assignment-review/ReviewHeader';
 import { ReviewQueue } from '@/components/instructor/assignment-review/ReviewQueue';
 import { ReviewCodeViewer } from '@/components/instructor/assignment-review/ReviewCodeViewer';
@@ -20,7 +21,9 @@ export default function AssignmentReviewPage() {
     if (action === 'approve') {
       setIsSubmitting(true);
       setTimeout(() => {
-        alert('Đã lưu kết quả (Passed). Hệ thống sẽ chuyển sang bài tiếp theo.');
+        toast.success('Đã lưu kết quả (Passed)', {
+          description: 'Hệ thống sẽ chuyển sang bài tiếp theo.',
+        });
         setIsSubmitting(false);
         setActiveQueue(1); // Chuyển sang bài tiếp theo trong hàng đợi
       }, 1000);

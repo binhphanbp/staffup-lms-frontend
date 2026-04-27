@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Toast } from '@/components/shared/Toast';
+import { toast } from '@/lib/toast';
 import { resolveMediaUrl } from '@/lib/media';
 import {
   useCreateUser,
@@ -195,7 +195,6 @@ function InstructorFormModal({
 }
 
 export default function InstructorsPage() {
-  const [toast, setToast] = useState({ visible: false, message: '' });
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<'' | 'active' | 'inactive'>('');
@@ -253,10 +252,7 @@ export default function InstructorsPage() {
 
   const meta = data?.meta ?? { total: 0, page: 1, limit: LIMIT, totalPages: 1 };
 
-  const showToast = (message: string) => {
-    setToast({ visible: true, message });
-    window.setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string) => toast.success(message);
 
   const openCreateModal = () => {
     setFormMode('create');
@@ -704,8 +700,6 @@ export default function InstructorsPage() {
         onSubmit={submitForm}
         submitting={createUser.isPending || updateUser.isPending}
       />
-
-      <Toast visible={toast.visible} message={toast.message} />
     </>
   );
 }
