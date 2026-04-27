@@ -42,7 +42,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <RoleGuard allowedRoles={['admin', 'manager']}>
+    <RoleGuard allowedRoles={['admin', 'manager', 'trainer']}>
       <MobileNavProvider>
         <AdminLayoutContent>{children}</AdminLayoutContent>
       </MobileNavProvider>
