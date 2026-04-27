@@ -7,6 +7,7 @@ import type { LessonDetail } from '@/types';
 import { resolveMediaUrl } from '@/lib/media';
 import { CourseQAChat } from '@/components/learning-room/CourseQAChat';
 import { VideoSummaryPanel } from '@/components/learning-room/VideoSummaryPanel';
+import { ForumPanel } from '@/components/forum/ForumPanel';
 
 interface LearningTabsProps {
   lesson?: LessonDetail & { moduleTitle?: string };
@@ -29,6 +30,7 @@ export const LearningTabs = ({
 }: LearningTabsProps) => {
   const isVideoLesson = lesson?.lessonType === 'video';
   const [activeTab, setActiveTab] = useState<TabId>('overview');
+  const forumLessons = lesson ? [lesson] : [];
 
   // Drop to overview if current tab no longer applies (e.g. non-video lesson with summary tab open)
   useEffect(() => {
@@ -106,25 +108,6 @@ export const LearningTabs = ({
             className={`border-b-2 py-3 transition-colors ${activeTab === 'overview' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
           >
             Tổng quan
-          </button>
-          {isVideoLesson && (
-            <button
-              onClick={() => setActiveTab('summary')}
-              className={`flex items-center gap-1.5 border-b-2 py-3 transition-colors ${activeTab === 'summary' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
-            >
-              <i className="fa-solid fa-layer-group text-[11px]"></i>
-              Tóm tắt AI
-              <span className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
-                MỚI
-              </span>
-            </button>
-          )}
-          <button
-            onClick={() => setActiveTab('ai')}
-            className={`flex items-center gap-1.5 border-b-2 py-3 transition-colors ${activeTab === 'ai' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
-          >
-            <i className="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
-            Trợ lý AI
           </button>
           {isVideoLesson && (
             <button
@@ -266,49 +249,15 @@ export const LearningTabs = ({
           </div>
         )}
 
-        {activeTab === 'summary' && isVideoLesson && (
-          <div className="max-w-4xl animate-[fadeIn_0.3s_ease-in-out]">
-            <VideoSummaryPanel
-              lessonId={lesson?.id}
-              lessonTitle={lesson?.title}
-              durationSeconds={lesson?.durationSeconds}
-              onSeek={onSeekVideo}
-            />
-          </div>
-        )}
-
-        {activeTab === 'ai' && (
-          <div className="animate-[fadeIn_0.3s_ease-in-out]">
+        {activeTab === 'qa' && (
+          <div className="max-w-5xl animate-[fadeIn_0.3s_ease-in-out]">
             {courseId ? (
-              <CourseQAChat
-                key={courseId}
-                courseId={courseId}
-                courseTitle={courseTitle}
-                currentLessonTitle={lesson?.title}
-              />
+              <ForumPanel courseId={courseId} lesson={lesson} lessons={forumLessons} />
             ) : (
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                Chưa có khóa học để hỏi AI.
+                Chưa có khóa học để mở diễn đàn.
               </div>
             )}
-          </div>
-        )}
-
-        {activeTab === 'qa' && (
-          <div className="max-w-4xl animate-[fadeIn_0.3s_ease-in-out]">
-            <div className="mb-8 flex gap-3">
-              <div className="relative flex-1">
-                <i className="fa-solid fa-magnifying-glass absolute top-1/2 left-3 -translate-y-1/2 text-sm text-slate-400"></i>
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm câu hỏi trong bài này..."
-                  className="focus:border-primary focus:ring-primary w-full rounded-md border border-gray-200 bg-slate-50 py-2 pr-4 pl-9 text-[13px] outline-none focus:bg-white focus:ring-1"
-                />
-              </div>
-              <button className="hover:border-primary hover:text-primary rounded-md border border-slate-300 bg-white px-4 py-2 text-[13px] font-bold whitespace-nowrap text-slate-700 transition-colors">
-                Đặt câu hỏi mới
-              </button>
-            </div>
           </div>
         )}
       </div>
