@@ -1,11 +1,13 @@
 import api from '@/lib/axios';
 import type {
   ApiResponse,
+  QuizAttemptAdminListParams,
+  QuizAttemptAdminListResponse,
   QuizAttemptDetailResponse,
+  QuizAttemptHistoryItem,
+  QuizResponsePayload,
   QuizStartPayload,
   QuizStartResponse,
-  QuizResponsePayload,
-  QuizAttemptHistoryItem,
   QuizSubmitResponse,
   AiGradeEssayResponse,
 } from '@/types';
@@ -58,6 +60,15 @@ export const quizService = {
     limit?: number;
   }): Promise<QuizAttemptHistoryItem[]> => {
     const { data } = await api.get<ApiResponse<QuizAttemptHistoryItem[]>>(`${API_BASE}/history`, {
+      params,
+    });
+    return data.data;
+  },
+
+  getAllAttemptsAdmin: async (
+    params: QuizAttemptAdminListParams = {},
+  ): Promise<QuizAttemptAdminListResponse> => {
+    const { data } = await api.get<ApiResponse<QuizAttemptAdminListResponse>>(`${API_BASE}/admin`, {
       params,
     });
     return data.data;
