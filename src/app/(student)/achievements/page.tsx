@@ -7,6 +7,8 @@ import type { BadgeDto, XpTransaction } from '@/services/gamification.service';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { LeaderboardCard } from '@/components/student/LeaderboardCard';
+import { MyRankCard } from '@/components/student/MyRankCard';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const breadcrumbs = [
   { label: 'Trang chủ', href: '/' },
@@ -126,6 +128,7 @@ export default function AchievementsPage() {
   const { data: badges, isLoading: badgesLoading } = useMyBadges();
   const { data: txs, isLoading: txsLoading } = useMyXpTransactions(20);
   const [tab, setTab] = useState<'all' | 'earned' | 'locked'>('all');
+  const myUserId = useAuthStore((s) => s.user?.id);
 
   const allBadges = [...(badges?.earned ?? []), ...(badges?.locked ?? [])];
   const visibleBadges =
@@ -218,6 +221,9 @@ export default function AchievementsPage() {
             </div>
           </section>
 
+          {/* My rank widget — quick view of where I stand vs company + department */}
+          <MyRankCard />
+
           <div className="grid gap-6 lg:grid-cols-3">
             {/* Badges grid */}
             <section className="card overflow-hidden p-0 lg:col-span-2">
@@ -295,7 +301,7 @@ export default function AchievementsPage() {
               </section>
 
               {/* Leaderboard widget */}
-              <LeaderboardCard limit={5} />
+              <LeaderboardCard limit={5} highlightUserId={myUserId} />
             </div>
           </div>
         </div>

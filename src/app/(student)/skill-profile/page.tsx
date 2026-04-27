@@ -2,7 +2,16 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Award, BookOpen, Lightbulb, Sparkles, Target, TrendingUp } from 'lucide-react';
+import {
+  ArrowRight,
+  Award,
+  BookOpen,
+  Brain,
+  Lightbulb,
+  Sparkles,
+  Target,
+  TrendingUp,
+} from 'lucide-react';
 import { StudentHeader } from '@/components/shared/StudentHeader';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -261,15 +270,41 @@ export default function SkillProfilePage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-6 dark:border-indigo-900/40 dark:bg-indigo-950/20">
-              <div className="flex items-start gap-3">
-                <Sparkles className="mt-0.5 h-5 w-5 text-indigo-500" />
-                <div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white">Mẹo</h3>
-                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                    Tự đánh giá thật trung thực giúp hệ thống đề xuất lộ trình chính xác hơn. Quản
-                    lý của bạn cũng có thể đánh giá lại mỗi kỹ năng và sẽ ghi đè đánh giá cá nhân.
-                  </p>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <div className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-sky-50 p-6 shadow-sm dark:border-emerald-900/40 dark:from-emerald-950/30 dark:to-sky-950/20">
+                <div className="flex items-start gap-3">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-md">
+                    <Brain className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-slate-900 dark:text-white">
+                      Xác minh năng lực bằng Adaptive Quiz
+                    </h3>
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                      Hệ thống sẽ chọn câu hỏi phù hợp với trình độ hiện tại để đánh giá khách quan.
+                      Kết quả sẽ tự động cập nhật vào hồ sơ kỹ năng.
+                    </p>
+                    <Link
+                      href="/adaptive-quiz"
+                      className="mt-3 inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:outline-none dark:focus:ring-offset-slate-900"
+                    >
+                      Bắt đầu Adaptive Quiz
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-6 dark:border-indigo-900/40 dark:bg-indigo-950/20">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="mt-0.5 h-5 w-5 text-indigo-500" />
+                  <div>
+                    <h3 className="font-semibold text-slate-900 dark:text-white">Mẹo</h3>
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                      Tự đánh giá thật trung thực giúp hệ thống đề xuất lộ trình chính xác hơn. Quản
+                      lý của bạn cũng có thể đánh giá lại mỗi kỹ năng và sẽ ghi đè đánh giá cá nhân.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

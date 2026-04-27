@@ -123,6 +123,21 @@ export const AdminSidebar = () => {
               </span>
             </Link>
             <Link
+              href="/manager/department-analytics"
+              className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+                pathname.startsWith('/manager/department-analytics')
+                  ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                  : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
+              }`}
+            >
+              <span
+                className={`material-symbols-outlined mr-4 text-[20px] ${pathname.startsWith('/manager/department-analytics') ? "[font-variation-settings:'FILL'_1]" : ''}`}
+              >
+                bar_chart_4_bars
+              </span>
+              Phân tích phòng ban
+            </Link>
+            <Link
               href="/risk-assessment"
               className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
                 pathname === '/risk-assessment'
