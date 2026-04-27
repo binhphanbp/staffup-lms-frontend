@@ -14,6 +14,7 @@ import { resolveMediaUrl } from '@/lib/media';
 import { MobileNavProvider, useMobileNav } from '@/context/MobileNavContext';
 import { RoleGuard } from '@/components/shared/RoleGuard';
 import { useAuthStore } from '@/store/useAuthStore';
+import { LeaderboardCard } from '@/components/student/LeaderboardCard';
 import type { EmployeeDashboardStats } from '@/types';
 
 // ── helpers ────────────────────────────────────────────────────────────────
@@ -304,6 +305,9 @@ function DashboardContent() {
 
                   {/* Skill Profile */}
                   <SkillProfile />
+
+                  {/* Leaderboard */}
+                  <LeaderboardCard limit={5} />
 
                   {/* AI Suggestions */}
                   <div className="card overflow-hidden p-0">

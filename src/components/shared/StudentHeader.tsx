@@ -3,6 +3,7 @@ import React from 'react';
 import { Breadcrumb, type BreadcrumbItem } from './Breadcrumb';
 import { useMobileNav } from '@/context/MobileNavContext';
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
+import { HeaderXpBadge } from '@/components/student/HeaderXpBadge';
 
 export const StudentHeader = ({ breadcrumbs }: { breadcrumbs: BreadcrumbItem[] }) => {
   const { openMobileNav } = useMobileNav();
@@ -21,6 +22,7 @@ export const StudentHeader = ({ breadcrumbs }: { breadcrumbs: BreadcrumbItem[] }
       </div>
 
       <div className="flex items-center gap-3 md:gap-5">
+        <HeaderXpBadge />
         <ThemeToggle />
         <button
           className="text-primary hover:text-primary-hover bg-primary-bg hidden items-center gap-2 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors md:flex dark:bg-blue-950/40 dark:text-sky-300"
