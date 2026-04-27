@@ -5,6 +5,7 @@ import type {
   MyGap,
   PositionSkillEntry,
   Skill,
+  SkillAssessmentHistoryEntry,
   SkillRecommendationEntry,
   TeamRollUp,
   UserGap,
@@ -97,6 +98,17 @@ export const skillGapService = {
   },
   getMyGap: async (): Promise<MyGap> => {
     const { data } = await api.get<ApiResponse<MyGap>>('/skill-gap/my-gap');
+    return data.data;
+  },
+  listMyAssessmentHistory: async (params?: {
+    skillId?: string;
+    source?: 'self' | 'manager' | 'auto';
+    limit?: number;
+  }): Promise<SkillAssessmentHistoryEntry[]> => {
+    const { data } = await api.get<ApiResponse<SkillAssessmentHistoryEntry[]>>(
+      '/skill-gap/my-assessments',
+      { params },
+    );
     return data.data;
   },
 
