@@ -1,7 +1,9 @@
-import type { CodeLabLanguage, CodeLabTestCase } from '@/services/code-lab.service';
+import type { CodeLabLanguage, CodeLabProblem, CodeLabTestCase } from '@/services/code-lab.service';
 
 export interface LabProblem {
   id: string;
+  /** Server-side slug (same as id when sourced from the registry). */
+  slug?: string;
   title: string;
   difficulty: 'easy' | 'medium' | 'hard';
   category: string;
@@ -10,6 +12,21 @@ export interface LabProblem {
   problemStatement: string;
   starterCode: string;
   testCases: CodeLabTestCase[];
+}
+
+/** Map a server-side CodeLabProblem to the local LabProblem shape. */
+export function fromBackendProblem(p: CodeLabProblem): LabProblem {
+  return {
+    id: p.slug,
+    slug: p.slug,
+    title: p.title,
+    difficulty: p.difficulty,
+    category: p.category,
+    language: p.language,
+    problemStatement: p.problemStatement,
+    starterCode: p.starterCode,
+    testCases: p.testCases,
+  };
 }
 
 const DIFFICULTY_LABEL_VI: Record<LabProblem['difficulty'], string> = {
