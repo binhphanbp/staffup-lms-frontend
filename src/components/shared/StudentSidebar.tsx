@@ -35,6 +35,16 @@ export const StudentSidebar = () => {
     { name: 'Bài Test năng lực', href: '/quiz-assessment', icon: 'fa-clipboard-check' },
     { name: 'Chứng chỉ Nội bộ', href: '/certificates', icon: 'fa-award' },
     { name: 'Thành tích & XP', href: '/achievements', icon: 'fa-trophy' },
+    {
+      name: 'BXH Adaptive Quiz',
+      href: '/leaderboards/adaptive-quiz',
+      icon: 'fa-ranking-star',
+    },
+    {
+      name: 'BXH Voice Roleplay',
+      href: '/leaderboards/voice-roleplay',
+      icon: 'fa-microphone-lines',
+    },
   ];
 
   const handleLogout = async () => {

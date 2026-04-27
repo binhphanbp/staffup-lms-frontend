@@ -5,6 +5,7 @@ import type {
   AdaptiveAdminBankDetail,
   AdaptiveAutoStrategy,
   AdaptiveBank,
+  AdaptiveLeaderboardEntry,
   AdaptiveSession,
   AdaptiveSessionSummary,
   BulkSetDifficultyInput,
@@ -97,6 +98,19 @@ export const adaptiveQuizAdminService = {
     const { data } = await api.post<
       ApiResponse<{ updated: number; strategy: AdaptiveAutoStrategy }>
     >(`/adaptive-quiz/admin/banks/${bankId}/auto-tune`, { strategy });
+    return data.data;
+  },
+};
+
+export const adaptiveQuizLeaderboardService = {
+  list: async (params?: {
+    scope?: 'global' | 'department';
+    limit?: number;
+  }): Promise<AdaptiveLeaderboardEntry[]> => {
+    const { data } = await api.get<ApiResponse<AdaptiveLeaderboardEntry[]>>(
+      '/adaptive-quiz/leaderboard',
+      { params },
+    );
     return data.data;
   },
 };

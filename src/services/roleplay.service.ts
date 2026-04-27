@@ -2,6 +2,7 @@ import api from '@/lib/axios';
 import type { ApiResponse } from '@/types';
 import type {
   EndRoleplaySessionResponse,
+  RoleplayLeaderboardEntry,
   RoleplayScenarioDetail,
   RoleplayScenarioListItem,
   RoleplaySessionDetail,
@@ -64,6 +65,19 @@ export const roleplayService = {
   abandonSession: async (sessionId: string): Promise<RoleplaySessionDetail> => {
     const { data } = await api.post<ApiResponse<RoleplaySessionDetail>>(
       `/roleplay/sessions/${sessionId}/abandon`,
+    );
+    return data.data;
+  },
+};
+
+export const roleplayLeaderboardService = {
+  list: async (params?: {
+    scope?: 'global' | 'department';
+    limit?: number;
+  }): Promise<RoleplayLeaderboardEntry[]> => {
+    const { data } = await api.get<ApiResponse<RoleplayLeaderboardEntry[]>>(
+      '/roleplay/leaderboard',
+      { params },
     );
     return data.data;
   },

@@ -105,3 +105,17 @@ export interface EndRoleplaySessionResponse {
   session: RoleplaySessionDetail;
   evaluation: RoleplayEvaluation;
 }
+
+export interface RoleplayLeaderboardEntry {
+  rank: number;
+  userId: string;
+  fullName: string;
+  avatarUrl: string | null;
+  positionTitle: string | null;
+  department: { id: string; name: string } | null;
+  bestScore: number;
+  averageScore: number;
+  bestBand: string | null;
+  completedSessions: number;
+  lastCompletedAt: string | null;
+}
