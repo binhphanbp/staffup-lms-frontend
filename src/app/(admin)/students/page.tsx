@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { Student } from '@/components/admin/students/types';
 import { StudentsTable } from '@/components/admin/students/StudentsTable';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/lib/toast';
 import {
   useCreateUser,
@@ -488,8 +489,20 @@ export default function StudentsPage() {
         )}
 
         {isLoading ? (
-          <div className="flex flex-1 items-center justify-center py-20">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DADCE0] border-t-[#1A73E8]" />
+          <div className="flex-1 overflow-hidden rounded-lg border border-[#DADCE0] bg-white dark:border-slate-800 dark:bg-slate-900">
+            <div className="space-y-2 p-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 rounded-md p-2">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3.5 w-1/3" />
+                    <Skeleton className="h-3 w-1/4" />
+                  </div>
+                  <Skeleton className="h-6 w-24 rounded-full" />
+                  <Skeleton className="h-6 w-20 rounded" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : isError ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20 text-[#D93025]">

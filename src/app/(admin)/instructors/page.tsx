@@ -4,6 +4,8 @@ import { useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from '@/lib/toast';
 import { resolveMediaUrl } from '@/lib/media';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   useCreateUser,
   useDeleteUser,
@@ -529,10 +531,19 @@ export default function InstructorsPage() {
 
         {/* Loading / Error / Table */}
         {isLoading ? (
-          <div className="flex flex-1 items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DADCE0] border-t-[#1A73E8]" />
-              <span className="text-[13px] text-[#5F6368]">Đang tải dữ liệu...</span>
+          <div className="flex-1 overflow-hidden rounded-lg border border-[#DADCE0] bg-white dark:border-slate-800 dark:bg-slate-900">
+            <div className="space-y-2 p-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 rounded-md p-2">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3.5 w-1/3" />
+                    <Skeleton className="h-3 w-1/4" />
+                  </div>
+                  <Skeleton className="h-6 w-24 rounded-full" />
+                  <Skeleton className="h-6 w-20 rounded" />
+                </div>
+              ))}
             </div>
           </div>
         ) : isError ? (
@@ -571,8 +582,17 @@ export default function InstructorsPage() {
                 <tbody>
                   {instructors.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-4 py-12 text-center text-[13px] text-[#5F6368]">
-                        Không tìm thấy giảng viên nào
+                      <td colSpan={5} className="px-4 py-10">
+                        <EmptyState
+                          icon={
+                            <span className="material-symbols-outlined text-[28px]">
+                              person_search
+                            </span>
+                          }
+                          title="Không tìm thấy giảng viên nào"
+                          description="Thử bỏ bớt bộ lọc, hoặc thêm giảng viên mới để bắt đầu."
+                          variant="compact"
+                        />
                       </td>
                     </tr>
                   ) : (

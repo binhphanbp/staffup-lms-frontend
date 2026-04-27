@@ -14,6 +14,8 @@ import {
 } from '@/hooks/useCourses';
 import { useMediaFolders } from '@/hooks/useMedia';
 import { useUsers } from '@/hooks/useUsers';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import type { CourseListItem, CourseListParams, CourseStatus } from '@/types';
 
 const LIMIT = 10;
@@ -606,10 +608,19 @@ export default function CoursesManagementPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="flex flex-1 items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DADCE0] border-t-[#1A73E8]" />
-              <span className="text-[13px] text-[#5F6368]">Đang tải dữ liệu...</span>
+          <div className="overflow-hidden rounded-lg border border-[#DADCE0] bg-white dark:border-slate-800 dark:bg-slate-900">
+            <div className="space-y-2 p-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 rounded-md p-2">
+                  <Skeleton className="h-10 w-14 rounded" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3.5 w-1/2" />
+                    <Skeleton className="h-3 w-1/3" />
+                  </div>
+                  <Skeleton className="h-6 w-20 rounded-full" />
+                  <Skeleton className="h-6 w-16 rounded" />
+                </div>
+              ))}
             </div>
           </div>
         ) : isError ? (
@@ -654,8 +665,19 @@ export default function CoursesManagementPage() {
                 <tbody>
                   {courses.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-4 py-12 text-center text-[13px] text-[#5F6368]">
-                        Không tìm thấy khóa học nào
+                      <td colSpan={7} className="px-4 py-10">
+                        <EmptyState
+                          icon={
+                            <span className="material-symbols-outlined text-[28px]">school</span>
+                          }
+                          title="Không tìm thấy khóa học nào"
+                          description={
+                            params.search || params.categoryId || params.status
+                              ? 'Thử bỏ bớt bộ lọc hoặc đổi từ khóa tìm kiếm.'
+                              : 'Tạo khóa học mới để bắt đầu xây dựng nội dung đào tạo.'
+                          }
+                          variant="compact"
+                        />
                       </td>
                     </tr>
                   ) : (
