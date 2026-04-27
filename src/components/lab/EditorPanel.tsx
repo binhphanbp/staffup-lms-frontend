@@ -289,7 +289,7 @@ export const EditorPanel = ({
   const failedTestCount = evaluation?.testResults.filter((t) => !t.passed).length ?? 0;
 
   return (
-    <div className="flex h-full min-w-[300px] flex-1 flex-col bg-[var(--color-code-bg)]">
+    <div className="flex h-full min-w-0 flex-1 flex-col bg-[var(--color-code-bg)] md:min-w-[300px]">
       {/* Editor Toolbar */}
       <div className="z-10 flex h-10 flex-shrink-0 items-center justify-between border-b border-black/40 bg-[#21252b] px-3 text-slate-300 shadow-sm">
         <div className="flex items-center gap-3">

@@ -15,7 +15,7 @@ export const TaskPanel = ({ problem }: TaskPanelProps) => {
   const [leftTab, setLeftTab] = useState<'task' | 'ai'>('task');
 
   return (
-    <div className="z-10 flex h-full w-full shrink-0 flex-col bg-white shadow-xl lg:w-[40%] xl:w-[35%]">
+    <div className="z-10 flex h-[55vh] w-full shrink-0 flex-col bg-white shadow-xl md:h-full lg:w-[40%] xl:w-[35%]">
       <div className="flex border-b border-gray-200 bg-slate-50 px-2 pt-2">
         <button
           onClick={() => setLeftTab('task')}
@@ -125,9 +125,10 @@ export const TaskPanel = ({ problem }: TaskPanelProps) => {
                 />
                 <button
                   disabled
-                  className="absolute top-1/2 right-2 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-slate-400 transition-colors hover:text-purple-600 disabled:cursor-not-allowed disabled:opacity-50"
+                  aria-label="Gửi câu hỏi cho AI Copilot"
+                  className="absolute top-1/2 right-2 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-slate-400 transition-colors hover:text-purple-600 focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <i className="fa-solid fa-paper-plane text-sm"></i>
+                  <i className="fa-solid fa-paper-plane text-sm" aria-hidden="true"></i>
                 </button>
               </div>
             </div>

@@ -331,10 +331,11 @@ export const VideoPlayer = ({
             {hasPrevLesson ? (
               <button
                 onClick={onPrevLesson}
-                className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-black/80"
+                className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-black/80 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
                 style={{ opacity: 1 }}
+                aria-label="Bài trước"
               >
-                <i className="fa-solid fa-chevron-left text-xs"></i>
+                <i className="fa-solid fa-chevron-left text-xs" aria-hidden="true"></i>
               </button>
             ) : (
               <div />
@@ -342,9 +343,10 @@ export const VideoPlayer = ({
             {hasNextLesson ? (
               <button
                 onClick={onNextLesson}
-                className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/80"
+                className="pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/80 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                aria-label="Bài tiếp theo"
               >
-                <i className="fa-solid fa-chevron-right text-xs"></i>
+                <i className="fa-solid fa-chevron-right text-xs" aria-hidden="true"></i>
               </button>
             ) : (
               <div />

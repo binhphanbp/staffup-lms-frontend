@@ -20,7 +20,13 @@ export default function LearningRoomPage() {
   const searchParams = useSearchParams();
   const courseId = searchParams.get('courseId');
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // On desktop (lg+), syllabus sidebar opens by default. On mobile/tablet it
+  // would otherwise cover the whole viewport (it's a slide-over) so we start
+  // collapsed and let the user toggle it via the hamburger.
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return window.matchMedia('(min-width: 1024px)').matches;
+  });
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
 
   const { data: course, isLoading: courseLoading } = useCourseDetail(courseId);

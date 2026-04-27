@@ -133,28 +133,31 @@ export default function CourseDetailPage() {
         <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-4 py-4 md:px-8 md:py-8 lg:flex-row">
           <div className="flex min-w-0 flex-1 flex-col gap-8 pb-12">
             <div className="sticky top-0 z-10 -mt-2 border-b border-gray-200 bg-[#f8fafc] pt-2">
-              <nav className="flex gap-6 text-[13px] font-semibold">
+              <nav
+                aria-label="Mục lục khóa học"
+                className="-mx-4 flex gap-6 overflow-x-auto px-4 text-[13px] font-semibold whitespace-nowrap [scrollbar-width:none] md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden"
+              >
                 <a
                   href="#overview"
-                  className="border-primary text-primary border-b-2 py-3 transition-colors"
+                  className="border-primary text-primary shrink-0 border-b-2 py-3 transition-colors"
                 >
                   Tổng quan
                 </a>
                 <a
                   href="#preview"
-                  className="border-b-2 border-transparent py-3 text-slate-500 transition-colors hover:text-slate-800"
+                  className="shrink-0 border-b-2 border-transparent py-3 text-slate-500 transition-colors hover:text-slate-800"
                 >
                   Video preview
                 </a>
                 <a
                   href="#curriculum"
-                  className="border-b-2 border-transparent py-3 text-slate-500 transition-colors hover:text-slate-800"
+                  className="shrink-0 border-b-2 border-transparent py-3 text-slate-500 transition-colors hover:text-slate-800"
                 >
                   Giáo trình
                 </a>
                 <a
                   href="#instructor"
-                  className="border-b-2 border-transparent py-3 text-slate-500 transition-colors hover:text-slate-800"
+                  className="shrink-0 border-b-2 border-transparent py-3 text-slate-500 transition-colors hover:text-slate-800"
                 >
                   Giảng viên
                 </a>
