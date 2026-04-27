@@ -129,3 +129,19 @@ export interface BulkSetDifficultyInput {
 }
 
 export type AdaptiveAutoStrategy = 'spread' | 'reset';
+
+export interface AdaptiveLeaderboardEntry {
+  rank: number;
+  userId: string;
+  fullName: string;
+  avatarUrl: string | null;
+  positionTitle: string | null;
+  department: { id: string; name: string } | null;
+  bestAbility: number;
+  bestBand: string | null;
+  completedSessions: number;
+  totalAnswered: number;
+  totalCorrect: number;
+  accuracyPct: number;
+  lastCompletedAt: string | null;
+}
