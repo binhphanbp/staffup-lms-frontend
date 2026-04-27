@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from '@/lib/toast';
+import { Dialog } from '@/components/ui/dialog';
 import {
   companyDocumentApi,
   type CompanyDocument,
@@ -456,191 +457,191 @@ export default function CompanyDocumentsPage() {
       </div>
 
       {/* ===== CREATE/EDIT MODAL ===== */}
-      {showModal && (
-        <div
-          className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40"
-          onClick={() => setShowModal(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="mx-4 flex max-h-[90vh] w-full max-w-[800px] flex-col rounded-xl bg-white shadow-2xl"
-          >
-            {/* Modal header */}
-            <div className="flex items-center justify-between border-b border-[#DADCE0] px-6 py-4">
-              <h2 className="m-0 text-[18px] font-medium text-[#202124]">
-                {editingDoc ? 'Chỉnh sửa tài liệu' : 'Thêm tài liệu mới'}
-              </h2>
-              <button
-                onClick={() => setShowModal(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F6368] transition-colors hover:bg-[#F1F3F4]"
+      <Dialog
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        widthClassName="max-w-[800px]"
+        ariaLabel={editingDoc ? 'Chỉnh sửa tài liệu' : 'Thêm tài liệu mới'}
+      >
+        <div className="flex max-h-[90vh] flex-col">
+          {/* Modal header */}
+          <div className="flex items-center justify-between border-b border-[#DADCE0] px-6 py-4 dark:border-slate-800">
+            <h2 className="m-0 text-[18px] font-medium text-[#202124] dark:text-slate-100">
+              {editingDoc ? 'Chỉnh sửa tài liệu' : 'Thêm tài liệu mới'}
+            </h2>
+            <button
+              onClick={() => setShowModal(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-[#5F6368] transition-colors hover:bg-[#F1F3F4] dark:text-slate-400 dark:hover:bg-slate-800"
+              aria-label="Đóng"
+            >
+              <span className="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          {/* Modal body */}
+          <div className="custom-scrollbar flex-1 overflow-y-auto px-6 py-4">
+            {/* FILE UPLOAD AREA */}
+            <div className="mb-4">
+              <label
+                className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-4 py-8 transition-colors ${isExtracting ? 'border-[#1A73E8] bg-[#E8F0FE]' : 'border-[#DADCE0] bg-[#F8F9FA] hover:border-[#1A73E8] hover:bg-[#F1F3F4]'}`}
               >
-                <span className="material-symbols-outlined">close</span>
-              </button>
+                <div className="flex flex-col items-center justify-center gap-2">
+                  {isExtracting ? (
+                    <span className="material-symbols-outlined animate-spin text-[32px] text-[#1A73E8]">
+                      progress_activity
+                    </span>
+                  ) : (
+                    <span className="material-symbols-outlined text-[32px] text-[#8AB4F8] [font-variation-settings:'FILL'_1]">
+                      upload_file
+                    </span>
+                  )}
+                  <p
+                    className={`m-0 text-[14px] font-medium ${isExtracting ? 'text-[#1A73E8]' : 'text-[#202124]'}`}
+                  >
+                    {isExtracting ? 'Đang đọc nội dung file...' : 'Tải file tài liệu lên'}
+                  </p>
+                  {!isExtracting && (
+                    <p className="m-0 text-center text-[12px] text-[#5F6368]">
+                      Chọn hoặc kéo thả file <strong>PDF, DOCX, TXT</strong> vào đây.
+                      <br />
+                      Hệ thống sẽ tự bóc tách nội dung thô (text) và điền xuống dưới.
+                    </p>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,.txt,.md,.csv"
+                  className="hidden"
+                  onChange={handleFileChange}
+                  disabled={isExtracting}
+                />
+              </label>
             </div>
 
-            {/* Modal body */}
-            <div className="custom-scrollbar flex-1 overflow-y-auto px-6 py-4">
-              {/* FILE UPLOAD AREA */}
-              <div className="mb-4">
-                <label
-                  className={`flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-4 py-8 transition-colors ${isExtracting ? 'border-[#1A73E8] bg-[#E8F0FE]' : 'border-[#DADCE0] bg-[#F8F9FA] hover:border-[#1A73E8] hover:bg-[#F1F3F4]'}`}
-                >
-                  <div className="flex flex-col items-center justify-center gap-2">
-                    {isExtracting ? (
-                      <span className="material-symbols-outlined animate-spin text-[32px] text-[#1A73E8]">
-                        progress_activity
-                      </span>
-                    ) : (
-                      <span className="material-symbols-outlined text-[32px] text-[#8AB4F8] [font-variation-settings:'FILL'_1]">
-                        upload_file
-                      </span>
-                    )}
-                    <p
-                      className={`m-0 text-[14px] font-medium ${isExtracting ? 'text-[#1A73E8]' : 'text-[#202124]'}`}
-                    >
-                      {isExtracting ? 'Đang đọc nội dung file...' : 'Tải file tài liệu lên'}
-                    </p>
-                    {!isExtracting && (
-                      <p className="m-0 text-center text-[12px] text-[#5F6368]">
-                        Chọn hoặc kéo thả file <strong>PDF, DOCX, TXT</strong> vào đây.
-                        <br />
-                        Hệ thống sẽ tự bóc tách nội dung thô (text) và điền xuống dưới.
-                      </p>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    accept=".pdf,.doc,.docx,.txt,.md,.csv"
-                    className="hidden"
-                    onChange={handleFileChange}
-                    disabled={isExtracting}
-                  />
-                </label>
-              </div>
+            <div className="mb-4">
+              <label className="mb-1.5 block text-[13px] font-medium text-[#5F6368]">
+                Tiêu đề <span className="text-[#D93025]">*</span>
+              </label>
+              <input
+                type="text"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                placeholder="Nhập tiêu đề tài liệu..."
+                className="h-10 w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 text-[14px] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
+              />
+            </div>
 
-              <div className="mb-4">
+            <div className="mb-4 flex gap-4">
+              <div className="flex-1">
                 <label className="mb-1.5 block text-[13px] font-medium text-[#5F6368]">
-                  Tiêu đề <span className="text-[#D93025]">*</span>
+                  Danh mục
                 </label>
                 <input
                   type="text"
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  placeholder="Nhập tiêu đề tài liệu..."
+                  value={form.category}
+                  onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  placeholder="VD: Nội quy, Chính sách, Quy trình..."
+                  list="category-suggestions"
                   className="h-10 w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 text-[14px] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
                 />
+                <datalist id="category-suggestions">
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat} />
+                  ))}
+                </datalist>
               </div>
-
-              <div className="mb-4 flex gap-4">
-                <div className="flex-1">
-                  <label className="mb-1.5 block text-[13px] font-medium text-[#5F6368]">
-                    Danh mục
-                  </label>
+              <div className="flex items-end gap-2 pb-0.5">
+                <label className="flex cursor-pointer items-center gap-2 text-[14px] text-[#202124]">
                   <input
-                    type="text"
-                    value={form.category}
-                    onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    placeholder="VD: Nội quy, Chính sách, Quy trình..."
-                    list="category-suggestions"
-                    className="h-10 w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 text-[14px] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
+                    type="checkbox"
+                    checked={form.isActive}
+                    onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
+                    className="h-4 w-4 accent-[#1A73E8]"
                   />
-                  <datalist id="category-suggestions">
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat} />
-                    ))}
-                  </datalist>
-                </div>
-                <div className="flex items-end gap-2 pb-0.5">
-                  <label className="flex cursor-pointer items-center gap-2 text-[14px] text-[#202124]">
-                    <input
-                      type="checkbox"
-                      checked={form.isActive}
-                      onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                      className="h-4 w-4 accent-[#1A73E8]"
-                    />
-                    Hoạt động
-                  </label>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label className="mb-1.5 block text-[13px] font-medium text-[#5F6368]">
-                  Nội dung <span className="text-[#D93025]">*</span>
+                  Hoạt động
                 </label>
-                <textarea
-                  value={form.content}
-                  onChange={(e) => setForm({ ...form, content: e.target.value })}
-                  placeholder="Nhập nội dung tài liệu..."
-                  rows={16}
-                  className="w-full resize-y rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 font-mono text-[13px] leading-[1.6] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
-                />
-                <p className="mt-1 text-[12px] text-[#5F6368]">
-                  {form.content.length.toLocaleString()} ký tự
-                </p>
               </div>
             </div>
 
-            {/* Modal footer */}
-            <div className="flex items-center justify-end gap-3 border-t border-[#DADCE0] px-6 py-4">
-              <button
-                onClick={() => setShowModal(false)}
-                className="rounded-[4px] border border-[#DADCE0] bg-transparent px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-all hover:bg-[#F1F3F4]"
-              >
-                Huỷ
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="flex items-center gap-2 rounded-[4px] border border-transparent bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-all hover:bg-[#174EA6] disabled:opacity-50"
-              >
-                <span className="material-symbols-outlined text-[18px]">
-                  {isSaving ? 'progress_activity' : 'save'}
-                </span>
-                {isSaving ? 'Đang lưu...' : editingDoc ? 'Cập nhật' : 'Tạo tài liệu'}
-              </button>
+            <div className="mb-4">
+              <label className="mb-1.5 block text-[13px] font-medium text-[#5F6368]">
+                Nội dung <span className="text-[#D93025]">*</span>
+              </label>
+              <textarea
+                value={form.content}
+                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                placeholder="Nhập nội dung tài liệu..."
+                rows={16}
+                className="w-full resize-y rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 font-mono text-[13px] leading-[1.6] text-[#202124] transition-colors outline-none focus:border-[#1A73E8]"
+              />
+              <p className="mt-1 text-[12px] text-[#5F6368]">
+                {form.content.length.toLocaleString()} ký tự
+              </p>
             </div>
           </div>
+
+          {/* Modal footer */}
+          <div className="flex items-center justify-end gap-3 border-t border-[#DADCE0] px-6 py-4 dark:border-slate-800">
+            <button
+              onClick={() => setShowModal(false)}
+              className="rounded-[4px] border border-[#DADCE0] bg-transparent px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-all hover:bg-[#F1F3F4] dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+            >
+              Huỷ
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="flex items-center gap-2 rounded-[4px] border border-transparent bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-all hover:bg-[#174EA6] disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-[18px]">
+                {isSaving ? 'progress_activity' : 'save'}
+              </span>
+              {isSaving ? 'Đang lưu...' : editingDoc ? 'Cập nhật' : 'Tạo tài liệu'}
+            </button>
+          </div>
         </div>
-      )}
+      </Dialog>
 
       {/* ===== DELETE CONFIRMATION ===== */}
-      {deleteTarget && (
-        <div
-          className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/40"
-          onClick={() => setDeleteTarget(null)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="mx-4 w-full max-w-[440px] rounded-xl bg-white p-6 shadow-2xl"
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <span className="material-symbols-outlined text-[28px] text-[#D93025] [font-variation-settings:'FILL'_1]">
-                warning
-              </span>
-              <h3 className="m-0 text-[18px] font-medium text-[#202124]">Xác nhận xoá</h3>
-            </div>
-            <p className="mb-6 text-[14px] leading-[1.6] text-[#5F6368]">
-              Bạn có chắc muốn xoá tài liệu <strong>&quot;{deleteTarget.title}&quot;</strong>? Tài
-              liệu sẽ bị vô hiệu hoá và các chunks đã đánh chỉ mục sẽ bị xoá khỏi hệ thống RAG.
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setDeleteTarget(null)}
-                className="rounded-[4px] border border-[#DADCE0] bg-transparent px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-all hover:bg-[#F1F3F4]"
-              >
-                Huỷ
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className="flex items-center gap-2 rounded-[4px] bg-[#D93025] px-4 py-2 text-[13px] font-medium text-white transition-all hover:bg-[#B71C1C] disabled:opacity-50"
-              >
-                {isDeleting ? 'Đang xoá...' : 'Xoá tài liệu'}
-              </button>
-            </div>
+      <Dialog
+        open={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        widthClassName="max-w-[440px]"
+        ariaLabel="Xác nhận xoá"
+      >
+        <div className="p-6">
+          <div className="mb-4 flex items-center gap-3">
+            <span className="material-symbols-outlined text-[28px] text-[#D93025] [font-variation-settings:'FILL'_1]">
+              warning
+            </span>
+            <h3 className="m-0 text-[18px] font-medium text-[#202124] dark:text-slate-100">
+              Xác nhận xoá
+            </h3>
+          </div>
+          <p className="mb-6 text-[14px] leading-[1.6] text-[#5F6368] dark:text-slate-400">
+            Bạn có chắc muốn xoá tài liệu{' '}
+            <strong className="text-[#202124] dark:text-slate-200">
+              &quot;{deleteTarget?.title}&quot;
+            </strong>
+            ? Tài liệu sẽ bị vô hiệu hoá và các chunks đã đánh chỉ mục sẽ bị xoá khỏi hệ thống RAG.
+          </p>
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setDeleteTarget(null)}
+              className="rounded-[4px] border border-[#DADCE0] bg-transparent px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-all hover:bg-[#F1F3F4] dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+            >
+              Huỷ
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="flex items-center gap-2 rounded-[4px] bg-[#D93025] px-4 py-2 text-[13px] font-medium text-white transition-all hover:bg-[#B71C1C] disabled:opacity-50"
+            >
+              {isDeleting ? 'Đang xoá...' : 'Xoá tài liệu'}
+            </button>
           </div>
         </div>
-      )}
+      </Dialog>
 
       {/* ===== TOAST ===== */}
     </>

@@ -6,6 +6,7 @@ import { toast } from '@/lib/toast';
 import { resolveMediaUrl } from '@/lib/media';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
+import { Dialog } from '@/components/ui/dialog';
 import {
   useCreateUser,
   useDeleteUser,
@@ -97,102 +98,112 @@ function InstructorFormModal({
   onSubmit: () => void;
   submitting: boolean;
 }) {
-  if (!open) {
-    return null;
-  }
-
   return (
-    <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-xl rounded-lg bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4">
-          <h2 className="text-[18px] font-semibold text-[#202124]">
-            {mode === 'create' ? 'Thêm Giảng viên' : 'Sửa Giảng viên'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="rounded p-1 text-[#5F6368] transition-colors hover:bg-[#F1F3F4]"
-          >
-            <span className="material-symbols-outlined">close</span>
-          </button>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      widthClassName="max-w-xl"
+      ariaLabel={mode === 'create' ? 'Thêm Giảng viên' : 'Sửa Giảng viên'}
+    >
+      <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4 dark:border-slate-800">
+        <h2 className="text-[18px] font-semibold text-[#202124] dark:text-slate-100">
+          {mode === 'create' ? 'Thêm Giảng viên' : 'Sửa Giảng viên'}
+        </h2>
+        <button
+          onClick={onClose}
+          className="rounded p-1 text-[#5F6368] transition-colors hover:bg-[#F1F3F4] dark:text-slate-400 dark:hover:bg-slate-800"
+          aria-label="Đóng"
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div className="grid gap-4 px-6 py-5">
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Họ tên
+          </label>
+          <input
+            value={value.fullName}
+            onChange={(event) => onChange('fullName', event.target.value)}
+            className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          />
         </div>
 
-        <div className="grid gap-4 px-6 py-5">
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">Họ tên</label>
-            <input
-              value={value.fullName}
-              onChange={(event) => onChange('fullName', event.target.value)}
-              className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">Email</label>
-            <input
-              type="email"
-              value={value.email}
-              disabled={mode === 'edit'}
-              onChange={(event) => onChange('email', event.target.value)}
-              className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] disabled:bg-[#F8F9FA]"
-            />
-          </div>
-
-          {mode === 'create' && (
-            <div>
-              <label className="mb-1 block text-[13px] font-medium text-[#202124]">Mật khẩu</label>
-              <input
-                type="password"
-                value={value.password}
-                onChange={(event) => onChange('password', event.target.value)}
-                className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-              />
-            </div>
-          )}
-
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">Phòng ban</label>
-            <select
-              value={value.departmentId}
-              onChange={(event) => onChange('departmentId', event.target.value)}
-              className="w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            >
-              <option value="">Chọn phòng ban</option>
-              {departments.map((department) => (
-                <option key={department.id} value={department.id}>
-                  {department.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">Chuyên môn</label>
-            <input
-              value={value.positionTitle}
-              onChange={(event) => onChange('positionTitle', event.target.value)}
-              placeholder="VD: Tech Lead, Senior Developer..."
-              className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            />
-          </div>
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Email
+          </label>
+          <input
+            type="email"
+            value={value.email}
+            disabled={mode === 'edit'}
+            onChange={(event) => onChange('email', event.target.value)}
+            className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] disabled:bg-[#F8F9FA] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:disabled:bg-slate-900"
+          />
         </div>
 
-        <div className="flex justify-end gap-3 border-t border-[#E0E0E0] px-6 py-4">
-          <button
-            onClick={onClose}
-            className="rounded-[4px] border border-[#DADCE0] px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-colors hover:bg-[#F1F3F4]"
+        {mode === 'create' && (
+          <div>
+            <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+              Mật khẩu
+            </label>
+            <input
+              type="password"
+              value={value.password}
+              onChange={(event) => onChange('password', event.target.value)}
+              className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            />
+          </div>
+        )}
+
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Phòng ban
+          </label>
+          <select
+            value={value.departmentId}
+            onChange={(event) => onChange('departmentId', event.target.value)}
+            className="w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
-            Hủy
-          </button>
-          <button
-            onClick={onSubmit}
-            disabled={submitting}
-            className="rounded-[4px] bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#174EA6] disabled:opacity-50"
-          >
-            {submitting ? 'Đang lưu...' : mode === 'create' ? 'Tạo giảng viên' : 'Lưu thay đổi'}
-          </button>
+            <option value="">Chọn phòng ban</option>
+            {departments.map((department) => (
+              <option key={department.id} value={department.id}>
+                {department.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Chuyên môn
+          </label>
+          <input
+            value={value.positionTitle}
+            onChange={(event) => onChange('positionTitle', event.target.value)}
+            placeholder="VD: Tech Lead, Senior Developer..."
+            className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          />
         </div>
       </div>
-    </div>
+
+      <div className="flex justify-end gap-3 border-t border-[#E0E0E0] px-6 py-4 dark:border-slate-800">
+        <button
+          onClick={onClose}
+          className="rounded-[4px] border border-[#DADCE0] px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-colors hover:bg-[#F1F3F4] dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+        >
+          Hủy
+        </button>
+        <button
+          onClick={onSubmit}
+          disabled={submitting}
+          className="rounded-[4px] bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#174EA6] disabled:opacity-50"
+        >
+          {submitting ? 'Đang lưu...' : mode === 'create' ? 'Tạo giảng viên' : 'Lưu thay đổi'}
+        </button>
+      </div>
+    </Dialog>
   );
 }
 

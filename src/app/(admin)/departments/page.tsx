@@ -6,6 +6,7 @@ import { toast } from '@/lib/toast';
 import { departmentService, type Department } from '@/services/department.service';
 import { userService } from '@/services/user.service';
 import { useAuthStore } from '@/store/useAuthStore';
+import { Dialog } from '@/components/ui/dialog';
 import type { UserListItem } from '@/types';
 
 type FormMode = 'create' | 'edit';
@@ -64,90 +65,93 @@ function DepartmentModal({
   onClose: () => void;
   onSubmit: () => void;
 }) {
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-xl rounded-lg bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4">
-          <div>
-            <h2 className="text-[18px] font-semibold text-[#202124]">
-              {mode === 'create' ? 'Tạo phòng ban' : 'Cập nhật phòng ban'}
-            </h2>
-            <p className="mt-1 text-[13px] text-[#5F6368]">
-              {mode === 'create'
-                ? 'Thiết lập phòng ban mới và gán quản lý nếu cần.'
-                : 'Chỉnh sửa thông tin và trạng thái phòng ban.'}
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="rounded p-1 text-[#5F6368] transition-colors hover:bg-[#F1F3F4]"
-            aria-label="Đóng"
-          >
-            <span className="material-symbols-outlined">close</span>
-          </button>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      widthClassName="max-w-xl"
+      ariaLabel={mode === 'create' ? 'Tạo phòng ban' : 'Cập nhật phòng ban'}
+    >
+      <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4 dark:border-slate-800">
+        <div>
+          <h2 className="text-[18px] font-semibold text-[#202124] dark:text-slate-100">
+            {mode === 'create' ? 'Tạo phòng ban' : 'Cập nhật phòng ban'}
+          </h2>
+          <p className="mt-1 text-[13px] text-[#5F6368] dark:text-slate-400">
+            {mode === 'create'
+              ? 'Thiết lập phòng ban mới và gán quản lý nếu cần.'
+              : 'Chỉnh sửa thông tin và trạng thái phòng ban.'}
+          </p>
         </div>
-
-        <div className="grid gap-4 px-6 py-5">
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">
-              Tên phòng ban
-            </label>
-            <input
-              value={value.name}
-              onChange={(event) => onChange('name', event.target.value)}
-              placeholder="Ví dụ: Engineering"
-              className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">
-              Quản lý phòng ban
-            </label>
-            <select
-              value={value.managerUserId}
-              onChange={(event) => onChange('managerUserId', event.target.value)}
-              className="w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            >
-              <option value="">Chưa gán quản lý</option>
-              {managers.map((manager) => (
-                <option key={manager.id} value={manager.id}>
-                  {manager.fullName} ({manager.email})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <label className="flex items-center gap-3 rounded-[4px] border border-[#DADCE0] px-3 py-3">
-            <input
-              type="checkbox"
-              checked={value.isActive}
-              onChange={(event) => onChange('isActive', event.target.checked)}
-              className="h-4 w-4 accent-[#1A73E8]"
-            />
-            <span className="text-[13px] text-[#202124]">Phòng ban đang hoạt động</span>
-          </label>
-        </div>
-
-        <div className="flex justify-end gap-3 border-t border-[#E0E0E0] px-6 py-4">
-          <button
-            onClick={onClose}
-            className="rounded-[4px] border border-[#DADCE0] px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-colors hover:bg-[#F1F3F4]"
-          >
-            Hủy
-          </button>
-          <button
-            onClick={onSubmit}
-            disabled={submitting}
-            className="rounded-[4px] bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#174EA6] disabled:opacity-50"
-          >
-            {submitting ? 'Đang lưu...' : mode === 'create' ? 'Tạo phòng ban' : 'Lưu thay đổi'}
-          </button>
-        </div>
+        <button
+          onClick={onClose}
+          className="rounded p-1 text-[#5F6368] transition-colors hover:bg-[#F1F3F4] dark:text-slate-400 dark:hover:bg-slate-800"
+          aria-label="Đóng"
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
       </div>
-    </div>
+
+      <div className="grid gap-4 px-6 py-5">
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Tên phòng ban
+          </label>
+          <input
+            value={value.name}
+            onChange={(event) => onChange('name', event.target.value)}
+            placeholder="Ví dụ: Engineering"
+            className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Quản lý phòng ban
+          </label>
+          <select
+            value={value.managerUserId}
+            onChange={(event) => onChange('managerUserId', event.target.value)}
+            className="w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          >
+            <option value="">Chưa gán quản lý</option>
+            {managers.map((manager) => (
+              <option key={manager.id} value={manager.id}>
+                {manager.fullName} ({manager.email})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <label className="flex items-center gap-3 rounded-[4px] border border-[#DADCE0] px-3 py-3 dark:border-slate-700">
+          <input
+            type="checkbox"
+            checked={value.isActive}
+            onChange={(event) => onChange('isActive', event.target.checked)}
+            className="h-4 w-4 accent-[#1A73E8]"
+          />
+          <span className="text-[13px] text-[#202124] dark:text-slate-200">
+            Phòng ban đang hoạt động
+          </span>
+        </label>
+      </div>
+
+      <div className="flex justify-end gap-3 border-t border-[#E0E0E0] px-6 py-4 dark:border-slate-800">
+        <button
+          onClick={onClose}
+          className="rounded-[4px] border border-[#DADCE0] px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-colors hover:bg-[#F1F3F4] dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+        >
+          Hủy
+        </button>
+        <button
+          onClick={onSubmit}
+          disabled={submitting}
+          className="rounded-[4px] bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#174EA6] disabled:opacity-50"
+        >
+          {submitting ? 'Đang lưu...' : mode === 'create' ? 'Tạo phòng ban' : 'Lưu thay đổi'}
+        </button>
+      </div>
+    </Dialog>
   );
 }
 
