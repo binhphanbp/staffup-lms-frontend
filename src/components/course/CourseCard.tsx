@@ -31,7 +31,7 @@ export const CourseCard = ({ course }: { course: CourseType }) => {
   return (
     <Link
       href={`/courses/detail?id=${course.id}`}
-      className={`card course-card group flex h-full flex-col ${course.isCodeLab ? 'border-2 border-purple-100' : ''} ${course.isCompleted ? 'opacity-80 hover:opacity-100' : ''}`}
+      className={`card course-card group flex h-full flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg motion-reduce:hover:translate-y-0 motion-reduce:hover:shadow-none ${course.isCodeLab ? 'border-2 border-purple-100' : ''} ${course.isCompleted ? 'opacity-80 hover:opacity-100' : ''}`}
     >
       {/* PHẦN 1: HÌNH ẢNH BANNER */}
       <div

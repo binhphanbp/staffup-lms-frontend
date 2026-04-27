@@ -7,7 +7,21 @@ import { NextResponse, type NextRequest } from 'next/server';
 // ============================================================
 
 // Routes accessible without authentication
-const publicRoutes = ['/login', '/register', '/forgot-password', '/403'];
+const publicRoutes = [
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/403',
+  // PWA — must be reachable without auth so service worker / install prompt
+  // can fetch them on first visit and from the offline page itself.
+  '/offline',
+  '/sw.js',
+  '/manifest.webmanifest',
+  '/apple-touch-icon.png',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/icon-maskable-512.png',
+];
 
 // Routes prefixed with these paths are always public (e.g. API, static)
 const publicPrefixes = ['/api', '/_next', '/favicon.ico'];

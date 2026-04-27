@@ -6,8 +6,12 @@ import { useAuthStore } from '@/store/useAuthStore';
 // Configured with JWT interceptors for authentication
 // ============================================================
 
+// Shared base URL — also used by non-axios callers (SSE streaming via fetch).
+// Keep a single source of truth so localhost fallbacks don't drift.
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1',
+  baseURL: API_BASE_URL,
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

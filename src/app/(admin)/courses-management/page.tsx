@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Toast } from '@/components/shared/Toast';
+import { toast } from '@/lib/toast';
 import { resolveMediaUrl } from '@/lib/media';
 import {
   useCategories,
@@ -14,6 +14,9 @@ import {
 } from '@/hooks/useCourses';
 import { useMediaFolders } from '@/hooks/useMedia';
 import { useUsers } from '@/hooks/useUsers';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Dialog } from '@/components/ui/dialog';
 import type { CourseListItem, CourseListParams, CourseStatus } from '@/types';
 
 const LIMIT = 10;
@@ -77,124 +80,128 @@ function CourseMediaModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-2xl rounded-lg bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4">
+    <Dialog open onClose={onClose} widthClassName="max-w-2xl" ariaLabel="Gán folder media">
+      <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4 dark:border-slate-800">
+        <div>
+          <h2 className="text-[18px] font-semibold text-[#202124] dark:text-slate-100">
+            Gán folder media
+          </h2>
+          <p className="mt-1 text-[12px] text-[#5F6368] dark:text-slate-400">{course.title}</p>
+        </div>
+        <button
+          onClick={onClose}
+          className="rounded p-1 text-[#5F6368] hover:bg-[#F1F3F4] dark:text-slate-400 dark:hover:bg-slate-800"
+          aria-label="Đóng"
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div className="space-y-4 px-6 py-5">
+        <div className="rounded-lg border border-[#DADCE0] bg-[#F8F9FA] p-3 text-[12px] text-[#5F6368]">
           <div>
-            <h2 className="text-[18px] font-semibold text-[#202124]">Gán folder media</h2>
-            <p className="mt-1 text-[12px] text-[#5F6368]">{course.title}</p>
+            Folder hiện tại: <strong>{course.mediaFolder ?? 'Chưa gán'}</strong>
           </div>
-          <button onClick={onClose} className="rounded p-1 text-[#5F6368] hover:bg-[#F1F3F4]">
-            <span className="material-symbols-outlined">close</span>
+          <div className="mt-1">
+            Đang duyệt: <strong>{currentPath ?? 'ROOT'}</strong>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => handleAssign(currentPath)}
+            disabled={!currentPath || updateCourse.isPending}
+            className="rounded bg-[#1A73E8] px-3 py-2 text-[12px] font-medium text-white hover:bg-[#174EA6] disabled:opacity-50"
+          >
+            Chọn folder đang mở
+          </button>
+          <button
+            type="button"
+            onClick={() => setCurrentPath(null)}
+            className="rounded border border-[#DADCE0] px-3 py-2 text-[12px] font-medium text-[#5F6368] hover:bg-[#F1F3F4]"
+          >
+            Về root
+          </button>
+          <button
+            type="button"
+            onClick={() => handleAssign(null)}
+            disabled={updateCourse.isPending}
+            className="rounded border border-[#DADCE0] px-3 py-2 text-[12px] font-medium text-[#5F6368] hover:bg-[#F1F3F4] disabled:opacity-50"
+          >
+            Bỏ gán folder
           </button>
         </div>
-        <div className="space-y-4 px-6 py-5">
-          <div className="rounded-lg border border-[#DADCE0] bg-[#F8F9FA] p-3 text-[12px] text-[#5F6368]">
-            <div>
-              Folder hiện tại: <strong>{course.mediaFolder ?? 'Chưa gán'}</strong>
-            </div>
-            <div className="mt-1">
-              Đang duyệt: <strong>{currentPath ?? 'ROOT'}</strong>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => handleAssign(currentPath)}
-              disabled={!currentPath || updateCourse.isPending}
-              className="rounded bg-[#1A73E8] px-3 py-2 text-[12px] font-medium text-white hover:bg-[#174EA6] disabled:opacity-50"
-            >
-              Chọn folder đang mở
-            </button>
-            <button
-              type="button"
-              onClick={() => setCurrentPath(null)}
-              className="rounded border border-[#DADCE0] px-3 py-2 text-[12px] font-medium text-[#5F6368] hover:bg-[#F1F3F4]"
-            >
-              Về root
-            </button>
-            <button
-              type="button"
-              onClick={() => handleAssign(null)}
-              disabled={updateCourse.isPending}
-              className="rounded border border-[#DADCE0] px-3 py-2 text-[12px] font-medium text-[#5F6368] hover:bg-[#F1F3F4] disabled:opacity-50"
-            >
-              Bỏ gán folder
-            </button>
-          </div>
-          {/* Breadcrumb */}
-          <div className="flex flex-wrap gap-1">
-            <button
-              type="button"
-              onClick={() => setCurrentPath(null)}
-              className={`rounded-full px-2.5 py-1 text-[11px] ${currentPath === null ? 'bg-[#E8F0FE] text-[#174EA6]' : 'bg-[#F1F3F4] text-[#5F6368] hover:bg-[#E0E0E0]'}`}
-            >
-              ROOT
-            </button>
-            {pathSegments.map((_, i) => {
-              const p = pathSegments.slice(0, i + 1).join('/');
-              return (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setCurrentPath(p)}
-                  className={`rounded-full px-2.5 py-1 text-[11px] ${p === currentPath ? 'bg-[#E8F0FE] text-[#174EA6]' : 'bg-[#F1F3F4] text-[#5F6368] hover:bg-[#E0E0E0]'}`}
-                >
-                  {pathSegments[i]}
-                </button>
-              );
-            })}
-          </div>
-          {/* Folder list */}
-          {isLoading && (
-            <div className="py-4 text-center text-[13px] text-[#5F6368]">Đang tải...</div>
-          )}
-          {isError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-[12px] text-red-600">
-              Không tải được danh sách folder.
-            </div>
-          )}
-          {!isLoading && !isError && (
-            <div className="max-h-[320px] space-y-2 overflow-y-auto">
-              {folders.length === 0 ? (
-                <div className="py-4 text-center text-[13px] text-[#5F6368]">
-                  Không có folder con.
-                </div>
-              ) : (
-                folders.map((f) => (
-                  <div
-                    key={f.path}
-                    className={`flex items-center justify-between rounded-lg border px-4 py-3 ${f.path === course.mediaFolder ? 'border-[#1A73E8] bg-[#E8F0FE]' : 'border-[#DADCE0] hover:bg-[#F8F9FA]'}`}
-                  >
-                    <div>
-                      <div className="text-[13px] font-medium text-[#202124]">{f.name}</div>
-                      <div className="text-[11px] text-[#5F6368]">{f.path}</div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleAssign(f.path)}
-                        disabled={updateCourse.isPending}
-                        className="rounded bg-[#1A73E8] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[#174EA6] disabled:opacity-50"
-                      >
-                        Gán
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setCurrentPath(f.path)}
-                        className="rounded border border-[#DADCE0] px-3 py-1.5 text-[11px] font-medium text-[#5F6368] hover:bg-[#F1F3F4]"
-                      >
-                        Mở
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          )}
+        {/* Breadcrumb */}
+        <div className="flex flex-wrap gap-1">
+          <button
+            type="button"
+            onClick={() => setCurrentPath(null)}
+            className={`rounded-full px-2.5 py-1 text-[11px] ${currentPath === null ? 'bg-[#E8F0FE] text-[#174EA6]' : 'bg-[#F1F3F4] text-[#5F6368] hover:bg-[#E0E0E0]'}`}
+          >
+            ROOT
+          </button>
+          {pathSegments.map((_, i) => {
+            const p = pathSegments.slice(0, i + 1).join('/');
+            return (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setCurrentPath(p)}
+                className={`rounded-full px-2.5 py-1 text-[11px] ${p === currentPath ? 'bg-[#E8F0FE] text-[#174EA6]' : 'bg-[#F1F3F4] text-[#5F6368] hover:bg-[#E0E0E0]'}`}
+              >
+                {pathSegments[i]}
+              </button>
+            );
+          })}
         </div>
+        {/* Folder list */}
+        {isLoading && (
+          <div className="py-4 text-center text-[13px] text-[#5F6368]">Đang tải...</div>
+        )}
+        {isError && (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-[12px] text-red-600">
+            Không tải được danh sách folder.
+          </div>
+        )}
+        {!isLoading && !isError && (
+          <div className="max-h-[320px] space-y-2 overflow-y-auto">
+            {folders.length === 0 ? (
+              <div className="py-4 text-center text-[13px] text-[#5F6368]">
+                Không có folder con.
+              </div>
+            ) : (
+              folders.map((f) => (
+                <div
+                  key={f.path}
+                  className={`flex items-center justify-between rounded-lg border px-4 py-3 ${f.path === course.mediaFolder ? 'border-[#1A73E8] bg-[#E8F0FE]' : 'border-[#DADCE0] hover:bg-[#F8F9FA]'}`}
+                >
+                  <div>
+                    <div className="text-[13px] font-medium text-[#202124]">{f.name}</div>
+                    <div className="text-[11px] text-[#5F6368]">{f.path}</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleAssign(f.path)}
+                      disabled={updateCourse.isPending}
+                      className="rounded bg-[#1A73E8] px-3 py-1.5 text-[11px] font-medium text-white hover:bg-[#174EA6] disabled:opacity-50"
+                    >
+                      Gán
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPath(f.path)}
+                      className="rounded border border-[#DADCE0] px-3 py-1.5 text-[11px] font-medium text-[#5F6368] hover:bg-[#F1F3F4]"
+                    >
+                      Mở
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
-    </div>
+    </Dialog>
   );
 }
 
@@ -220,157 +227,165 @@ function CourseFormModal({
   onSubmit: () => void;
   submitting: boolean;
 }) {
-  if (!open) return null;
-
   return (
-    <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-xl rounded-lg bg-white shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4">
-          <h2 className="text-[18px] font-semibold text-[#202124]">
-            {mode === 'create' ? 'Thêm khóa học' : 'Chỉnh sửa khóa học'}
-          </h2>
-          <button onClick={onClose} className="rounded p-1 text-[#5F6368] hover:bg-[#F1F3F4]">
-            <span className="material-symbols-outlined">close</span>
-          </button>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      widthClassName="max-w-xl"
+      ariaLabel={mode === 'create' ? 'Thêm khóa học' : 'Chỉnh sửa khóa học'}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4 dark:border-slate-800">
+        <h2 className="text-[18px] font-semibold text-[#202124] dark:text-slate-100">
+          {mode === 'create' ? 'Thêm khóa học' : 'Chỉnh sửa khóa học'}
+        </h2>
+        <button
+          onClick={onClose}
+          className="rounded p-1 text-[#5F6368] hover:bg-[#F1F3F4] dark:text-slate-400 dark:hover:bg-slate-800"
+          aria-label="Đóng"
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      {/* Body */}
+      <div className="grid gap-4 px-6 py-5">
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Tên khóa học <span className="text-red-500">*</span>
+          </label>
+          <input
+            value={value.title}
+            onChange={(e) => onChange('title', e.target.value)}
+            className="w-full rounded border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          />
         </div>
 
-        {/* Body */}
-        <div className="grid gap-4 px-6 py-5">
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Mô tả
+          </label>
+          <textarea
+            rows={3}
+            value={value.description}
+            onChange={(e) => onChange('description', e.target.value)}
+            className="w-full rounded border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">
-              Tên khóa học <span className="text-red-500">*</span>
+            <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+              Danh mục
             </label>
-            <input
-              value={value.title}
-              onChange={(e) => onChange('title', e.target.value)}
-              className="w-full rounded border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            />
+            <select
+              value={value.categoryId}
+              onChange={(e) => onChange('categoryId', e.target.value)}
+              className="w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            >
+              <option value="">Chọn danh mục</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
-
           <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">Mô tả</label>
-            <textarea
-              rows={3}
-              value={value.description}
-              onChange={(e) => onChange('description', e.target.value)}
-              className="w-full rounded border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="mb-1 block text-[13px] font-medium text-[#202124]">Danh mục</label>
-              <select
-                value={value.categoryId}
-                onChange={(e) => onChange('categoryId', e.target.value)}
-                className="w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-              >
-                <option value="">Chọn danh mục</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="mb-1 block text-[13px] font-medium text-[#202124]">
-                Giảng viên
-              </label>
-              <select
-                value={value.trainerId}
-                onChange={(e) => onChange('trainerId', e.target.value)}
-                className="w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-              >
-                <option value="">Chọn giảng viên</option>
-                {trainers.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.fullName}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">
-              Ảnh thumbnail (URL)
+            <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+              Giảng viên
             </label>
-            <input
-              value={value.thumbnailUrl}
-              onChange={(e) => onChange('thumbnailUrl', e.target.value)}
-              placeholder="https://... hoặc /uploads/..."
-              className="w-full rounded border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            />
-            {value.thumbnailUrl && (
-              <div className="mt-2">
-                <img
-                  src={resolveMediaUrl(value.thumbnailUrl) ?? value.thumbnailUrl}
-                  alt="preview"
-                  className="h-20 rounded border border-[#DADCE0] object-cover"
-                />
-              </div>
-            )}
+            <select
+              value={value.trainerId}
+              onChange={(e) => onChange('trainerId', e.target.value)}
+              className="w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            >
+              <option value="">Chọn giảng viên</option>
+              {trainers.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.fullName}
+                </option>
+              ))}
+            </select>
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="mb-1 block text-[13px] font-medium text-[#202124]">
-                Thời lượng (phút)
-              </label>
-              <input
-                type="number"
-                min={0}
-                value={value.estimatedDurationMinutes}
-                onChange={(e) => onChange('estimatedDurationMinutes', e.target.value)}
-                className="w-full rounded border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Ảnh thumbnail (URL)
+          </label>
+          <input
+            value={value.thumbnailUrl}
+            onChange={(e) => onChange('thumbnailUrl', e.target.value)}
+            placeholder="https://... hoặc /uploads/..."
+            className="w-full rounded border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          />
+          {value.thumbnailUrl && (
+            <div className="mt-2">
+              <img
+                src={resolveMediaUrl(value.thumbnailUrl) ?? value.thumbnailUrl}
+                alt="preview"
+                className="h-20 rounded border border-[#DADCE0] object-cover dark:border-slate-700"
               />
             </div>
-            {mode === 'edit' && (
-              <div>
-                <label className="mb-1 block text-[13px] font-medium text-[#202124]">
-                  Trạng thái
-                </label>
-                <select
-                  value={value.status}
-                  onChange={(e) => onChange('status', e.target.value)}
-                  className="w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-                >
-                  <option value="draft">Bản nháp</option>
-                  <option value="published">Đã xuất bản</option>
-                  <option value="archived">Lưu trữ</option>
-                </select>
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* Footer */}
-        <div className="flex justify-end gap-3 border-t border-[#E0E0E0] px-6 py-4">
-          <button
-            onClick={onClose}
-            className="rounded border border-[#DADCE0] px-4 py-2 text-[13px] font-medium text-[#5F6368] hover:bg-[#F1F3F4]"
-          >
-            Hủy
-          </button>
-          <button
-            onClick={onSubmit}
-            disabled={submitting}
-            className="rounded bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white hover:bg-[#174EA6] disabled:opacity-50"
-          >
-            {submitting ? 'Đang lưu...' : mode === 'create' ? 'Tạo khóa học' : 'Lưu thay đổi'}
-          </button>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+              Thời lượng (phút)
+            </label>
+            <input
+              type="number"
+              min={0}
+              value={value.estimatedDurationMinutes}
+              onChange={(e) => onChange('estimatedDurationMinutes', e.target.value)}
+              className="w-full rounded border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            />
+          </div>
+          {mode === 'edit' && (
+            <div>
+              <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+                Trạng thái
+              </label>
+              <select
+                value={value.status}
+                onChange={(e) => onChange('status', e.target.value)}
+                className="w-full rounded border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+              >
+                <option value="draft">Bản nháp</option>
+                <option value="published">Đã xuất bản</option>
+                <option value="archived">Lưu trữ</option>
+              </select>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+
+      {/* Footer */}
+      <div className="flex justify-end gap-3 border-t border-[#E0E0E0] px-6 py-4 dark:border-slate-800">
+        <button
+          onClick={onClose}
+          className="rounded border border-[#DADCE0] px-4 py-2 text-[13px] font-medium text-[#5F6368] hover:bg-[#F1F3F4] dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+        >
+          Hủy
+        </button>
+        <button
+          onClick={onSubmit}
+          disabled={submitting}
+          className="rounded bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white hover:bg-[#174EA6] disabled:opacity-50"
+        >
+          {submitting ? 'Đang lưu...' : mode === 'create' ? 'Tạo khóa học' : 'Lưu thay đổi'}
+        </button>
+      </div>
+    </Dialog>
   );
 }
 
 /* ── Page ──────────────────────────────────────────────── */
 export default function CoursesManagementPage() {
   const router = useRouter();
-  const [toast, setToast] = useState({ visible: false, message: '' });
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<CourseStatus | ''>('');
@@ -407,10 +422,8 @@ export default function CoursesManagementPage() {
     [trainersData],
   );
 
-  const showToast = (msg: string) => {
-    setToast({ visible: true, message: msg });
-    window.setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const openCreate = () => {
     setFormMode('create');
@@ -446,7 +459,7 @@ export default function CoursesManagementPage() {
 
   const submitForm = async () => {
     if (!form.title.trim()) {
-      showToast('Vui lòng nhập tên khóa học.');
+      showToast('Vui lòng nhập tên khóa học.', 'error');
       return;
     }
 
@@ -474,7 +487,7 @@ export default function CoursesManagementPage() {
       }
       closeModal();
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể lưu khóa học.');
+      showToast(err?.response?.data?.message || err?.message || 'Không thể lưu khóa học.', 'error');
     }
   };
 
@@ -484,7 +497,7 @@ export default function CoursesManagementPage() {
       await deleteCourse.mutateAsync(c.id);
       showToast('Đã xóa khóa học');
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể xóa khóa học.');
+      showToast(err?.response?.data?.message || err?.message || 'Không thể xóa khóa học.', 'error');
     }
   };
 
@@ -609,10 +622,19 @@ export default function CoursesManagementPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="flex flex-1 items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DADCE0] border-t-[#1A73E8]" />
-              <span className="text-[13px] text-[#5F6368]">Đang tải dữ liệu...</span>
+          <div className="overflow-hidden rounded-lg border border-[#DADCE0] bg-white dark:border-slate-800 dark:bg-slate-900">
+            <div className="space-y-2 p-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 rounded-md p-2">
+                  <Skeleton className="h-10 w-14 rounded" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3.5 w-1/2" />
+                    <Skeleton className="h-3 w-1/3" />
+                  </div>
+                  <Skeleton className="h-6 w-20 rounded-full" />
+                  <Skeleton className="h-6 w-16 rounded" />
+                </div>
+              ))}
             </div>
           </div>
         ) : isError ? (
@@ -657,8 +679,19 @@ export default function CoursesManagementPage() {
                 <tbody>
                   {courses.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-4 py-12 text-center text-[13px] text-[#5F6368]">
-                        Không tìm thấy khóa học nào
+                      <td colSpan={7} className="px-4 py-10">
+                        <EmptyState
+                          icon={
+                            <span className="material-symbols-outlined text-[28px]">school</span>
+                          }
+                          title="Không tìm thấy khóa học nào"
+                          description={
+                            params.search || params.categoryId || params.status
+                              ? 'Thử bỏ bớt bộ lọc hoặc đổi từ khóa tìm kiếm.'
+                              : 'Tạo khóa học mới để bắt đầu xây dựng nội dung đào tạo.'
+                          }
+                          variant="compact"
+                        />
                       </td>
                     </tr>
                   ) : (
@@ -841,8 +874,6 @@ export default function CoursesManagementPage() {
         onClose={() => setMediaModalCourse(null)}
         onSuccess={showToast}
       />
-
-      <Toast visible={toast.visible} message={toast.message} />
     </>
   );
 }

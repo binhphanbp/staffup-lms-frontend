@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { toast } from '@/lib/toast';
 import { CourseBuilderHeader } from '@/components/instructor/course-builder/CourseBuilderHeader';
 import { CourseBuilderStepper } from '@/components/instructor/course-builder/CourseBuilderStepper';
 import { StepGeneralInfo } from '@/components/instructor/course-builder/StepGeneralInfo';
@@ -19,7 +20,9 @@ export default function CourseBuilderPage() {
     } else {
       setIsSubmitting(true);
       setTimeout(() => {
-        alert('Xuất bản khóa học thành công! Hệ thống sẽ thông báo cho học viên.');
+        toast.success('Xuất bản khóa học thành công', {
+          description: 'Hệ thống sẽ thông báo cho học viên.',
+        });
         window.location.href = '/overview';
       }, 1500);
     }

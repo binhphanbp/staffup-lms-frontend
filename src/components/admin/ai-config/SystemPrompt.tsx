@@ -1,6 +1,14 @@
+'use client';
+
 import React from 'react';
 
-export const SystemPrompt = () => {
+interface SystemPromptProps {
+  value: string;
+  onChange: (value: string) => void;
+  onRestoreDefault: () => void;
+}
+
+export const SystemPrompt = ({ value, onChange, onRestoreDefault }: SystemPromptProps) => {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-[#DADCE0] bg-white">
       <div className="border-b border-[#DADCE0] bg-[#FAFAFA] px-6 py-4">
@@ -11,18 +19,19 @@ export const SystemPrompt = () => {
       </div>
       <div className="p-4">
         <p className="mt-0 mb-3 text-[12px] text-[#5F6368]">
-          Định hình phong cách trả lời mặc định cho Chatbot học tập.
+          Định hình phong cách trả lời mặc định cho Chatbot Học tập (Trợ lý Tài liệu Doanh nghiệp).
         </p>
         <textarea
-          className="h-[200px] w-full resize-y rounded-[4px] border border-[#DADCE0] px-3 py-2 font-mono text-[13px] leading-[1.5] transition-all outline-none focus:border-2 focus:border-[#1A73E8]"
-          defaultValue={`Bạn là một trợ lý giảng dạy AI xuất sắc trong hệ thống LMS nội bộ của doanh nghiệp. 
-Nhiệm vụ của bạn là:
-1. Giải đáp các thắc mắc về khóa học một cách ngắn gọn, súc tích.
-2. Khuyến khích học viên tự suy nghĩ, không đưa ra câu trả lời trực tiếp cho bài tập.
-3. Luôn giữ thái độ lịch sự, chuyên nghiệp.
-4. Trả lời bằng tiếng Việt chuẩn mực.`}
-        ></textarea>
-        <button className="mt-3 flex h-9 w-full items-center justify-center rounded-[4px] border border-[#DADCE0] bg-transparent text-[13px] font-medium text-[#5F6368] transition-all hover:bg-[#F1F3F4] hover:text-[#202124]">
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-[280px] w-full resize-y rounded-[4px] border border-[#DADCE0] px-3 py-2 font-mono text-[13px] leading-[1.5] transition-all outline-none focus:border-2 focus:border-[#1A73E8]"
+        />
+        <button
+          type="button"
+          onClick={onRestoreDefault}
+          className="mt-3 flex h-9 w-full items-center justify-center rounded-[4px] border border-[#DADCE0] bg-transparent text-[13px] font-medium text-[#5F6368] transition-all hover:bg-[#F1F3F4] hover:text-[#202124]"
+        >
+          <span className="material-symbols-outlined mr-2 text-[18px]">refresh</span>
           Khôi phục Prompt mặc định
         </button>
       </div>

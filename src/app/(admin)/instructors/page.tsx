@@ -2,8 +2,11 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Toast } from '@/components/shared/Toast';
+import { toast } from '@/lib/toast';
 import { resolveMediaUrl } from '@/lib/media';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Dialog } from '@/components/ui/dialog';
 import {
   useCreateUser,
   useDeleteUser,
@@ -95,107 +98,116 @@ function InstructorFormModal({
   onSubmit: () => void;
   submitting: boolean;
 }) {
-  if (!open) {
-    return null;
-  }
-
   return (
-    <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-xl rounded-lg bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4">
-          <h2 className="text-[18px] font-semibold text-[#202124]">
-            {mode === 'create' ? 'Thêm Giảng viên' : 'Sửa Giảng viên'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="rounded p-1 text-[#5F6368] transition-colors hover:bg-[#F1F3F4]"
-          >
-            <span className="material-symbols-outlined">close</span>
-          </button>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      widthClassName="max-w-xl"
+      ariaLabel={mode === 'create' ? 'Thêm Giảng viên' : 'Sửa Giảng viên'}
+    >
+      <div className="flex items-center justify-between border-b border-[#E0E0E0] px-6 py-4 dark:border-slate-800">
+        <h2 className="text-[18px] font-semibold text-[#202124] dark:text-slate-100">
+          {mode === 'create' ? 'Thêm Giảng viên' : 'Sửa Giảng viên'}
+        </h2>
+        <button
+          onClick={onClose}
+          className="rounded p-1 text-[#5F6368] transition-colors hover:bg-[#F1F3F4] dark:text-slate-400 dark:hover:bg-slate-800"
+          aria-label="Đóng"
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div className="grid gap-4 px-6 py-5">
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Họ tên
+          </label>
+          <input
+            value={value.fullName}
+            onChange={(event) => onChange('fullName', event.target.value)}
+            className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          />
         </div>
 
-        <div className="grid gap-4 px-6 py-5">
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">Họ tên</label>
-            <input
-              value={value.fullName}
-              onChange={(event) => onChange('fullName', event.target.value)}
-              className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">Email</label>
-            <input
-              type="email"
-              value={value.email}
-              disabled={mode === 'edit'}
-              onChange={(event) => onChange('email', event.target.value)}
-              className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] disabled:bg-[#F8F9FA]"
-            />
-          </div>
-
-          {mode === 'create' && (
-            <div>
-              <label className="mb-1 block text-[13px] font-medium text-[#202124]">Mật khẩu</label>
-              <input
-                type="password"
-                value={value.password}
-                onChange={(event) => onChange('password', event.target.value)}
-                className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-              />
-            </div>
-          )}
-
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">Phòng ban</label>
-            <select
-              value={value.departmentId}
-              onChange={(event) => onChange('departmentId', event.target.value)}
-              className="w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            >
-              <option value="">Chọn phòng ban</option>
-              {departments.map((department) => (
-                <option key={department.id} value={department.id}>
-                  {department.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-[13px] font-medium text-[#202124]">Chuyên môn</label>
-            <input
-              value={value.positionTitle}
-              onChange={(event) => onChange('positionTitle', event.target.value)}
-              placeholder="VD: Tech Lead, Senior Developer..."
-              className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8]"
-            />
-          </div>
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Email
+          </label>
+          <input
+            type="email"
+            value={value.email}
+            disabled={mode === 'edit'}
+            onChange={(event) => onChange('email', event.target.value)}
+            className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] disabled:bg-[#F8F9FA] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:disabled:bg-slate-900"
+          />
         </div>
 
-        <div className="flex justify-end gap-3 border-t border-[#E0E0E0] px-6 py-4">
-          <button
-            onClick={onClose}
-            className="rounded-[4px] border border-[#DADCE0] px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-colors hover:bg-[#F1F3F4]"
+        {mode === 'create' && (
+          <div>
+            <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+              Mật khẩu
+            </label>
+            <input
+              type="password"
+              value={value.password}
+              onChange={(event) => onChange('password', event.target.value)}
+              className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+            />
+          </div>
+        )}
+
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Phòng ban
+          </label>
+          <select
+            value={value.departmentId}
+            onChange={(event) => onChange('departmentId', event.target.value)}
+            className="w-full rounded-[4px] border border-[#DADCE0] bg-white px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
-            Hủy
-          </button>
-          <button
-            onClick={onSubmit}
-            disabled={submitting}
-            className="rounded-[4px] bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#174EA6] disabled:opacity-50"
-          >
-            {submitting ? 'Đang lưu...' : mode === 'create' ? 'Tạo giảng viên' : 'Lưu thay đổi'}
-          </button>
+            <option value="">Chọn phòng ban</option>
+            {departments.map((department) => (
+              <option key={department.id} value={department.id}>
+                {department.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-1 block text-[13px] font-medium text-[#202124] dark:text-slate-200">
+            Chuyên môn
+          </label>
+          <input
+            value={value.positionTitle}
+            onChange={(event) => onChange('positionTitle', event.target.value)}
+            placeholder="VD: Tech Lead, Senior Developer..."
+            className="w-full rounded-[4px] border border-[#DADCE0] px-3 py-2 text-[13px] outline-none focus:border-[#1A73E8] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+          />
         </div>
       </div>
-    </div>
+
+      <div className="flex justify-end gap-3 border-t border-[#E0E0E0] px-6 py-4 dark:border-slate-800">
+        <button
+          onClick={onClose}
+          className="rounded-[4px] border border-[#DADCE0] px-4 py-2 text-[13px] font-medium text-[#5F6368] transition-colors hover:bg-[#F1F3F4] dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+        >
+          Hủy
+        </button>
+        <button
+          onClick={onSubmit}
+          disabled={submitting}
+          className="rounded-[4px] bg-[#1A73E8] px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#174EA6] disabled:opacity-50"
+        >
+          {submitting ? 'Đang lưu...' : mode === 'create' ? 'Tạo giảng viên' : 'Lưu thay đổi'}
+        </button>
+      </div>
+    </Dialog>
   );
 }
 
 export default function InstructorsPage() {
-  const [toast, setToast] = useState({ visible: false, message: '' });
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<'' | 'active' | 'inactive'>('');
@@ -227,14 +239,17 @@ export default function InstructorsPage() {
   const updateUser = useUpdateUser();
   const toggleUserStatus = useToggleUserStatus();
   const { data: adminStats } = useAdminDashboard();
-  const { data: quizAttempts = [] } = useAllQuizAttempts();
+  const { data: pendingGradingData } = useAllQuizAttempts({
+    aiStatus: 'pending',
+    limit: 1,
+  });
   const { data: departmentsData } = useQuery({
     queryKey: ['departments-for-instructors'],
     queryFn: () => departmentService.list(),
   });
 
   const coursesCount = adminStats?.courses?.published ?? 0;
-  const pendingGradingCount = quizAttempts.filter((a) => a.status === 'submitted').length;
+  const pendingGradingCount = pendingGradingData?.pagination.total ?? 0;
 
   const departments =
     departmentsData?.map((department) => ({
@@ -250,10 +265,8 @@ export default function InstructorsPage() {
 
   const meta = data?.meta ?? { total: 0, page: 1, limit: LIMIT, totalPages: 1 };
 
-  const showToast = (message: string) => {
-    setToast({ visible: true, message });
-    window.setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const openCreateModal = () => {
     setFormMode('create');
@@ -287,12 +300,12 @@ export default function InstructorsPage() {
 
   const submitForm = async () => {
     if (!form.fullName.trim() || !form.email.trim()) {
-      showToast('Vui lòng nhập đủ thông tin bắt buộc.');
+      showToast('Vui lòng nhập đủ thông tin bắt buộc.', 'error');
       return;
     }
 
     if (formMode === 'create' && !form.password.trim()) {
-      showToast('Vui lòng nhập mật khẩu cho giảng viên mới.');
+      showToast('Vui lòng nhập mật khẩu cho giảng viên mới.', 'error');
       return;
     }
 
@@ -321,7 +334,10 @@ export default function InstructorsPage() {
 
       closeModal();
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể lưu giảng viên.');
+      showToast(
+        err?.response?.data?.message || err?.message || 'Không thể lưu giảng viên.',
+        'error',
+      );
     }
   };
 
@@ -333,7 +349,10 @@ export default function InstructorsPage() {
       });
       showToast(instructor.isActive ? 'Đã khóa tài khoản' : 'Đã mở khóa tài khoản');
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể cập nhật trạng thái.');
+      showToast(
+        err?.response?.data?.message || err?.message || 'Không thể cập nhật trạng thái.',
+        'error',
+      );
     }
   };
 
@@ -346,7 +365,10 @@ export default function InstructorsPage() {
       await deleteUser.mutateAsync(instructor.id);
       showToast('Đã xóa giảng viên');
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể xóa giảng viên.');
+      showToast(
+        err?.response?.data?.message || err?.message || 'Không thể xóa giảng viên.',
+        'error',
+      );
     }
   };
 
@@ -375,7 +397,7 @@ export default function InstructorsPage() {
     } catch (err: any) {
       const message =
         err?.response?.data?.message || err?.message || 'Không thể import file Excel.';
-      showToast(message);
+      showToast(message, 'error');
     }
   };
 
@@ -520,10 +542,19 @@ export default function InstructorsPage() {
 
         {/* Loading / Error / Table */}
         {isLoading ? (
-          <div className="flex flex-1 items-center justify-center py-20">
-            <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#DADCE0] border-t-[#1A73E8]" />
-              <span className="text-[13px] text-[#5F6368]">Đang tải dữ liệu...</span>
+          <div className="flex-1 overflow-hidden rounded-lg border border-[#DADCE0] bg-white dark:border-slate-800 dark:bg-slate-900">
+            <div className="space-y-2 p-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3 rounded-md p-2">
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3.5 w-1/3" />
+                    <Skeleton className="h-3 w-1/4" />
+                  </div>
+                  <Skeleton className="h-6 w-24 rounded-full" />
+                  <Skeleton className="h-6 w-20 rounded" />
+                </div>
+              ))}
             </div>
           </div>
         ) : isError ? (
@@ -562,8 +593,17 @@ export default function InstructorsPage() {
                 <tbody>
                   {instructors.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-4 py-12 text-center text-[13px] text-[#5F6368]">
-                        Không tìm thấy giảng viên nào
+                      <td colSpan={5} className="px-4 py-10">
+                        <EmptyState
+                          icon={
+                            <span className="material-symbols-outlined text-[28px]">
+                              person_search
+                            </span>
+                          }
+                          title="Không tìm thấy giảng viên nào"
+                          description="Thử bỏ bớt bộ lọc, hoặc thêm giảng viên mới để bắt đầu."
+                          variant="compact"
+                        />
                       </td>
                     </tr>
                   ) : (
@@ -701,8 +741,6 @@ export default function InstructorsPage() {
         onSubmit={submitForm}
         submitting={createUser.isPending || updateUser.isPending}
       />
-
-      <Toast visible={toast.visible} message={toast.message} />
     </>
   );
 }

@@ -4,9 +4,21 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 interface LabHeaderProps {
   onRunCode: () => void;
+  title?: string;
+  subtitle?: string;
+  backHref?: string;
+  backTitle?: string;
+  rightSlot?: React.ReactNode;
 }
 
-export const LabHeader = ({ onRunCode }: LabHeaderProps) => {
+export const LabHeader = ({
+  onRunCode,
+  title = 'Triển khai thuật toán Consistent Hashing',
+  subtitle = 'Khóa: System Design Phân tán | Mức độ: Khó',
+  backHref = '/courses/detail/learning-room',
+  backTitle = 'Rời khỏi Lab',
+  rightSlot,
+}: LabHeaderProps) => {
   const user = useAuthStore((s) => s.user);
   const displayName = user?.fullName ?? 'Người dùng';
   const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=1677ff&color=fff&bold=true`;
@@ -14,9 +26,9 @@ export const LabHeader = ({ onRunCode }: LabHeaderProps) => {
     <header className="z-20 flex h-14 shrink-0 items-center justify-between border-b border-black/50 bg-[#181a1f] px-4 text-white shadow-md lg:px-6">
       <div className="flex min-w-0 items-center gap-4">
         <Link
-          href="/courses/detail/learning-room"
+          href={backHref}
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
-          title="Rời khỏi Lab"
+          title={backTitle}
         >
           <i className="fa-solid fa-arrow-left"></i>
         </Link>
@@ -26,15 +38,14 @@ export const LabHeader = ({ onRunCode }: LabHeaderProps) => {
             <span className="rounded border border-purple-500/30 bg-purple-600/20 px-1.5 py-0.5 text-[9px] font-bold tracking-widest text-purple-400 uppercase">
               <i className="fa-solid fa-terminal mr-1"></i> Code Lab
             </span>
-            <h1 className="truncate text-sm font-bold">Triển khai thuật toán Consistent Hashing</h1>
+            <h1 className="truncate text-sm font-bold">{title}</h1>
           </div>
-          <div className="truncate font-mono text-[10px] text-slate-400">
-            Khóa: System Design Phân tán | Mức độ: Khó
-          </div>
+          <div className="truncate font-mono text-[10px] text-slate-400">{subtitle}</div>
         </div>
       </div>
 
-      <div className="flex shrink-0 items-center gap-4">
+      <div className="flex shrink-0 items-center gap-3">
+        {rightSlot}
         <div className="hidden items-center gap-1 font-mono text-[10px] text-slate-400 md:flex">
           <i className="fa-solid fa-cloud-arrow-up"></i> Đã tự động lưu
         </div>

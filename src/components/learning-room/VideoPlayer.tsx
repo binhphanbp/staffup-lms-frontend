@@ -195,6 +195,47 @@ export const VideoPlayer = ({
     return () => window.removeEventListener('message', onMsg);
   }, [isIframe, triggerStart, triggerComplete, handleTimeUpdate]);
 
+  // Listen for external seek requests (e.g. chapter clicks in the AI summary panel).
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ seconds?: number; lessonId?: string }>).detail;
+      if (!detail || typeof detail.seconds !== 'number') return;
+      if (detail.lessonId && lessonId && detail.lessonId !== lessonId) return;
+      const seconds = Math.max(0, detail.seconds);
+      if (videoRef.current) {
+        try {
+          videoRef.current.currentTime = seconds;
+          void videoRef.current.play?.();
+        } catch {}
+        return;
+      }
+      if (isIframe) {
+        const iframe = document.querySelector(
+          'iframe[data-learning-video]',
+        ) as HTMLIFrameElement | null;
+        if (!iframe?.contentWindow) return;
+        if (embedUrl?.includes('youtube.com/embed/')) {
+          iframe.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'seekTo', args: [seconds, true] }),
+            '*',
+          );
+          iframe.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'playVideo' }),
+            '*',
+          );
+        } else if (embedUrl?.includes('player.vimeo.com')) {
+          iframe.contentWindow.postMessage(
+            JSON.stringify({ method: 'setCurrentTime', value: seconds }),
+            '*',
+          );
+          iframe.contentWindow.postMessage(JSON.stringify({ method: 'play' }), '*');
+        }
+      }
+    };
+    window.addEventListener('learning-room:seek', handler);
+    return () => window.removeEventListener('learning-room:seek', handler);
+  }, [isIframe, embedUrl, lessonId]);
+
   const cancelCountdown = () => {
     if (countdownRef.current) {
       clearInterval(countdownRef.current);
@@ -212,6 +253,7 @@ export const VideoPlayer = ({
             <iframe
               key={embedUrl}
               src={embedUrl}
+              data-learning-video=""
               className="h-full w-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

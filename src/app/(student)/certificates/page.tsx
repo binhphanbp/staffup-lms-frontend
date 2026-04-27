@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { toast } from '@/lib/toast';
 import { StudentHeader } from '@/components/shared/StudentHeader';
 import { ProfileBanner } from '@/components/certificates/ProfileBanner';
 import { BadgeTab } from '@/components/certificates/BadgeTab';
@@ -9,15 +10,10 @@ import { CertificateTab } from '@/components/certificates/CertificateTab';
 export default function CertificatesPage() {
   // State quản lý Tab đang mở
   const [activeTab, setActiveTab] = useState<'certificates' | 'badges'>('certificates');
-  // State quản lý hiển thị Toast Notification
-  const [showToast, setShowToast] = useState(false);
 
-  // Hàm xử lý copy text và hiện Toast
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
-    setShowToast(true);
-    // Tự động ẩn sau 2.5 giây
-    setTimeout(() => setShowToast(false), 2500);
+    toast.success('Đã sao chép Credential ID vào Clipboard');
   };
 
   return (
@@ -58,14 +54,6 @@ export default function CertificatesPage() {
         <footer className="mt-8 border-t border-gray-200 py-6 text-center text-[11px] text-slate-400">
           &copy; 2026 Staffup LMS. Hệ thống Xác thực Chứng chỉ đang hoạt động.
         </footer>
-      </div>
-
-      {/* TOAST NOTIFICATION (Copy ID) */}
-      <div
-        className={`fixed bottom-10 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-lg bg-slate-800 px-4 py-2.5 text-xs font-medium text-white shadow-2xl ${showToast ? 'animate-slide-up-toast' : 'invisible opacity-0'}`}
-      >
-        <i className="fa-solid fa-circle-check text-success text-sm"></i>
-        <span>Đã sao chép Credential ID vào Clipboard!</span>
       </div>
     </>
   );

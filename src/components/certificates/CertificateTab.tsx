@@ -5,6 +5,8 @@ import { useCertificates } from '@/hooks/useCertificates';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { CertificateResponse } from '@/types';
 import { resolveMediaUrl } from '@/lib/media';
+import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface CertificateTabProps {
   onCopy: (text: string) => void;
@@ -104,19 +106,33 @@ export const CertificateTab = ({ onCopy }: CertificateTabProps) => {
         </div>
       </div>
 
-      {isLoading && (
-        <div className="py-12 text-center text-sm text-slate-400">Đang tải chứng chỉ...</div>
+      {isLoading ? (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex h-full flex-col rounded-lg border-t-4 border-t-blue-200 bg-white p-5"
+            >
+              <Skeleton className="mb-4 h-40 w-full rounded-lg" />
+              <Skeleton className="mb-2 h-4 w-3/4" />
+              <Skeleton className="mb-4 h-3 w-1/2" />
+              <Skeleton className="h-20 w-full rounded-md" />
+            </div>
+          ))}
+        </div>
+      ) : certificates.length === 0 ? (
+        <EmptyState
+          icon={<i className="fa-solid fa-file-contract text-xl" />}
+          title="Bạn chưa có chứng chỉ nào"
+          description="Hoàn thành khóa học để nhận chứng chỉ đầu tiên của bạn."
+        />
+      ) : (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {certificates.map((cert) => (
+            <CertificateCard key={cert.id} cert={cert} onCopy={onCopy} />
+          ))}
+        </div>
       )}
-
-      {!isLoading && certificates.length === 0 && (
-        <div className="py-12 text-center text-sm text-slate-400">Bạn chưa có chứng chỉ nào.</div>
-      )}
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {certificates.map((cert) => (
-          <CertificateCard key={cert.id} cert={cert} onCopy={onCopy} />
-        ))}
-      </div>
     </div>
   );
 };
