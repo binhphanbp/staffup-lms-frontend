@@ -126,6 +126,25 @@ export const LearningTabs = ({
             <i className="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
             Trợ lý AI
           </button>
+          {isVideoLesson && (
+            <button
+              onClick={() => setActiveTab('summary')}
+              className={`flex items-center gap-1.5 border-b-2 py-3 transition-colors ${activeTab === 'summary' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+            >
+              <i className="fa-solid fa-layer-group text-[11px]"></i>
+              Tóm tắt AI
+              <span className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                MỚI
+              </span>
+            </button>
+          )}
+          <button
+            onClick={() => setActiveTab('ai')}
+            className={`flex items-center gap-1.5 border-b-2 py-3 transition-colors ${activeTab === 'ai' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+          >
+            <i className="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
+            Trợ lý AI
+          </button>
           <button
             onClick={() => setActiveTab('notes')}
             className={`flex items-center gap-1 border-b-2 py-3 transition-colors ${activeTab === 'notes' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
@@ -216,6 +235,34 @@ export const LearningTabs = ({
                 </button>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'summary' && isVideoLesson && (
+          <div className="max-w-4xl animate-[fadeIn_0.3s_ease-in-out]">
+            <VideoSummaryPanel
+              lessonId={lesson?.id}
+              lessonTitle={lesson?.title}
+              durationSeconds={lesson?.durationSeconds}
+              onSeek={onSeekVideo}
+            />
+          </div>
+        )}
+
+        {activeTab === 'ai' && (
+          <div className="animate-[fadeIn_0.3s_ease-in-out]">
+            {courseId ? (
+              <CourseQAChat
+                key={courseId}
+                courseId={courseId}
+                courseTitle={courseTitle}
+                currentLessonTitle={lesson?.title}
+              />
+            ) : (
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+                Chưa có khóa học để hỏi AI.
+              </div>
+            )}
           </div>
         )}
 

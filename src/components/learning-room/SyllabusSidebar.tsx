@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import type { ModuleDetail, LessonProgressStatus } from '@/types';
-import { CourseCertificatePanel } from './CourseCertificatePanel';
 
 interface LessonProgress {
   lessonId: string;
@@ -110,7 +109,7 @@ export const SyllabusSidebar = ({
           </span>
         </div>
 
-        <div className="dark-scrollbar flex-1 overflow-y-auto">
+        <div className="dark-scrollbar flex-1 overflow-y-auto pb-10">
           {sortedModules.map((mod, modIdx) => {
             const isOpen = openSections[mod.id] ?? false;
             const sortedLessons = [...mod.lessons].sort((a, b) => a.orderIndex - b.orderIndex);
@@ -241,15 +240,6 @@ export const SyllabusSidebar = ({
               </div>
             );
           })}
-
-          {/* ── Certificate panel ── */}
-          {enrollmentId && (
-            <CourseCertificatePanel
-              enrollmentId={enrollmentId}
-              completedLessons={completedLessons}
-              totalLessons={totalLessons}
-            />
-          )}
         </div>
       </div>
     </div>
