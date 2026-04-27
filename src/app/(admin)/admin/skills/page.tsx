@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import { Edit2, Plus, Search, Sparkles, Tag, Target, Trash2, X } from 'lucide-react';
-import { AdminHeader } from '@/components/shared/AdminHeader';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Dialog } from '@/components/ui/dialog';
@@ -25,7 +24,6 @@ export default function AdminSkillsPage() {
 
   return (
     <>
-      <AdminHeader />
       <div className="px-4 py-6 md:px-8">
         <div className="mb-6 flex flex-col gap-2">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Quản lý Skill</h1>

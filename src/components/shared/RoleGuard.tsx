@@ -21,16 +21,21 @@ export function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
 
   const hasAccess = isAuthenticated && user?.roleCodes?.some((role) => allowedRoles.includes(role));
 
+  // After rehydration the store restores isAuthenticated=true but user=null
+  // (user is not persisted). Wait for user to be populated before redirecting.
+  const isLoadingUser = _hasHydrated && isAuthenticated && !user;
+
   useEffect(() => {
-    if (!_hasHydrated) return;
+    if (!_hasHydrated || isLoadingUser) return;
     if (!isAuthenticated) {
       router.replace('/login');
     } else if (!hasAccess) {
       router.replace('/403');
     }
-  }, [_hasHydrated, isAuthenticated, hasAccess, router]);
+  }, [_hasHydrated, isAuthenticated, hasAccess, isLoadingUser, router]);
 
-  if (!_hasHydrated || !hasAccess) return null;
+  if (!_hasHydrated || isLoadingUser) return null;
+  if (!hasAccess) return null;
 
   return <>{children}</>;
 }
