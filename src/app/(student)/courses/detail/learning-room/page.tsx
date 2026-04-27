@@ -233,6 +233,14 @@ export default function LearningRoomPage() {
             enrollmentId={enrollmentId}
             courseId={courseId}
             courseTitle={course.title}
+            onSeekVideo={(seconds) => {
+              window.dispatchEvent(
+                new CustomEvent('learning-room:seek', {
+                  detail: { seconds, lessonId: activeLesson?.id },
+                }),
+              );
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         </div>
 
