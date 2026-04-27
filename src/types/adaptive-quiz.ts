@@ -93,3 +93,39 @@ export interface SubmitAdaptiveAnswerInput {
   selectedOptionIds: string[];
   timeSpentMs?: number;
 }
+
+// ---------- Admin types ----------
+
+export type DifficultyDistribution = Record<'1' | '2' | '3' | '4' | '5', number>;
+
+export interface AdaptiveAdminBank {
+  id: string;
+  title: string;
+  description: string | null;
+  isActive: boolean;
+  category: { id: string; name: string } | null;
+  totalQuestions: number;
+  eligibleQuestions: number;
+  difficultyDistribution: DifficultyDistribution;
+  isEligibleForAdaptive: boolean;
+  updatedAt: string;
+}
+
+export interface AdaptiveAdminBankDetail extends AdaptiveAdminBank {
+  questions: Array<{
+    id: string;
+    content: string;
+    questionType: string;
+    difficulty: number;
+    isActive: boolean;
+    optionsCount: number;
+    correctOptionsCount: number;
+  }>;
+}
+
+export interface BulkSetDifficultyInput {
+  questionIds: string[];
+  difficulty: number;
+}
+
+export type AdaptiveAutoStrategy = 'spread' | 'reset';

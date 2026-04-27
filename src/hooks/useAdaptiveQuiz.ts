@@ -1,6 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { adaptiveQuizService } from '@/services/adaptive-quiz.service';
-import type { StartAdaptiveSessionInput, SubmitAdaptiveAnswerInput } from '@/types/adaptive-quiz';
+import { adaptiveQuizAdminService, adaptiveQuizService } from '@/services/adaptive-quiz.service';
+import type {
+  AdaptiveAutoStrategy,
+  BulkSetDifficultyInput,
+  StartAdaptiveSessionInput,
+  SubmitAdaptiveAnswerInput,
+} from '@/types/adaptive-quiz';
 
 export const ADAPTIVE_QUIZ_KEYS = {
   all: ['adaptive-quiz'] as const,
@@ -71,6 +76,53 @@ export function useAbandonAdaptiveSession(sessionId: string) {
     onSuccess: (data) => {
       qc.setQueryData(ADAPTIVE_QUIZ_KEYS.session(sessionId), data);
       qc.invalidateQueries({ queryKey: ADAPTIVE_QUIZ_KEYS.sessions() });
+    },
+  });
+}
+
+// ---------- Admin hooks ----------
+
+export const ADAPTIVE_QUIZ_ADMIN_KEYS = {
+  all: ['adaptive-quiz-admin'] as const,
+  banks: () => [...ADAPTIVE_QUIZ_ADMIN_KEYS.all, 'banks'] as const,
+  bank: (id: string) => [...ADAPTIVE_QUIZ_ADMIN_KEYS.banks(), id] as const,
+};
+
+export function useAdaptiveAdminBanks() {
+  return useQuery({
+    queryKey: ADAPTIVE_QUIZ_ADMIN_KEYS.banks(),
+    queryFn: () => adaptiveQuizAdminService.listBanks(),
+  });
+}
+
+export function useAdaptiveAdminBank(id: string | null | undefined) {
+  return useQuery({
+    queryKey: ADAPTIVE_QUIZ_ADMIN_KEYS.bank(id ?? ''),
+    queryFn: () => adaptiveQuizAdminService.getBank(id as string),
+    enabled: Boolean(id),
+  });
+}
+
+export function useBulkSetDifficulty() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: BulkSetDifficultyInput) =>
+      adaptiveQuizAdminService.bulkSetDifficulty(input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ADAPTIVE_QUIZ_ADMIN_KEYS.all });
+      qc.invalidateQueries({ queryKey: ADAPTIVE_QUIZ_KEYS.banks() });
+    },
+  });
+}
+
+export function useAutoTuneAdaptiveBank() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { bankId: string; strategy: AdaptiveAutoStrategy }) =>
+      adaptiveQuizAdminService.autoTune(input.bankId, input.strategy),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ADAPTIVE_QUIZ_ADMIN_KEYS.all });
+      qc.invalidateQueries({ queryKey: ADAPTIVE_QUIZ_KEYS.banks() });
     },
   });
 }
