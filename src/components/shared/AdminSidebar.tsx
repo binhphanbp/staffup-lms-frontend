@@ -85,6 +85,24 @@ export const AdminSidebar = () => {
               AI
             </span>
           </Link>
+          <Link
+            href="/risk-assessment"
+            className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+              pathname === '/risk-assessment'
+                ? 'bg-[#E8F0FE] text-[#1A73E8]'
+                : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+            }`}
+          >
+            <span
+              className={`material-symbols-outlined mr-4 text-[20px] ${pathname === '/risk-assessment' ? "[font-variation-settings:'FILL'_1]" : ''}`}
+            >
+              warning
+            </span>
+            Quản lý Rủi ro
+            <span className="ml-auto rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-2 py-0.5 text-[10px] font-bold text-white">
+              MỚI
+            </span>
+          </Link>
         </div>
 
         {/* Phân hệ Học viên */}
