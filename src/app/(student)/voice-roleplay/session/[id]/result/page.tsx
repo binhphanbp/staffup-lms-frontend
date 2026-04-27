@@ -59,7 +59,7 @@ function ScoreGauge({ score, band }: { score: number; band: RoleplayBand }) {
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          className={`bg-gradient-to-br ${meta.gradient} stroke-current ${meta.tone}`}
+          className={`stroke-current ${meta.tone}`}
           style={{ transition: 'stroke-dashoffset 600ms ease-out' }}
         />
       </svg>
@@ -187,20 +187,35 @@ export default function VoiceRoleplayResultPage() {
   }
 
   if (!evaluation) {
+    const isAbandoned = session.status === 'abandoned';
     return (
       <>
         <StudentHeader breadcrumbs={breadcrumbs} />
         <div className="flex-1 px-4 py-6 md:px-8">
           <div className="mx-auto max-w-2xl rounded-2xl border border-amber-200 bg-amber-50 p-6 text-center dark:border-amber-900/40 dark:bg-amber-950/30">
             <p className="text-sm text-amber-700 dark:text-amber-300">
-              Phiên này chưa được đánh giá. Có thể bạn đã hủy giữa chừng.
+              {isAbandoned
+                ? 'Phiên này đã bị hủy nên không có đánh giá. Hãy thử lại với tình huống khác.'
+                : 'Phiên này chưa được đánh giá. Có thể bạn đã hủy giữa chừng.'}
             </p>
-            <Link
-              href={`/voice-roleplay/session/${sessionId}`}
-              className="bg-primary mt-3 inline-block rounded-lg px-4 py-2 text-sm font-medium text-white"
-            >
-              Mở phiên
-            </Link>
+            <div className="mt-3 flex flex-wrap justify-center gap-2">
+              <button
+                type="button"
+                onClick={handleRetry}
+                disabled={startSession.isPending}
+                className="bg-primary inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
+              >
+                <RefreshCcw className="size-4" />
+                {startSession.isPending ? 'Đang tạo phiên…' : 'Luyện lại tình huống này'}
+              </button>
+              <Link
+                href="/voice-roleplay"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-4 py-2 text-sm font-medium text-amber-700 hover:bg-amber-100 dark:border-amber-800 dark:bg-slate-900 dark:text-amber-200 dark:hover:bg-slate-800"
+              >
+                <ArrowLeft className="size-4" />
+                Về danh sách
+              </Link>
+            </div>
           </div>
         </div>
       </>
