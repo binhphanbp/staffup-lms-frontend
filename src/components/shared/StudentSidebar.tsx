@@ -29,6 +29,7 @@ export const StudentSidebar = () => {
   const achievementMenus = [
     { name: 'Bài Test năng lực', href: '/quiz-assessment', icon: 'fa-clipboard-check' },
     { name: 'Chứng chỉ Nội bộ', href: '/certificates', icon: 'fa-award' },
+    { name: 'Thành tích & XP', href: '/achievements', icon: 'fa-trophy' },
   ];
 
   const handleLogout = async () => {
