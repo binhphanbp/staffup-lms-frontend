@@ -1,11 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { LessonDetail } from '@/types';
 import { resolveMediaUrl } from '@/lib/media';
 import { CourseQAChat } from '@/components/learning-room/CourseQAChat';
+import { VideoSummaryPanel } from '@/components/learning-room/VideoSummaryPanel';
 
 interface LearningTabsProps {
   lesson?: LessonDetail & { moduleTitle?: string };
@@ -13,7 +14,10 @@ interface LearningTabsProps {
   enrollmentId?: string | null;
   courseId?: string | null;
   courseTitle?: string;
+  onSeekVideo?: (seconds: number) => void;
 }
+
+type TabId = 'overview' | 'summary' | 'ai' | 'notes' | 'qa';
 
 export const LearningTabs = ({
   lesson,
@@ -21,8 +25,18 @@ export const LearningTabs = ({
   enrollmentId,
   courseId,
   courseTitle,
+  onSeekVideo,
 }: LearningTabsProps) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'ai' | 'notes' | 'qa'>('overview');
+  const isVideoLesson = lesson?.lessonType === 'video';
+  const [activeTab, setActiveTab] = useState<TabId>('overview');
+
+  // Drop to overview if current tab no longer applies (e.g. non-video lesson with summary tab open)
+  useEffect(() => {
+    if (activeTab === 'summary' && !isVideoLesson) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveTab('overview');
+    }
+  }, [activeTab, isVideoLesson]);
   const downloadableResource = lesson?.resources?.find((resource) => resource.fileUrl);
   const downloadUrl = resolveMediaUrl(downloadableResource?.fileUrl);
   const quizHref =
@@ -93,15 +107,24 @@ export const LearningTabs = ({
           >
             Tổng quan
           </button>
+          {isVideoLesson && (
+            <button
+              onClick={() => setActiveTab('summary')}
+              className={`flex items-center gap-1.5 border-b-2 py-3 transition-colors ${activeTab === 'summary' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+            >
+              <i className="fa-solid fa-layer-group text-[11px]"></i>
+              Tóm tắt AI
+              <span className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                MỚI
+              </span>
+            </button>
+          )}
           <button
             onClick={() => setActiveTab('ai')}
             className={`flex items-center gap-1.5 border-b-2 py-3 transition-colors ${activeTab === 'ai' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
           >
             <i className="fa-solid fa-wand-magic-sparkles text-[11px]"></i>
             Trợ lý AI
-            <span className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-1.5 py-0.5 text-[9px] font-bold text-white">
-              MỚI
-            </span>
           </button>
           <button
             onClick={() => setActiveTab('notes')}
@@ -193,6 +216,17 @@ export const LearningTabs = ({
                 </button>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'summary' && isVideoLesson && (
+          <div className="max-w-4xl animate-[fadeIn_0.3s_ease-in-out]">
+            <VideoSummaryPanel
+              lessonId={lesson?.id}
+              lessonTitle={lesson?.title}
+              durationSeconds={lesson?.durationSeconds}
+              onSeek={onSeekVideo}
+            />
           </div>
         )}
 
