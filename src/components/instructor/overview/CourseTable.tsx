@@ -44,11 +44,21 @@ export const CourseTable = () => {
         <table className="w-full">
           <thead className="bg-slate-50">
             <tr className="text-left text-xs font-semibold text-slate-500 uppercase">
-              <th className="px-5 py-3">Tên khóa học</th>
-              <th className="px-5 py-3">Trạng thái</th>
-              <th className="px-5 py-3">Học viên</th>
-              <th className="px-5 py-3">Tiến độ</th>
-              <th className="px-5 py-3">Action</th>
+              <th scope="col" className="px-5 py-3">
+                Tên khóa học
+              </th>
+              <th scope="col" className="px-5 py-3">
+                Trạng thái
+              </th>
+              <th scope="col" className="px-5 py-3">
+                Học viên
+              </th>
+              <th scope="col" className="px-5 py-3">
+                Tiến độ
+              </th>
+              <th scope="col" className="px-5 py-3">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">

@@ -101,13 +101,17 @@ export function RiskHeatmap({ assessments, onCellClick, maxCourses = 10 }: RiskH
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="bg-[#F8F9FA] text-[11px] font-medium tracking-wide text-[#5F6368] uppercase">
-              <th className="px-4 py-3 text-left">Khóa học</th>
+              <th scope="col" className="px-4 py-3 text-left">
+                Khóa học
+              </th>
               {LEVELS.map((l) => (
-                <th key={l} className="px-4 py-3 text-center">
+                <th key={l} scope="col" className="px-4 py-3 text-center">
                   {LEVEL_LABEL[l]}
                 </th>
               ))}
-              <th className="px-4 py-3 text-right">Tổng</th>
+              <th scope="col" className="px-4 py-3 text-right">
+                Tổng
+              </th>
             </tr>
           </thead>
           <tbody>

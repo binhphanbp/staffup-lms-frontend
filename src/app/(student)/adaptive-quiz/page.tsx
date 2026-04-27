@@ -190,124 +190,127 @@ export default function AdaptiveQuizPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-1 flex-col overflow-hidden">
       <StudentHeader breadcrumbs={breadcrumbs} />
-
-      <section className="rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 px-6 py-7 text-white shadow-lg">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-medium tracking-wide text-blue-100 uppercase">
-              Adaptive Quiz · GMAT-style
-            </p>
-            <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">
-              Đánh giá năng lực bằng quiz tự điều chỉnh độ khó
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm text-blue-50">
-              Trả lời đúng &rarr; câu khó hơn. Sai &rarr; câu dễ hơn. Hệ thống ước lượng năng lực
-              theo thuật toán Elo và xếp band sau khi hoàn tất.
-            </p>
-          </div>
-          <div className="grid grid-cols-3 gap-3 text-center sm:gap-6">
-            <div>
-              <p className="text-xs text-blue-100 uppercase">Phiên</p>
-              <p className="text-2xl font-semibold">{stats?.total ?? '—'}</p>
+      <div className="flex-1 overflow-y-auto px-4 pb-6 md:px-8">
+        <div className="space-y-6 pt-6">
+          <section className="rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 px-6 py-7 text-white shadow-lg">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium tracking-wide text-blue-100 uppercase">
+                  Adaptive Quiz · GMAT-style
+                </p>
+                <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">
+                  Đánh giá năng lực bằng quiz tự điều chỉnh độ khó
+                </h1>
+                <p className="mt-2 max-w-2xl text-sm text-blue-50">
+                  Trả lời đúng &rarr; câu khó hơn. Sai &rarr; câu dễ hơn. Hệ thống ước lượng năng
+                  lực theo thuật toán Elo và xếp band sau khi hoàn tất.
+                </p>
+              </div>
+              <div className="grid grid-cols-3 gap-3 text-center sm:gap-6">
+                <div>
+                  <p className="text-xs text-blue-100 uppercase">Phiên</p>
+                  <p className="text-2xl font-semibold">{stats?.total ?? '—'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-blue-100 uppercase">Hoàn tất</p>
+                  <p className="text-2xl font-semibold">{stats?.completed ?? '—'}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-blue-100 uppercase">Best ability</p>
+                  <p className="text-2xl font-semibold">
+                    {stats?.best ? stats.best.abilityScore.toFixed(2) : '—'}
+                  </p>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-blue-100 uppercase">Hoàn tất</p>
-              <p className="text-2xl font-semibold">{stats?.completed ?? '—'}</p>
-            </div>
-            <div>
-              <p className="text-xs text-blue-100 uppercase">Best ability</p>
-              <p className="text-2xl font-semibold">
-                {stats?.best ? stats.best.abilityScore.toFixed(2) : '—'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      <section className="space-y-3">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-              Ngân hàng câu hỏi đủ điều kiện
-            </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Cần ≥5 câu trắc nghiệm và phủ ≥2 mức độ khó.
-            </p>
-          </div>
-          <input
-            type="text"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            placeholder="Tìm theo tên / nhóm…"
-            className="h-9 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none sm:w-64 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
-            aria-label="Tìm ngân hàng"
-          />
-        </div>
-
-        {loadingBanks ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[0, 1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-44 rounded-2xl" />
-            ))}
-          </div>
-        ) : banksErr ? (
-          <EmptyState
-            icon={<Brain className="size-10" />}
-            title="Không tải được ngân hàng"
-            description={(banksErr as Error).message}
-          />
-        ) : filteredBanks.length === 0 ? (
-          <EmptyState
-            icon={<Brain className="size-10" />}
-            title="Chưa có ngân hàng phù hợp"
-            description="Trainer cần tạo bank với ≥5 câu trắc nghiệm và ≥2 mức độ khó để bật adaptive quiz."
-          />
-        ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredBanks.map((b) => (
-              <BankCard
-                key={b.id}
-                bank={b}
-                onStart={handleStart}
-                isStarting={startMutation.isPending}
+          <section className="space-y-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                  Ngân hàng câu hỏi đủ điều kiện
+                </h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Cần ≥5 câu trắc nghiệm và phủ ≥2 mức độ khó.
+                </p>
+              </div>
+              <input
+                type="text"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                placeholder="Tìm theo tên / nhóm…"
+                className="h-9 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none sm:w-64 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                aria-label="Tìm ngân hàng"
               />
-            ))}
-          </div>
-        )}
-      </section>
+            </div>
 
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-            Lịch sử phiên gần đây
-          </h2>
-          <span className="text-xs text-slate-500 dark:text-slate-400">
-            <TrendingUp className="mr-1 inline size-3" /> 50 phiên gần nhất
-          </span>
+            {loadingBanks ? (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {[0, 1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-44 rounded-2xl" />
+                ))}
+              </div>
+            ) : banksErr ? (
+              <EmptyState
+                icon={<Brain className="size-10" />}
+                title="Không tải được ngân hàng"
+                description={(banksErr as Error).message}
+              />
+            ) : filteredBanks.length === 0 ? (
+              <EmptyState
+                icon={<Brain className="size-10" />}
+                title="Chưa có ngân hàng phù hợp"
+                description="Trainer cần tạo bank với ≥5 câu trắc nghiệm và ≥2 mức độ khó để bật adaptive quiz."
+              />
+            ) : (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredBanks.map((b) => (
+                  <BankCard
+                    key={b.id}
+                    bank={b}
+                    onStart={handleStart}
+                    isStarting={startMutation.isPending}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                Lịch sử phiên gần đây
+              </h2>
+              <span className="text-xs text-slate-500 dark:text-slate-400">
+                <TrendingUp className="mr-1 inline size-3" /> 50 phiên gần nhất
+              </span>
+            </div>
+            {loadingSessions ? (
+              <div className="space-y-2">
+                {[0, 1, 2].map((i) => (
+                  <Skeleton key={i} className="h-14 rounded-xl" />
+                ))}
+              </div>
+            ) : sessions && sessions.length > 0 ? (
+              <div className="space-y-2">
+                {sessions.map((s) => (
+                  <SessionRow key={s.id} session={s} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                icon={<Sparkles className="size-10" />}
+                title="Chưa có phiên nào"
+                description="Bắt đầu một phiên adaptive quiz từ ngân hàng phía trên để xem lịch sử."
+                variant="compact"
+              />
+            )}
+          </section>
         </div>
-        {loadingSessions ? (
-          <div className="space-y-2">
-            {[0, 1, 2].map((i) => (
-              <Skeleton key={i} className="h-14 rounded-xl" />
-            ))}
-          </div>
-        ) : sessions && sessions.length > 0 ? (
-          <div className="space-y-2">
-            {sessions.map((s) => (
-              <SessionRow key={s.id} session={s} />
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            icon={<Sparkles className="size-10" />}
-            title="Chưa có phiên nào"
-            description="Bắt đầu một phiên adaptive quiz từ ngân hàng phía trên để xem lịch sử."
-            variant="compact"
-          />
-        )}
-      </section>
+      </div>
     </div>
   );
 }

@@ -71,12 +71,24 @@ export function RiskLearnerTable({
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-[#F8F9FA] text-[11px] font-medium tracking-wide text-[#5F6368] uppercase">
-              <th className="px-4 py-3 text-left">Học viên</th>
-              <th className="px-4 py-3 text-left">Khóa học</th>
-              <th className="px-4 py-3 text-center">Điểm rủi ro</th>
-              <th className="px-4 py-3 text-center">Mức</th>
-              <th className="px-4 py-3 text-left">Cập nhật</th>
-              <th className="px-4 py-3 text-right">Thao tác</th>
+              <th scope="col" className="px-4 py-3 text-left">
+                Học viên
+              </th>
+              <th scope="col" className="px-4 py-3 text-left">
+                Khóa học
+              </th>
+              <th scope="col" className="px-4 py-3 text-center">
+                Điểm rủi ro
+              </th>
+              <th scope="col" className="px-4 py-3 text-center">
+                Mức
+              </th>
+              <th scope="col" className="px-4 py-3 text-left">
+                Cập nhật
+              </th>
+              <th scope="col" className="px-4 py-3 text-right">
+                Thao tác
+              </th>
             </tr>
           </thead>
           <tbody>
