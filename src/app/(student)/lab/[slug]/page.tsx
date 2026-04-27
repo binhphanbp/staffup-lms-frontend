@@ -115,10 +115,10 @@ export default function LabProblemPage({ params }: { params: Promise<{ slug: str
         }
       />
 
-      <div className="flex w-full flex-1 overflow-hidden">
+      <div className="flex w-full flex-1 flex-col overflow-hidden md:flex-row">
         <TaskPanel problem={problem} />
 
-        <div className="resizer"></div>
+        <div className="resizer hidden md:block"></div>
 
         <EditorPanel
           code={code}

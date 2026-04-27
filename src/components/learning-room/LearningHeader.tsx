@@ -54,10 +54,11 @@ export const LearningHeader = ({
       <div className="flex min-w-0 items-center gap-3">
         <Link
           href={backHref}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
           title="Quay lại chi tiết khóa học"
+          aria-label="Quay lại chi tiết khóa học"
         >
-          <i className="fa-solid fa-arrow-left text-sm"></i>
+          <i className="fa-solid fa-arrow-left text-sm" aria-hidden="true"></i>
         </Link>
         <div className="hidden h-5 w-px bg-slate-700 sm:block" />
         <div className="min-w-0">
@@ -78,18 +79,20 @@ export const LearningHeader = ({
         <button
           onClick={onPrevLesson}
           disabled={!hasPrevLesson}
-          className="flex h-8 w-8 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-8 w-8 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-30"
           title="Bài trước"
+          aria-label="Bài trước"
         >
-          <i className="fa-solid fa-chevron-up text-xs"></i>
+          <i className="fa-solid fa-chevron-up text-xs" aria-hidden="true"></i>
         </button>
         <button
           onClick={onNextLesson}
           disabled={!hasNextLesson}
-          className="flex h-8 w-8 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
+          className="flex h-8 w-8 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-800 hover:text-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-30"
           title="Bài tiếp theo"
+          aria-label="Bài tiếp theo"
         >
-          <i className="fa-solid fa-chevron-down text-xs"></i>
+          <i className="fa-solid fa-chevron-down text-xs" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -152,9 +155,10 @@ export const LearningHeader = ({
         {onOpenSyllabus && (
           <button
             onClick={onOpenSyllabus}
-            className="flex items-center gap-1.5 rounded border border-slate-700 px-2.5 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:border-slate-500 hover:text-white md:hidden"
+            className="flex items-center gap-1.5 rounded border border-slate-700 px-2.5 py-1.5 text-xs font-medium text-slate-300 transition-colors hover:border-slate-500 hover:text-white focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none md:hidden"
+            aria-label="Mở giáo trình"
           >
-            <i className="fa-solid fa-list text-xs"></i>
+            <i className="fa-solid fa-list text-xs" aria-hidden="true"></i>
           </button>
         )}
       </div>

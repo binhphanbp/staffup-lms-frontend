@@ -74,28 +74,31 @@ export const LearningTabs = ({
 
         <div className="flex gap-2">
           <button
-            className="hover:text-primary hover:border-primary flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-sm transition-colors"
+            className="hover:text-primary hover:border-primary flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
             title="Lưu khóa học"
+            aria-label="Lưu khóa học"
           >
-            <i className="fa-regular fa-bookmark"></i>
+            <i className="fa-regular fa-bookmark" aria-hidden="true"></i>
           </button>
 
           {downloadUrl ? (
             <Link
               href={downloadUrl}
               target="_blank"
-              className="hover:text-primary hover:border-primary flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-sm transition-colors"
+              className="hover:text-primary hover:border-primary flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
               title="Tải tài liệu"
+              aria-label="Tải tài liệu bài học"
             >
-              <i className="fa-solid fa-download"></i>
+              <i className="fa-solid fa-download" aria-hidden="true"></i>
             </Link>
           ) : (
             <button
               disabled
               className="flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-full border border-gray-200 bg-slate-100 text-slate-300 shadow-sm"
               title="Chưa có tài liệu"
+              aria-label="Chưa có tài liệu"
             >
-              <i className="fa-solid fa-download"></i>
+              <i className="fa-solid fa-download" aria-hidden="true"></i>
             </button>
           )}
         </div>
