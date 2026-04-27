@@ -6,6 +6,8 @@ import { QueryProvider } from '@/components/providers/QueryProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import AIChatWidget from '@/components/ai-chat/AIChatWidget';
+import { ServiceWorkerRegistrar } from '@/components/pwa/ServiceWorkerRegistrar';
+import { InstallPromptBanner } from '@/components/pwa/InstallPromptBanner';
 import './globals.css';
 
 const inter = Inter({
@@ -19,6 +21,24 @@ export const metadata: Metadata = {
     template: '%s | Staffup LMS',
   },
   description: 'Staffup LMS — A modern learning management system for teams and organizations.',
+  manifest: '/manifest.webmanifest',
+  applicationName: 'StaffUp LMS',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'StaffUp',
+  },
+  icons: {
+    icon: [
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+  },
+};
+
+export const viewport = {
+  themeColor: '#1677ff',
 };
 
 export default function RootLayout({
@@ -50,6 +70,8 @@ export default function RootLayout({
           <QueryProvider>{children}</QueryProvider>
           <AIChatWidget />
           <ToastProvider />
+          <ServiceWorkerRegistrar />
+          <InstallPromptBanner />
         </ThemeProvider>
       </body>
     </html>
