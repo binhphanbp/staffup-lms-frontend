@@ -1,0 +1,1 @@
+export { useForumThread } from './useForumThreads';
