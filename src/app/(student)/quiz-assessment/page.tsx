@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { toast } from '@/lib/toast';
 import Link from 'next/link';
 import { StudentHeader } from '@/components/shared/StudentHeader';
 import { QuestionContent } from '@/components/quiz/QuestionContent';
@@ -168,7 +169,9 @@ export default function QuizAssessmentPage() {
           if (newCount <= 3) {
             setShowCheatModal(true);
           } else {
-            alert('Vi phạm quá 3 lần. Bài thi tự động bị hủy!');
+            toast.error('Bài thi bị hủy do vi phạm quá 3 lần', {
+              description: 'Hệ thống đang tự động nộp bài...',
+            });
             handleFinishExam();
           }
           return newCount;

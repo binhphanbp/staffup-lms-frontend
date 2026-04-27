@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { quizService } from '@/services/quiz.service';
-import type { QuizStartPayload, QuizResponsePayload } from '@/types';
+import type { QuizAttemptAdminListParams, QuizStartPayload, QuizResponsePayload } from '@/types';
 
 // ============================================================
 // React Query Hooks — Quiz Attempts
@@ -45,15 +45,15 @@ export function useSubmitQuiz() {
   });
 }
 
-export function useAllQuizAttempts(params?: {
-  enrollmentId?: string;
-  quizId?: string;
-  page?: number;
-  limit?: number;
-}) {
+/**
+ * Admin/trainer-scoped listing of quiz attempts (server-side filter + pagination).
+ * Keys on the params object so filter/pagination changes refetch automatically.
+ */
+export function useAllQuizAttempts(params: QuizAttemptAdminListParams = {}) {
   return useQuery({
     queryKey: ['quiz-attempts-all', params],
-    queryFn: () => quizService.getHistory(params),
+    queryFn: () => quizService.getAllAttemptsAdmin(params),
+    placeholderData: (prev) => prev,
   });
 }
 

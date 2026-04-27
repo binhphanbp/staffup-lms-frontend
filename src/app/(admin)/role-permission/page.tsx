@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { toast } from '@/lib/toast';
 import type { Role as ComponentRole } from '@/components/admin/role-permission/types';
 import type { Role as ApiRole } from '@/types';
 import { RoleList } from '@/components/admin/role-permission/RoleList';
@@ -43,7 +44,6 @@ export default function RolePermissionPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newRoleName, setNewRoleName] = useState('');
   const [newRoleDesc, setNewRoleDesc] = useState('');
-  const [toast, setToast] = useState({ visible: false, message: '' });
 
   // Auto-select first role when data loads
   useEffect(() => {
@@ -64,10 +64,7 @@ export default function RolePermissionPage() {
     return map;
   }, [activeRole, apiRoles]);
 
-  const showToast = useCallback((msg: string) => {
-    setToast({ visible: true, message: msg });
-    setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  }, []);
+  const showToast = useCallback((msg: string) => toast.success(msg), []);
 
   const handleSelectRole = useCallback((role: ComponentRole) => {
     setActiveRole(role);
@@ -75,7 +72,7 @@ export default function RolePermissionPage() {
 
   const handleCreateRole = useCallback(() => {
     if (!newRoleName.trim()) {
-      alert('Vui lòng nhập tên vai trò.');
+      toast.error('Vui lòng nhập tên vai trò.');
       return;
     }
     const code = newRoleName.toLowerCase().replace(/\s+/g, '_');
@@ -169,14 +166,6 @@ export default function RolePermissionPage() {
         newRoleDesc={newRoleDesc}
         setNewRoleDesc={setNewRoleDesc}
       />
-
-      {/* TOAST NOTIFICATION */}
-      <div
-        className={`fixed bottom-6 left-6 z-[3000] flex items-center gap-3 rounded-[4px] bg-[#323232] px-6 py-[14px] text-white shadow-[0_4px_6px_0_rgba(60,64,67,0.15),0_12px_16px_0_rgba(60,64,67,0.15)] transition-transform duration-300 ${toast.visible ? 'translate-y-0' : 'translate-y-[100px]'}`}
-      >
-        <span className="material-symbols-outlined text-[24px] text-[#81C995]">check_circle</span>
-        <span className="text-[14px]">{toast.message}</span>
-      </div>
     </>
   );
 }

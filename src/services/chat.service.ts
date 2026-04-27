@@ -1,4 +1,4 @@
-import api from '@/lib/axios';
+import api, { API_BASE_URL } from '@/lib/axios';
 import { useAuthStore } from '@/store/useAuthStore';
 
 // ============================================================
@@ -99,7 +99,7 @@ export const chatApi = {
   ): (() => void) => {
     const controller = new AbortController();
     const token = useAuthStore.getState().token;
-    const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+    const baseURL = API_BASE_URL;
 
     fetch(`${baseURL}${API_BASE}/message/stream`, {
       method: 'POST',
@@ -195,7 +195,7 @@ export const chatApi = {
   ): (() => void) => {
     const controller = new AbortController();
     const token = useAuthStore.getState().token;
-    const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+    const baseURL = API_BASE_URL;
 
     fetch(`${baseURL}${API_BASE}/course/${courseId}/ask/stream`, {
       method: 'POST',

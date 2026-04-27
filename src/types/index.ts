@@ -159,6 +159,19 @@ export interface ModuleDetail {
   title: string;
   orderIndex: number;
   lessons: LessonDetail[];
+  /**
+   * Optional module-level quizzes — populated by the course-detail endpoint.
+   * Listed inline in the syllabus sidebar so learners can launch them
+   * without leaving the learning room.
+   */
+  quizzes?: Array<{
+    id: string;
+    title: string;
+    totalQuestions?: number;
+    timeLimitMinutes?: number | null;
+    passScorePercent?: number | null;
+    _count?: { quizQuestions?: number };
+  }>;
 }
 
 export interface CourseModuleItem {
@@ -530,13 +543,14 @@ export interface QuizAttemptHistoryItem {
   isPassed: boolean | null;
   startedAt: string;
   submittedAt: string | null;
+  gradedAt?: string | null;
   timeSpentSeconds: number;
   quiz: {
     id: string;
     title: string;
     passScorePercent: number;
     timeLimitMinutes: number | null;
-    maxAttempts: number | null;
+    maxAttempts?: number | null;
   };
   enrollment: {
     id: string;
@@ -550,6 +564,38 @@ export interface QuizAttemptHistoryItem {
       title: string;
     };
   };
+}
+
+export type DerivedAiStatus = 'pending' | 'ai_graded' | 'finalized';
+
+export interface QuizAttemptAdminItem extends QuizAttemptHistoryItem {
+  gradedAt: string | null;
+  essayQuestionCount: number;
+  aiGradedEssayCount: number;
+  manuallyGradedEssayCount: number;
+  derivedAiStatus: DerivedAiStatus;
+}
+
+export interface QuizAttemptAdminListResponse {
+  items: QuizAttemptAdminItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface QuizAttemptAdminListParams {
+  status?: QuizAttemptStatus;
+  aiStatus?: 'all' | DerivedAiStatus;
+  courseId?: string;
+  quizId?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: 'submittedAt' | 'startedAt' | 'gradedAt' | 'totalScore';
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface QuizSubmitResponse {

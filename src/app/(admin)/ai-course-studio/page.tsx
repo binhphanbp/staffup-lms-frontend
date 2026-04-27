@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Toast } from '@/components/shared/Toast';
+import { toast } from '@/lib/toast';
 import {
   useCategories,
   useGenerateCourseOutline,
@@ -110,11 +110,8 @@ export default function AiCourseStudioPage() {
   const router = useRouter();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [toast, setToast] = useState({ visible: false, message: '' });
-  const showToast = (msg: string) => {
-    setToast({ visible: true, message: msg });
-    window.setTimeout(() => setToast({ visible: false, message: '' }), 3000);
-  };
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   // ─── Step 1 — form state ────────────────────────────────────────────────
   const [topic, setTopic] = useState('');
@@ -387,7 +384,7 @@ export default function AiCourseStudioPage() {
       );
       window.setTimeout(() => router.push('/courses-management'), 800);
     } catch (err) {
-      showToast(extractApiError(err));
+      showToast(extractApiError(err), 'error');
     }
   };
 
@@ -585,8 +582,6 @@ export default function AiCourseStudioPage() {
           </div>
         </div>
       </div>
-
-      <Toast visible={toast.visible} message={toast.message} />
     </>
   );
 }
