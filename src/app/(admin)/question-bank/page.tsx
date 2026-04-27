@@ -21,7 +21,8 @@ export default function QuestionBankPage() {
   const totalBanks = meta?.total ?? 0;
   const totalQuestions = banks.reduce((sum, b) => sum + b.questionsCount, 0);
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
@@ -32,7 +33,7 @@ export default function QuestionBankPage() {
     if (!confirm(`Xóa ngân hàng câu hỏi "${bank.name}"?`)) return;
     deleteBank.mutate(bank.id, {
       onSuccess: () => showToast(`Đã xóa ngân hàng "${bank.name}"`),
-      onError: () => showToast('Xóa thất bại. Vui lòng thử lại.'),
+      onError: () => showToast('Xóa thất bại. Vui lòng thử lại.', 'error'),
     });
   };
 

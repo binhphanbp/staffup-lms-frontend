@@ -110,7 +110,8 @@ export default function AiCourseStudioPage() {
   const router = useRouter();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   // ─── Step 1 — form state ────────────────────────────────────────────────
   const [topic, setTopic] = useState('');
@@ -383,7 +384,7 @@ export default function AiCourseStudioPage() {
       );
       window.setTimeout(() => router.push('/courses-management'), 800);
     } catch (err) {
-      showToast(extractApiError(err));
+      showToast(extractApiError(err), 'error');
     }
   };
 

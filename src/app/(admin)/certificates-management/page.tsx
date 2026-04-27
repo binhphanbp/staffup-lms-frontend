@@ -23,12 +23,13 @@ export default function CertificatesManagementPage() {
   const certificates = data?.certificates ?? [];
   const pagination = data?.pagination;
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const handleRevoke = (id: string) => {
     revokeMutation.mutate(id, {
       onSuccess: () => showToast('Thu hồi chứng chỉ thành công'),
-      onError: () => showToast('Có lỗi xảy ra khi thu hồi chứng chỉ'),
+      onError: () => showToast('Có lỗi xảy ra khi thu hồi chứng chỉ', 'error'),
     });
   };
 

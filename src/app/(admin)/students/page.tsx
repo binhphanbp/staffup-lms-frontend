@@ -254,7 +254,8 @@ export default function StudentsPage() {
   const meta = data?.meta;
   const totalPages = meta?.totalPages ?? 1;
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const openCreateModal = () => {
     setFormMode('create');
@@ -288,12 +289,12 @@ export default function StudentsPage() {
 
   const submitForm = async () => {
     if (!form.fullName.trim() || !form.email.trim() || !form.departmentId) {
-      showToast('Vui lòng nhập đủ thông tin bắt buộc.');
+      showToast('Vui lòng nhập đủ thông tin bắt buộc.', 'error');
       return;
     }
 
     if (formMode === 'create' && !form.password.trim()) {
-      showToast('Vui lòng nhập mật khẩu cho học viên mới.');
+      showToast('Vui lòng nhập mật khẩu cho học viên mới.', 'error');
       return;
     }
 
@@ -322,7 +323,10 @@ export default function StudentsPage() {
 
       closeModal();
     } catch (error: any) {
-      showToast(error?.response?.data?.message || error?.message || 'Không thể lưu học viên.');
+      showToast(
+        error?.response?.data?.message || error?.message || 'Không thể lưu học viên.',
+        'error',
+      );
     }
   };
 
@@ -336,6 +340,7 @@ export default function StudentsPage() {
     } catch (error: any) {
       showToast(
         error?.response?.data?.message || error?.message || 'Không thể cập nhật trạng thái.',
+        'error',
       );
     }
   };
@@ -349,7 +354,10 @@ export default function StudentsPage() {
       await deleteUser.mutateAsync(student.userId);
       showToast('Đã xóa học viên');
     } catch (error: any) {
-      showToast(error?.response?.data?.message || error?.message || 'Không thể xóa học viên.');
+      showToast(
+        error?.response?.data?.message || error?.message || 'Không thể xóa học viên.',
+        'error',
+      );
     }
   };
 
@@ -378,7 +386,7 @@ export default function StudentsPage() {
     } catch (error: any) {
       const message =
         error?.response?.data?.message || error?.message || 'Không thể import file Excel.';
-      showToast(message);
+      showToast(message, 'error');
     }
   };
 

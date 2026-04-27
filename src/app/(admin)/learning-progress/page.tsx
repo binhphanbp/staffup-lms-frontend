@@ -51,7 +51,8 @@ export default function LearningProgressPage() {
 
   const overdueCount = useMemo(() => enrollments.filter((e) => e.isOverdue).length, [enrollments]);
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const handleSearchChange = (value: string) => {
     setSearch(value);

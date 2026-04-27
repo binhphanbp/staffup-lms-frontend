@@ -206,7 +206,8 @@ export default function DepartmentsPage() {
     },
   });
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const filteredDepartments = useMemo(() => {
     const keyword = search.trim().toLowerCase();
@@ -262,7 +263,7 @@ export default function DepartmentsPage() {
 
   const handleSubmit = async () => {
     if (!form.name.trim()) {
-      showToast('Vui lòng nhập tên phòng ban.');
+      showToast('Vui lòng nhập tên phòng ban.', 'error');
       return;
     }
 
@@ -288,7 +289,7 @@ export default function DepartmentsPage() {
 
       resetModal();
     } catch (error) {
-      showToast(getErrorMessage(error, 'Không thể lưu phòng ban.'));
+      showToast(getErrorMessage(error, 'Không thể lưu phòng ban.'), 'error');
     }
   };
 
@@ -300,7 +301,7 @@ export default function DepartmentsPage() {
       await deleteDepartment.mutateAsync(department.id);
       showToast('Đã xóa phòng ban');
     } catch (error) {
-      showToast(getErrorMessage(error, 'Không thể xóa phòng ban.'));
+      showToast(getErrorMessage(error, 'Không thể xóa phòng ban.'), 'error');
     }
   };
 

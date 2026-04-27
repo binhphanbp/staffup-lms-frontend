@@ -252,7 +252,8 @@ export default function InstructorsPage() {
 
   const meta = data?.meta ?? { total: 0, page: 1, limit: LIMIT, totalPages: 1 };
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const openCreateModal = () => {
     setFormMode('create');
@@ -286,12 +287,12 @@ export default function InstructorsPage() {
 
   const submitForm = async () => {
     if (!form.fullName.trim() || !form.email.trim()) {
-      showToast('Vui lòng nhập đủ thông tin bắt buộc.');
+      showToast('Vui lòng nhập đủ thông tin bắt buộc.', 'error');
       return;
     }
 
     if (formMode === 'create' && !form.password.trim()) {
-      showToast('Vui lòng nhập mật khẩu cho giảng viên mới.');
+      showToast('Vui lòng nhập mật khẩu cho giảng viên mới.', 'error');
       return;
     }
 
@@ -320,7 +321,10 @@ export default function InstructorsPage() {
 
       closeModal();
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể lưu giảng viên.');
+      showToast(
+        err?.response?.data?.message || err?.message || 'Không thể lưu giảng viên.',
+        'error',
+      );
     }
   };
 
@@ -332,7 +336,10 @@ export default function InstructorsPage() {
       });
       showToast(instructor.isActive ? 'Đã khóa tài khoản' : 'Đã mở khóa tài khoản');
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể cập nhật trạng thái.');
+      showToast(
+        err?.response?.data?.message || err?.message || 'Không thể cập nhật trạng thái.',
+        'error',
+      );
     }
   };
 
@@ -345,7 +352,10 @@ export default function InstructorsPage() {
       await deleteUser.mutateAsync(instructor.id);
       showToast('Đã xóa giảng viên');
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể xóa giảng viên.');
+      showToast(
+        err?.response?.data?.message || err?.message || 'Không thể xóa giảng viên.',
+        'error',
+      );
     }
   };
 
@@ -374,7 +384,7 @@ export default function InstructorsPage() {
     } catch (err: any) {
       const message =
         err?.response?.data?.message || err?.message || 'Không thể import file Excel.';
-      showToast(message);
+      showToast(message, 'error');
     }
   };
 

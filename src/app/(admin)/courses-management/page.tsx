@@ -406,7 +406,8 @@ export default function CoursesManagementPage() {
     [trainersData],
   );
 
-  const showToast = (message: string) => toast.success(message);
+  const showToast = (message: string, type: 'success' | 'error' = 'success') =>
+    toast[type](message);
 
   const openCreate = () => {
     setFormMode('create');
@@ -442,7 +443,7 @@ export default function CoursesManagementPage() {
 
   const submitForm = async () => {
     if (!form.title.trim()) {
-      showToast('Vui lòng nhập tên khóa học.');
+      showToast('Vui lòng nhập tên khóa học.', 'error');
       return;
     }
 
@@ -470,7 +471,7 @@ export default function CoursesManagementPage() {
       }
       closeModal();
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể lưu khóa học.');
+      showToast(err?.response?.data?.message || err?.message || 'Không thể lưu khóa học.', 'error');
     }
   };
 
@@ -480,7 +481,7 @@ export default function CoursesManagementPage() {
       await deleteCourse.mutateAsync(c.id);
       showToast('Đã xóa khóa học');
     } catch (err: any) {
-      showToast(err?.response?.data?.message || err?.message || 'Không thể xóa khóa học.');
+      showToast(err?.response?.data?.message || err?.message || 'Không thể xóa khóa học.', 'error');
     }
   };
 
