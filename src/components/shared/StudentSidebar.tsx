@@ -25,6 +25,7 @@ export const StudentSidebar = () => {
     { name: 'Lộ trình phát triển', href: '/roadmaps', icon: 'fa-route' },
     { name: 'Môi trường Thực hành', href: '/courses/detail/learning-room', icon: 'fa-code' },
     { name: 'Voice Roleplay', href: '/voice-roleplay', icon: 'fa-microphone' },
+    { name: 'Quiz thích nghi', href: '/adaptive-quiz', icon: 'fa-brain' },
     { name: 'Onboarding của tôi', href: '/onboarding', icon: 'fa-rocket' },
     { name: 'Bài học đã lưu', href: '/saved-lessons', icon: 'fa-bookmark' },
   ];
