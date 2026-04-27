@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useCompleteLesson } from '@/hooks/useEnrollments';
+import { SaveOfflineButton } from './SaveOfflineButton';
 
 interface LearningHeaderProps {
   courseTitle?: string;
@@ -120,6 +121,14 @@ export const LearningHeader = ({
         </div>
 
         <div className="hidden h-5 w-px bg-slate-700 md:block" />
+
+        {/* Save offline */}
+        <SaveOfflineButton
+          lessonId={lessonId}
+          courseId={courseId}
+          courseTitle={courseTitle}
+          lessonTitle={lessonTitle}
+        />
 
         {/* Mark complete button */}
         {isLessonCompleted ? (

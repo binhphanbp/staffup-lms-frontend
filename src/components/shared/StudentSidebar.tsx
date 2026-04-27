@@ -26,6 +26,7 @@ export const StudentSidebar = () => {
     { name: 'Môi trường Thực hành', href: '/courses/detail/learning-room', icon: 'fa-code' },
     { name: 'Voice Roleplay', href: '/voice-roleplay', icon: 'fa-microphone' },
     { name: 'Onboarding của tôi', href: '/onboarding', icon: 'fa-rocket' },
+    { name: 'Bài học đã lưu', href: '/saved-lessons', icon: 'fa-bookmark' },
   ];
 
   const achievementMenus = [
