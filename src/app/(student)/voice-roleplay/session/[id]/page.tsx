@@ -150,6 +150,7 @@ export default function VoiceRoleplaySessionPage() {
   const turns = useMemo(() => session?.turns ?? [], [session?.turns]);
   const userTurnsCount = useMemo(() => turns.filter((t) => t.role === 'user').length, [turns]);
   const remainingTurns = session ? Math.max(0, session.scenario.maxTurns - userTurnsCount) : null;
+  const turnLimitReached = remainingTurns === 0;
 
   // Mark hydrated so we can read browser-only Web Speech APIs without SSR mismatch
   useEffect(() => {
@@ -408,7 +409,16 @@ export default function VoiceRoleplaySessionPage() {
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setAutoSpeak((v) => !v)}
+                  onClick={() => {
+                    setAutoSpeak((v) => {
+                      const next = !v;
+                      // Immediately silence any in‑flight utterance when
+                      // toggling OFF — otherwise AI keeps talking until
+                      // the current sentence finishes.
+                      if (!next) stopSpeaking();
+                      return next;
+                    });
+                  }}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
                   aria-pressed={autoSpeak}
                   title="Bật/tắt giọng đọc của AI"
@@ -494,10 +504,19 @@ export default function VoiceRoleplaySessionPage() {
                 Trình duyệt không hỗ trợ giọng nói. Bạn có thể gõ tin nhắn bên dưới.
               </p>
             )}
+            {turnLimitReached && (
+              <div className="mb-2 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
+                <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+                <span>
+                  Bạn đã đạt giới hạn {session.scenario.maxTurns} lượt cho tình huống này. Hãy bấm{' '}
+                  <strong>Kết thúc &amp; chấm điểm</strong> để xem kết quả.
+                </span>
+              </div>
+            )}
             <div className="flex items-end gap-2">
               <button
                 type="button"
-                disabled={!speechSupported || sendTurn.isPending}
+                disabled={!speechSupported || sendTurn.isPending || turnLimitReached}
                 onClick={isListening ? stopListening : startListening}
                 aria-pressed={isListening}
                 aria-label={isListening ? 'Dừng nghe' : 'Bắt đầu nghe'}
@@ -514,7 +533,7 @@ export default function VoiceRoleplaySessionPage() {
                 className="flex flex-1 items-end gap-2"
                 onSubmit={(event) => {
                   event.preventDefault();
-                  if (!textInput.trim() || sendTurn.isPending) return;
+                  if (!textInput.trim() || sendTurn.isPending || turnLimitReached) return;
                   sendMessage(textInput);
                 }}
               >
@@ -525,21 +544,25 @@ export default function VoiceRoleplaySessionPage() {
                   onKeyDown={(event) => {
                     if (event.key === 'Enter' && !event.shiftKey) {
                       event.preventDefault();
-                      if (!textInput.trim() || sendTurn.isPending) return;
+                      if (!textInput.trim() || sendTurn.isPending || turnLimitReached) return;
                       sendMessage(textInput);
                     }
                   }}
                   placeholder={
-                    isListening
-                      ? 'Đang nghe… bạn nói tự nhiên nhé.'
-                      : 'Hoặc gõ phản hồi tại đây… (Enter để gửi)'
+                    turnLimitReached
+                      ? 'Đã đạt giới hạn lượt — hãy kết thúc để nhận đánh giá.'
+                      : isListening
+                        ? 'Đang nghe… bạn nói tự nhiên nhé.'
+                        : 'Hoặc gõ phản hồi tại đây… (Enter để gửi)'
                   }
-                  disabled={isListening || sendTurn.isPending}
+                  disabled={isListening || sendTurn.isPending || turnLimitReached}
                   className="focus:border-primary max-h-32 flex-1 resize-y rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900"
                 />
                 <button
                   type="submit"
-                  disabled={!textInput.trim() || sendTurn.isPending || isListening}
+                  disabled={
+                    !textInput.trim() || sendTurn.isPending || isListening || turnLimitReached
+                  }
                   className="bg-primary hover:bg-primary/90 inline-flex h-12 items-center gap-1.5 rounded-lg px-4 text-sm font-medium text-white shadow-sm transition disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <Send className="size-4" />
@@ -547,7 +570,7 @@ export default function VoiceRoleplaySessionPage() {
                 </button>
               </form>
             </div>
-            {remainingTurns !== null && (
+            {remainingTurns !== null && !turnLimitReached && (
               <p className="mt-2 text-right text-[11px] text-slate-500 dark:text-slate-400">
                 Còn {remainingTurns} lượt — hãy kết thúc khi đã đạt mục tiêu để nhận đánh giá.
               </p>
