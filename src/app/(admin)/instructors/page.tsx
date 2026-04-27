@@ -227,14 +227,17 @@ export default function InstructorsPage() {
   const updateUser = useUpdateUser();
   const toggleUserStatus = useToggleUserStatus();
   const { data: adminStats } = useAdminDashboard();
-  const { data: quizAttempts = [] } = useAllQuizAttempts();
+  const { data: pendingGradingData } = useAllQuizAttempts({
+    aiStatus: 'pending',
+    limit: 1,
+  });
   const { data: departmentsData } = useQuery({
     queryKey: ['departments-for-instructors'],
     queryFn: () => departmentService.list(),
   });
 
   const coursesCount = adminStats?.courses?.published ?? 0;
-  const pendingGradingCount = quizAttempts.filter((a) => a.status === 'submitted').length;
+  const pendingGradingCount = pendingGradingData?.pagination.total ?? 0;
 
   const departments =
     departmentsData?.map((department) => ({

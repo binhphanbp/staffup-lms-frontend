@@ -30,6 +30,8 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
     message: '',
     type: 'success' as 'success' | 'error',
   });
+  const [confirmFinalizeOpen, setConfirmFinalizeOpen] = useState(false);
+  const [pendingNavIndex, setPendingNavIndex] = useState<number | null>(null);
 
   // Get essay questions only
   const essayQuestions =
@@ -46,7 +48,7 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
   useEffect(() => {
     if (attemptId && attemptId !== prevAttemptIdRef.current) {
       prevAttemptIdRef.current = attemptId;
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- resetting form when external prop changes
+
       setActiveQuestionIndex(0);
 
       setDraftScore('');
@@ -57,21 +59,24 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
 
   // When active question changes, populate draft from existing data
   const prevQuestionIdRef = useRef<string | null>(null);
+  const initialFeedbackRef = useRef<string>('');
   useEffect(() => {
     const currentId = activeQuestion?.id ?? null;
     if (currentId && currentId !== prevQuestionIdRef.current) {
       prevQuestionIdRef.current = currentId;
       const resp = activeQuestion?.response;
       if (resp?.awardedPoints !== null && resp?.awardedPoints !== undefined) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing form with fetched data
         setDraftScore(resp.awardedPoints.toString());
       } else {
         setDraftScore('');
       }
 
       setDraftFeedback('');
+      initialFeedbackRef.current = '';
     }
   }, [activeQuestion]);
+
+  const hasUnsavedFeedback = draftFeedback.trim() !== initialFeedbackRef.current.trim();
 
   const showToast = useCallback((msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ visible: true, message: msg, type });
@@ -89,6 +94,19 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
       showToast('Lỗi khi gọi AI chấm bài. Vui lòng thử lại.', 'error');
     }
   };
+
+  // Navigate with unsaved-change guard
+  const requestNavigate = useCallback(
+    (nextIndex: number) => {
+      if (nextIndex < 0 || nextIndex > essayQuestions.length - 1) return;
+      if (hasUnsavedFeedback) {
+        setPendingNavIndex(nextIndex);
+      } else {
+        setActiveQuestionIndex(nextIndex);
+      }
+    },
+    [essayQuestions.length, hasUnsavedFeedback],
+  );
 
   // Apply AI score/feedback to draft
   const handleApplyAI = () => {
@@ -114,29 +132,46 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
   };
 
   // Submit manual grade
-  const handleSubmitGrade = async () => {
+  const handleSubmitGrade = async (options?: { advance?: boolean }) => {
     if (!draftScore) {
       showToast('Vui lòng nhập điểm số trước khi lưu.', 'error');
       return;
     }
     if (!activeQuestion?.response) return;
 
+    const maxPoints = activeQuestion.maxPoints;
+    const parsed = Number(draftScore);
+    if (Number.isNaN(parsed) || parsed < 0 || parsed > maxPoints) {
+      showToast(`Điểm phải nằm trong khoảng 0 – ${maxPoints}.`, 'error');
+      return;
+    }
+
     try {
       await manualGrade.mutateAsync({
         responseId: activeQuestion.response.id,
-        awardedPoints: Number(draftScore),
+        awardedPoints: parsed,
         feedback: draftFeedback || undefined,
       });
+      initialFeedbackRef.current = draftFeedback;
       await refetch();
       showToast('Đã lưu điểm thành công!');
+      if (options?.advance) {
+        const nextIndex = activeQuestionIndex + 1;
+        if (nextIndex <= essayQuestions.length - 1) {
+          setActiveQuestionIndex(nextIndex);
+        } else {
+          showToast('Đây là câu cuối — đã lưu xong.', 'success');
+        }
+      }
     } catch {
       showToast('Lỗi khi lưu điểm. Vui lòng thử lại.', 'error');
     }
   };
 
-  // Finalize all grading
+  // Finalize all grading (confirmed via modal)
   const handleFinalize = async () => {
     if (!attemptId) return;
+    setConfirmFinalizeOpen(false);
     try {
       await finalizeGrading.mutateAsync(attemptId);
       showToast('Đã hoàn tất chấm bài và gửi kết quả!');
@@ -146,6 +181,36 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
       showToast('Lỗi khi hoàn tất. Vui lòng thử lại.', 'error');
     }
   };
+
+  // Keyboard shortcuts: ←/→ navigate, Ctrl/Cmd+Enter save, Esc close
+  useEffect(() => {
+    if (!attemptId) return;
+    const handler = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const isTextInput =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target?.isContentEditable;
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        void handleSubmitGrade();
+        return;
+      }
+      if (isTextInput) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        requestNavigate(activeQuestionIndex - 1);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        requestNavigate(activeQuestionIndex + 1);
+      } else if (e.key === 'Escape' && !confirmFinalizeOpen && pendingNavIndex === null) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- handleSubmitGrade is stable per question
+  }, [attemptId, activeQuestionIndex, requestNavigate, confirmFinalizeOpen, pendingNavIndex]);
 
   const aiFeedback = activeQuestion?.response?.aiFeedback as AiGradingFeedback | null;
   const hasAiResult = !!aiFeedback && activeQuestion?.response?.aiGradedAt;
@@ -176,18 +241,19 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
             </span>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          <span className="hidden text-[11px] text-[#5F6368] md:inline">
+            Phím tắt: ← → chuyển câu · Ctrl+Enter lưu · Esc đóng
+          </span>
           <button
-            onClick={() => setActiveQuestionIndex(Math.max(0, activeQuestionIndex - 1))}
+            onClick={() => requestNavigate(activeQuestionIndex - 1)}
             disabled={activeQuestionIndex === 0}
             className="flex items-center gap-2 rounded border-none bg-transparent px-4 py-2 text-[13px] font-medium text-[#5F6368] hover:bg-[#F1F3F4] disabled:opacity-40"
           >
             <span className="material-symbols-outlined text-[20px]">chevron_left</span> Trước
           </button>
           <button
-            onClick={() =>
-              setActiveQuestionIndex(Math.min(essayQuestions.length - 1, activeQuestionIndex + 1))
-            }
+            onClick={() => requestNavigate(activeQuestionIndex + 1)}
             disabled={activeQuestionIndex >= essayQuestions.length - 1}
             className="flex items-center gap-2 rounded border-none bg-transparent px-4 py-2 text-[13px] font-medium text-[#5F6368] hover:bg-[#F1F3F4] disabled:opacity-40"
           >
@@ -319,13 +385,29 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
                     </div>
                   ) : null}
 
-                  <button
-                    onClick={handleApplyAI}
-                    className="flex w-full items-center justify-center gap-2 rounded-[4px] border border-[#E8D3FD] bg-transparent py-2 font-medium text-[#9334E6] transition-all hover:bg-[#E8D3FD] hover:shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">content_copy</span>
-                    Áp dụng Điểm & Nhận xét của AI
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleApplyAI}
+                      className="flex flex-1 items-center justify-center gap-2 rounded-[4px] border border-[#E8D3FD] bg-transparent py-2 font-medium text-[#9334E6] transition-all hover:bg-[#E8D3FD] hover:shadow-[0_1px_2px_rgba(0,0,0,0.1)]"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">content_copy</span>
+                      Áp dụng điểm & nhận xét
+                    </button>
+                    <button
+                      onClick={handleAiGrade}
+                      disabled={aiGradeEssay.isPending}
+                      className="flex items-center justify-center gap-2 rounded-[4px] border border-[#E8D3FD] bg-white px-3 py-2 font-medium text-[#9334E6] transition-all hover:bg-[#F3E8FD] disabled:opacity-50"
+                      title="Yêu cầu AI chấm lại"
+                    >
+                      {aiGradeEssay.isPending ? (
+                        <span className="material-symbols-outlined animate-spin text-[18px]">
+                          progress_activity
+                        </span>
+                      ) : (
+                        <span className="material-symbols-outlined text-[18px]">refresh</span>
+                      )}
+                    </button>
+                  </div>
                 </div>
               ) : (
                 /* No AI Result — Trigger Button */
@@ -392,25 +474,38 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
 
             {/* Footer Actions */}
             <div className="mt-auto flex flex-col gap-3 border-t border-[#DADCE0] bg-[#FAFAFA] p-6">
-              <button
-                onClick={handleSubmitGrade}
-                disabled={manualGrade.isPending || !draftScore}
-                className="flex h-11 w-full items-center justify-center gap-2 rounded-[4px] bg-[#1A73E8] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-colors hover:bg-[#174EA6] disabled:opacity-50"
-              >
-                {manualGrade.isPending ? (
-                  <>
-                    <span className="material-symbols-outlined animate-spin text-[18px]">
-                      progress_activity
-                    </span>
-                    Đang lưu...
-                  </>
-                ) : (
-                  <>
-                    <span className="material-symbols-outlined text-[18px]">save</span>
-                    Lưu điểm câu này
-                  </>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleSubmitGrade()}
+                  disabled={manualGrade.isPending || !draftScore}
+                  className="flex h-11 flex-1 items-center justify-center gap-2 rounded-[4px] bg-[#1A73E8] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-colors hover:bg-[#174EA6] disabled:opacity-50"
+                >
+                  {manualGrade.isPending ? (
+                    <>
+                      <span className="material-symbols-outlined animate-spin text-[18px]">
+                        progress_activity
+                      </span>
+                      Đang lưu...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-[18px]">save</span>
+                      Lưu điểm câu này
+                    </>
+                  )}
+                </button>
+                {activeQuestionIndex < essayQuestions.length - 1 && (
+                  <button
+                    onClick={() => handleSubmitGrade({ advance: true })}
+                    disabled={manualGrade.isPending || !draftScore}
+                    className="flex h-11 items-center justify-center gap-2 rounded-[4px] border border-[#1A73E8] bg-white px-3 font-medium text-[#1A73E8] transition-colors hover:bg-[#E8F0FE] disabled:opacity-50"
+                    title="Lưu rồi chuyển câu kế tiếp"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">double_arrow</span>
+                    Lưu & tiếp theo
+                  </button>
                 )}
-              </button>
+              </div>
 
               {/* Show Finalize button only if we're on the last question or all are graded */}
               {essayQuestions.every(
@@ -418,7 +513,7 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
                   q.response?.awardedPoints !== null && q.response?.awardedPoints !== undefined,
               ) && (
                 <button
-                  onClick={handleFinalize}
+                  onClick={() => setConfirmFinalizeOpen(true)}
                   disabled={finalizeGrading.isPending}
                   className="flex h-11 w-full items-center justify-center gap-2 rounded-[4px] bg-[#34A853] font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-colors hover:bg-[#2D8E47] disabled:opacity-50"
                 >
@@ -437,6 +532,81 @@ export const GradingWorkspace = ({ attemptId, onClose, onGraded }: GradingWorksp
                   )}
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Unsaved-nav warning modal */}
+      {pendingNavIndex !== null && (
+        <div className="fixed inset-0 z-[3500] flex items-center justify-center bg-black/40">
+          <div className="w-[420px] rounded-lg bg-white p-6 shadow-xl">
+            <h3 className="mb-2 text-[16px] font-medium text-[#202124]">
+              Bạn có nhận xét chưa lưu
+            </h3>
+            <p className="mb-5 text-[13px] leading-relaxed text-[#5F6368]">
+              Nếu chuyển câu bây giờ, phần nhận xét đang soạn sẽ bị mất. Bạn muốn tiếp tục?
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setPendingNavIndex(null)}
+                className="rounded border border-[#DADCE0] bg-white px-4 py-2 text-[13px] font-medium text-[#202124] hover:bg-[#F8F9FA]"
+              >
+                Ở lại câu này
+              </button>
+              <button
+                onClick={() => {
+                  setActiveQuestionIndex(pendingNavIndex);
+                  setPendingNavIndex(null);
+                }}
+                className="rounded bg-[#D93025] px-4 py-2 text-[13px] font-medium text-white hover:bg-[#B71C1C]"
+              >
+                Bỏ nhận xét & chuyển câu
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Finalize confirm modal */}
+      {confirmFinalizeOpen && (
+        <div className="fixed inset-0 z-[3500] flex items-center justify-center bg-black/40">
+          <div className="w-[460px] rounded-lg bg-white p-6 shadow-xl">
+            <div className="mb-3 flex items-center gap-2 text-[#E65100]">
+              <span className="material-symbols-outlined text-[24px]">warning</span>
+              <h3 className="m-0 text-[16px] font-medium text-[#202124]">Hoàn tất chấm bài?</h3>
+            </div>
+            <p className="mb-5 text-[13px] leading-relaxed text-[#5F6368]">
+              Sau khi hoàn tất, kết quả & điểm sẽ được gửi đến học viên và không thể hoàn tác. Hãy
+              đảm bảo mọi câu đã được chấm đúng.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setConfirmFinalizeOpen(false)}
+                disabled={finalizeGrading.isPending}
+                className="rounded border border-[#DADCE0] bg-white px-4 py-2 text-[13px] font-medium text-[#202124] hover:bg-[#F8F9FA]"
+              >
+                Huỷ
+              </button>
+              <button
+                onClick={handleFinalize}
+                disabled={finalizeGrading.isPending}
+                className="flex items-center gap-2 rounded bg-[#34A853] px-4 py-2 text-[13px] font-medium text-white hover:bg-[#2D8E47] disabled:opacity-60"
+              >
+                {finalizeGrading.isPending ? (
+                  <>
+                    <span className="material-symbols-outlined animate-spin text-[16px]">
+                      progress_activity
+                    </span>
+                    Đang xử lý...
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-[16px]">done_all</span>
+                    Xác nhận hoàn tất
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
