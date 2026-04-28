@@ -328,7 +328,7 @@ export const AdminSidebar = () => {
                 >
                   apartment
                 </span>{' '}
-                Quáº£n lÃ½ PhÃ²ng ban
+                Quản lý phòng ban
               </Link>
             )}
             <Link
