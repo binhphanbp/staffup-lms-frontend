@@ -9,7 +9,7 @@ import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, LogIn, Loader2, GraduationCap, AlertCircle, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
