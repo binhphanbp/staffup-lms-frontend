@@ -53,22 +53,40 @@ export const PermissionMatrix = ({
         <table className="w-full border-collapse text-left">
           <thead className="sticky top-0 z-10 bg-white shadow-[0_1px_0_#DADCE0]">
             <tr>
-              <th className="w-[40%] border-b border-[#DADCE0] px-4 py-3 pl-6 text-[13px] font-medium text-[#5F6368]">
+              <th
+                scope="col"
+                className="w-[40%] border-b border-[#DADCE0] px-4 py-3 pl-6 text-[13px] font-medium text-[#5F6368]"
+              >
                 Phân hệ / Chức năng
               </th>
-              <th className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]">
+              <th
+                scope="col"
+                className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]"
+              >
                 Xem (Read)
               </th>
-              <th className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]">
+              <th
+                scope="col"
+                className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]"
+              >
                 Thêm (Create)
               </th>
-              <th className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]">
+              <th
+                scope="col"
+                className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]"
+              >
                 Sửa (Update)
               </th>
-              <th className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]">
+              <th
+                scope="col"
+                className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]"
+              >
                 Xóa (Delete)
               </th>
-              <th className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]">
+              <th
+                scope="col"
+                className="border-b border-[#DADCE0] px-4 py-3 text-center text-[13px] font-medium text-[#5F6368]"
+              >
                 Tất cả
               </th>
             </tr>

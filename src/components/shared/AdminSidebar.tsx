@@ -155,6 +155,24 @@ export const AdminSidebar = () => {
                 MỚI
               </span>
             </Link>
+            <Link
+              href="/learning-path"
+              className={`mr-4 flex h-10 cursor-pointer items-center rounded-r-full px-6 font-medium transition-colors ${
+                pathname.startsWith('/learning-path')
+                  ? 'bg-[#E8F0FE] text-[#1A73E8] dark:bg-blue-950/40 dark:text-sky-300'
+                  : 'text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124] dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white'
+              }`}
+            >
+              <span
+                className={`material-symbols-outlined mr-4 text-[20px] ${pathname.startsWith('/learning-path') ? "[font-variation-settings:'FILL'_1]" : ''}`}
+              >
+                route
+              </span>
+              Lộ trình Thích ứng
+              <span className="ml-auto rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 px-2 py-0.5 text-[10px] font-bold text-white">
+                MỚI
+              </span>
+            </Link>
           </div>
         )}
 
@@ -328,7 +346,7 @@ export const AdminSidebar = () => {
                 >
                   apartment
                 </span>{' '}
-                Quáº£n lÃ½ PhÃ²ng ban
+                Quản lý phòng ban
               </Link>
             )}
             <Link

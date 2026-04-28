@@ -48,11 +48,15 @@ export const InstructorActivityTable = () => {
       <table className="w-full">
         <thead>
           <tr className="border-b border-[#DADCE0]">
-            <th className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">
+            <th scope="col" className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">
               Giảng viên (Tech Lead)
             </th>
-            <th className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">Nhiệm vụ</th>
-            <th className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">Trạng thái</th>
+            <th scope="col" className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">
+              Nhiệm vụ
+            </th>
+            <th scope="col" className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">
+              Trạng thái
+            </th>
           </tr>
         </thead>
         <tbody>

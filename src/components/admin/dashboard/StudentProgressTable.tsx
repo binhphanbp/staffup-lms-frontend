@@ -41,11 +41,15 @@ export const StudentProgressTable = ({ data, loading }: StudentProgressTableProp
       <table className="w-full">
         <thead>
           <tr className="border-b border-[#DADCE0]">
-            <th className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">Học viên</th>
-            <th className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">
+            <th scope="col" className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">
+              Học viên
+            </th>
+            <th scope="col" className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">
               Khóa học đang tham gia
             </th>
-            <th className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">Tiến độ</th>
+            <th scope="col" className="pb-3 text-left text-[13px] font-medium text-[#5F6368]">
+              Tiến độ
+            </th>
           </tr>
         </thead>
         <tbody>

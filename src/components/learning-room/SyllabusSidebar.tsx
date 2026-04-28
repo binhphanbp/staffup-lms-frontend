@@ -93,10 +93,15 @@ export const SyllabusSidebar = ({
     >
       <button
         onClick={onToggle}
-        className="hover:text-primary hover:border-primary tooltip absolute top-4 -left-4 z-20 hidden h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-md transition-colors md:flex"
+        className="hover:text-primary hover:border-primary tooltip absolute top-4 -left-4 z-20 hidden h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-slate-500 shadow-md transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none md:flex"
         title="Bật/Tắt Giáo trình"
+        aria-label={isOpen ? 'Đóng giáo trình' : 'Mở giáo trình'}
+        aria-expanded={isOpen}
       >
-        <i className={`fa-solid ${isOpen ? 'fa-chevron-right' : 'fa-chevron-left'} text-xs`}></i>
+        <i
+          className={`fa-solid ${isOpen ? 'fa-chevron-right' : 'fa-chevron-left'} text-xs`}
+          aria-hidden="true"
+        ></i>
       </button>
 
       <div

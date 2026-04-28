@@ -573,19 +573,34 @@ export default function InstructorsPage() {
               <table className="w-full border-collapse">
                 <thead className="bg-[#F8F9FA]">
                   <tr>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Thông tin Giảng viên
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Đơn vị / Phòng ban
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Chuyên môn
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Trạng thái
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-left text-[13px] font-medium text-[#5F6368]"
+                    >
                       Thao tác
                     </th>
                   </tr>
@@ -673,8 +688,9 @@ export default function InstructorsPage() {
                               onClick={() => openEditModal(instructor)}
                               className="flex h-9 w-9 items-center justify-center rounded border border-[#DADCE0] text-[#5F6368] transition-colors hover:bg-[#F1F3F4] hover:text-[#202124]"
                               title="Sửa giảng viên"
+                              aria-label="Sửa giảng viên"
                             >
-                              <i className="fa-solid fa-pen text-[13px]"></i>
+                              <i className="fa-solid fa-pen text-[13px]" aria-hidden="true"></i>
                             </button>
                             <button
                               onClick={() => handleToggleStatus(instructor)}
@@ -684,17 +700,22 @@ export default function InstructorsPage() {
                                   : 'bg-[#E8F0FE] text-[#174EA6] hover:bg-[#D8E3FD]'
                               }`}
                               title={instructor.isActive ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
+                              aria-label={
+                                instructor.isActive ? 'Khóa tài khoản' : 'Mở khóa tài khoản'
+                              }
                             >
                               <i
                                 className={`fa-solid ${instructor.isActive ? 'fa-lock' : 'fa-lock-open'} text-[13px]`}
+                                aria-hidden="true"
                               ></i>
                             </button>
                             <button
                               onClick={() => handleDelete(instructor)}
                               className="flex h-9 w-9 items-center justify-center rounded bg-red-50 text-red-600 transition-colors hover:bg-red-100"
                               title="Xóa giảng viên"
+                              aria-label="Xóa giảng viên"
                             >
-                              <i className="fa-solid fa-trash text-[13px]"></i>
+                              <i className="fa-solid fa-trash text-[13px]" aria-hidden="true"></i>
                             </button>
                           </div>
                         </td>

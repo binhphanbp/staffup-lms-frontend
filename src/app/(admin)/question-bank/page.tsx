@@ -158,22 +158,40 @@ export default function QuestionBankPage() {
               <table className="w-full border-collapse text-left">
                 <thead className="sticky top-0 z-10 bg-white shadow-[0_1px_0_#DADCE0]">
                   <tr>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-[12px] font-medium whitespace-nowrap text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-[12px] font-medium whitespace-nowrap text-[#5F6368]"
+                    >
                       Tên ngân hàng
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-[12px] font-medium whitespace-nowrap text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-[12px] font-medium whitespace-nowrap text-[#5F6368]"
+                    >
                       Mô tả
                     </th>
-                    <th className="w-[120px] border-b border-[#DADCE0] px-4 py-3 text-center text-[12px] font-medium whitespace-nowrap text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="w-[120px] border-b border-[#DADCE0] px-4 py-3 text-center text-[12px] font-medium whitespace-nowrap text-[#5F6368]"
+                    >
                       Số câu hỏi
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-[12px] font-medium whitespace-nowrap text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-[12px] font-medium whitespace-nowrap text-[#5F6368]"
+                    >
                       Người tạo
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 text-[12px] font-medium whitespace-nowrap text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 text-[12px] font-medium whitespace-nowrap text-[#5F6368]"
+                    >
                       Ngày tạo
                     </th>
-                    <th className="border-b border-[#DADCE0] px-4 py-3 pr-6 text-right text-[12px] font-medium text-[#5F6368]">
+                    <th
+                      scope="col"
+                      className="border-b border-[#DADCE0] px-4 py-3 pr-6 text-right text-[12px] font-medium text-[#5F6368]"
+                    >
                       Thao tác
                     </th>
                   </tr>
@@ -238,17 +256,27 @@ export default function QuestionBankPage() {
                             <button
                               className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent text-[#5F6368] transition-colors hover:bg-[#5F6368]/10 hover:text-[#202124]"
                               title="Chỉnh sửa"
+                              aria-label="Chỉnh sửa"
                               onClick={() => showToast(`Sửa ngân hàng: ${bank.name}`)}
                             >
-                              <span className="material-symbols-outlined text-[20px]">edit</span>
+                              <span
+                                className="material-symbols-outlined text-[20px]"
+                                aria-hidden="true"
+                              >
+                                edit
+                              </span>
                             </button>
                             <button
                               className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent text-[#5F6368] transition-colors hover:bg-[#EA4335]/10 hover:text-[#EA4335]"
                               title="Xóa"
+                              aria-label="Xóa"
                               onClick={() => handleDelete(bank)}
                               disabled={deleteBank.isPending}
                             >
-                              <span className="material-symbols-outlined text-[20px] text-[#EA4335]">
+                              <span
+                                className="material-symbols-outlined text-[20px] text-[#EA4335]"
+                                aria-hidden="true"
+                              >
                                 delete
                               </span>
                             </button>

@@ -126,11 +126,21 @@ export function LeaderboardLayout({
               <table className="w-full text-sm">
                 <thead className="border-b border-slate-200 text-left text-xs tracking-wide text-slate-500 uppercase dark:border-slate-700 dark:text-slate-400">
                   <tr>
-                    <th className="w-16 px-4 py-3">Hạng</th>
-                    <th className="px-4 py-3">Học viên</th>
-                    <th className="px-4 py-3">Phòng ban</th>
-                    <th className="px-4 py-3 text-right">{rest[0]?.primaryLabel}</th>
-                    <th className="px-4 py-3 text-right">Số phiên</th>
+                    <th scope="col" className="w-16 px-4 py-3">
+                      Hạng
+                    </th>
+                    <th scope="col" className="px-4 py-3">
+                      Học viên
+                    </th>
+                    <th scope="col" className="px-4 py-3">
+                      Phòng ban
+                    </th>
+                    <th scope="col" className="px-4 py-3 text-right">
+                      {rest[0]?.primaryLabel}
+                    </th>
+                    <th scope="col" className="px-4 py-3 text-right">
+                      Số phiên
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
