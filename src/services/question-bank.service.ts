@@ -42,9 +42,13 @@ export const questionBankService = {
 
   // ----- Questions within a bank -----
 
-  listQuestions: async (bankId: string): Promise<QuestionBankQuestion[]> => {
-    const { data } = await api.get<ApiResponse<QuestionBankQuestion[]>>(
+  listQuestions: async (
+    bankId: string,
+    params?: { page?: number; limit?: number },
+  ): Promise<PaginatedResponse<QuestionBankQuestion>> => {
+    const { data } = await api.get<ApiResponse<PaginatedResponse<QuestionBankQuestion>>>(
       `${API_BASE}/${bankId}/questions`,
+      { params },
     );
     return data.data;
   },

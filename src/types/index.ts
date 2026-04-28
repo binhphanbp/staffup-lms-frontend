@@ -905,9 +905,11 @@ export interface PermissionListParams {
 export interface QuestionBank {
   id: string;
   name: string;
+  title?: string; // API trả về title thay vì name
   description: string | null;
   createdBy: { id: string; fullName: string } | null;
-  questionsCount: number;
+  questionsCount?: number;
+  _count?: { questions: number }; // API trả về _count.questions
   createdAt: string;
   updatedAt: string;
 }
