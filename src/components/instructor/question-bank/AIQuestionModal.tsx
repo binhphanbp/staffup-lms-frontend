@@ -244,7 +244,7 @@ export const AIQuestionModal = ({
               )}
               {banks.map((b) => (
                 <option key={b.id} value={b.id}>
-                  {b.name}
+                  {b.title || b.name}
                 </option>
               ))}
             </select>
