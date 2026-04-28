@@ -2,10 +2,16 @@
 
 import { useState } from 'react';
 import { toast } from '@/lib/toast';
-import { useQuestionBanks, useDeleteQuestionBank } from '@/hooks/useQuestionBanks';
+import {
+  useQuestionBanks,
+  useDeleteQuestionBank,
+  useUpdateQuestionBank,
+} from '@/hooks/useQuestionBanks';
 import type { QuestionBank } from '@/types';
 import { AddQuestionModal } from '@/components/instructor/question-bank/AddQuestionModal';
 import { AIQuestionModal } from '@/components/instructor/question-bank/AIQuestionModal';
+import { ViewBankModal } from '@/components/instructor/question-bank/ViewBankModal';
+import { EditBankModal } from '@/components/instructor/question-bank/EditBankModal';
 
 export default function QuestionBankPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,13 +19,21 @@ export default function QuestionBankPage() {
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedBank, setSelectedBank] = useState<QuestionBank | null>(null);
+
   const { data, isLoading, isError } = useQuestionBanks({ search: searchQuery, page, limit: 10 });
   const deleteBank = useDeleteQuestionBank();
+  const updateBank = useUpdateQuestionBank();
 
   const banks: QuestionBank[] = data?.data ?? [];
   const meta = data?.meta;
   const totalBanks = meta?.total ?? 0;
-  const totalQuestions = banks.reduce((sum, b) => sum + b.questionsCount, 0);
+  const totalQuestions = banks.reduce(
+    (sum, b) => sum + (b._count?.questions || b.questionsCount || 0),
+    0,
+  );
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') =>
     toast[type](message);
@@ -30,9 +44,9 @@ export default function QuestionBankPage() {
   };
 
   const handleDelete = (bank: QuestionBank) => {
-    if (!confirm(`Xóa ngân hàng câu hỏi "${bank.name}"?`)) return;
+    if (!confirm(`Xóa ngân hàng câu hỏi "${bank.title}"?`)) return;
     deleteBank.mutate(bank.id, {
-      onSuccess: () => showToast(`Đã xóa ngân hàng "${bank.name}"`),
+      onSuccess: () => showToast(`Đã xóa ngân hàng "${bank.title}"`),
       onError: () => showToast('Xóa thất bại. Vui lòng thử lại.', 'error'),
     });
   };
@@ -45,6 +59,30 @@ export default function QuestionBankPage() {
   const handleSaveAI = (createdCount: number) => {
     setIsAIModalOpen(false);
     showToast(`Đã thêm ${createdCount} câu hỏi từ AI vào Ngân hàng!`);
+  };
+
+  const handleView = (bank: QuestionBank) => {
+    setSelectedBank(bank);
+    setIsViewModalOpen(true);
+  };
+
+  const handleEdit = (bank: QuestionBank) => {
+    setSelectedBank(bank);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = (id: string, data: { title: string; description: string }) => {
+    updateBank.mutate(
+      { id, payload: { name: data.title, description: data.description } },
+      {
+        onSuccess: () => {
+          showToast('Đã cập nhật ngân hàng thành công!');
+          setIsEditModalOpen(false);
+          setSelectedBank(null);
+        },
+        onError: () => showToast('Cập nhật thất bại. Vui lòng thử lại.', 'error'),
+      },
+    );
   };
 
   const formatDate = (iso: string) =>
@@ -214,7 +252,7 @@ export default function QuestionBankPage() {
                       >
                         <td className="px-4 py-4 align-middle">
                           <span className="text-[14px] font-medium text-[#202124]">
-                            {bank.name}
+                            {bank.title}
                           </span>
                         </td>
                         <td className="max-w-[300px] px-4 py-4 align-middle">
@@ -229,7 +267,7 @@ export default function QuestionBankPage() {
                         <td className="px-4 py-4 text-center align-middle">
                           <span className="inline-flex items-center gap-1 rounded border border-[#E8F0FE] bg-[#E8F0FE] px-2 py-0.5 text-[12px] font-medium text-[#1A73E8]">
                             <span className="material-symbols-outlined text-[14px]">quiz</span>
-                            {bank.questionsCount}
+                            {bank._count?.questions ?? bank.questionsCount ?? 0}
                           </span>
                         </td>
                         <td className="px-4 py-4 align-middle">
@@ -247,7 +285,7 @@ export default function QuestionBankPage() {
                             <button
                               className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent text-[#5F6368] transition-colors hover:bg-[#5F6368]/10 hover:text-[#202124]"
                               title="Xem chi tiết"
-                              onClick={() => showToast(`Xem ngân hàng: ${bank.name}`)}
+                              onClick={() => handleView(bank)}
                             >
                               <span className="material-symbols-outlined text-[20px]">
                                 open_in_new
@@ -257,7 +295,7 @@ export default function QuestionBankPage() {
                               className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent text-[#5F6368] transition-colors hover:bg-[#5F6368]/10 hover:text-[#202124]"
                               title="Chỉnh sửa"
                               aria-label="Chỉnh sửa"
-                              onClick={() => showToast(`Sửa ngân hàng: ${bank.name}`)}
+                              onClick={() => handleEdit(bank)}
                             >
                               <span
                                 className="material-symbols-outlined text-[20px]"
@@ -329,6 +367,27 @@ export default function QuestionBankPage() {
         isOpen={isAIModalOpen}
         onClose={() => setIsAIModalOpen(false)}
         onSave={handleSaveAI}
+      />
+
+      <ViewBankModal
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setSelectedBank(null);
+        }}
+        bank={selectedBank}
+        onEdit={handleEdit}
+      />
+
+      <EditBankModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedBank(null);
+        }}
+        bank={selectedBank}
+        onSave={handleSaveEdit}
+        isSaving={updateBank.isPending}
       />
 
       {/* TOAST NOTIFICATION */}
