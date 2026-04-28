@@ -45,11 +45,10 @@ export function PassedSelector({ nodes, passedIds, onChange, onSavePassedToDb, s
     onChange([]);
   }
 
-  function selectPreset(preset: 'student1' | 'senior' | 'half') {
+  function selectPreset(preset: 'student1' | 'senior' | 'empty') {
     if (preset === 'student1') onChange(['L11']);
     else if (preset === 'senior') onChange(['L11', 'L12', 'L15', 'L16', 'L18', 'L21', 'L26']);
-    else if (preset === 'half')
-      onChange(nodes.slice(0, Math.floor(nodes.length / 2)).map((n) => n.id));
+    else if (preset === 'empty') onChange([]);
   }
 
   return (
@@ -85,10 +84,10 @@ export function PassedSelector({ nodes, passedIds, onChange, onSavePassedToDb, s
           Senior (7 bài)
         </button>
         <button
-          onClick={() => selectPreset('half')}
-          className="rounded-full bg-emerald-100 px-2 py-0.5 font-medium text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300"
+          onClick={() => selectPreset('empty')}
+          className="rounded-full bg-slate-200 px-2 py-0.5 font-medium text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-200"
         >
-          50%
+          Empty (chưa pass gì)
         </button>
       </div>
 

@@ -8,6 +8,7 @@ export interface AiModuleFlags {
   dropoutPrediction: boolean;
   autoGrader: boolean;
   questionGenerator: boolean;
+  learningAdvisor: boolean;
 }
 
 export interface AiPromptSet {
@@ -19,6 +20,7 @@ export interface AiPromptSet {
   lessonContentSystemPrompt: string;
   learningRecommendationSystemPrompt: string;
   codeLabReviewSystemPrompt: string;
+  learningAdvisorSystemPrompt: string;
 }
 
 export interface AiConfigDto {
