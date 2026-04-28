@@ -33,6 +33,12 @@ const ITEMS: Array<{
     title: 'Trợ lý Tạo Câu hỏi (Question Generator)',
     description: 'Tự động sinh câu hỏi trắc nghiệm từ tài liệu bài giảng.',
   },
+  {
+    key: 'learningAdvisor',
+    title: 'Cố vấn Đào tạo (Learning Advisor)',
+    description:
+      'Soạn email "Chào mừng & Hướng dẫn Lộ trình cá nhân hóa" cho nhân viên mới sau Bài Test đầu vào (Module Lộ trình Thích ứng).',
+  },
 ];
 
 export const AiModules = ({ modules, onChange }: AiModulesProps) => {
