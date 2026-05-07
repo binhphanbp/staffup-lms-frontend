@@ -1,6 +1,6 @@
 # Staffup LMS — Frontend
 
-Production-ready Next.js frontend for the Staffup Learning Management System.
+Production-ready Next.js frontend for the Staffup Learning Management System
 
 ## Tech Stack
 
