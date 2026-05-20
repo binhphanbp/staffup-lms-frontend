@@ -55,7 +55,7 @@ docker build --target production -t staffup-frontend .
 docker run -p 3000:3000 staffup-frontend
 ```
 
-## Project Structure
+## Project Structure:
 
 ```
 src/
